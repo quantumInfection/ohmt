@@ -1,0 +1,13 @@
+.env
+venv/
+.gcloudignore
+.git
+.gitignore
+.idea/
+__pycache__/
+scripts/
+env/
+migrations/
+**/.DS_Store
+localhost.py
+temp.js
