@@ -1,0 +1,8 @@
+{
+  "compilerOptions": {
+    "baseUrl": "../../../Downloads/Devias Kit Pro v7.1.0-Standard Plus/code/vite-template-javascript",
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  }
+}
