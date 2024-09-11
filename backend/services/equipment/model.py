@@ -11,6 +11,24 @@ class Status(Enum):
 
 
 @dataclass
+class Location:
+    id: str
+    name: str
+
+
+@dataclass
+class Category:
+    id: str
+    name: str
+
+
+@dataclass
+class Calibration:
+    id: str
+    # TODO: Grow
+
+
+@dataclass
 class Equipment:
     id: str  # uuid
     asset_id: str
@@ -18,8 +36,8 @@ class Equipment:
     model: str
     serial_number: str
     case_id: str
-    location_id: str  # TODO: Could be string
+    location_id: str  # References Location
     image_url: str
     status: Status
-    category_id: str  # TODO: Could be string
-    calibration_id: str | None  # TODO: Could be string
+    category_id: str
+    calibration_id: str | None  # References Calibration
