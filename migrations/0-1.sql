@@ -16,9 +16,18 @@ create table calibrations
     -- todo: add more fields as the calibration class grows
 );
 
+
+create table companies
+(
+    id   uuid primary key,
+    name text not null
+);
+
+
 create table equipment
 (
     id             uuid primary key,
+    company_id     uuid references companies (id)  not null,
     asset_id       text                            not null,
     device_id      text                            not null,
     model          text                            not null,

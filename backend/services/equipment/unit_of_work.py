@@ -3,9 +3,12 @@ from abc import ABC
 from psycopg2.extensions import ISOLATION_LEVEL_READ_COMMITTED
 
 from db import db_pool
+import services.equipment.equipment_repository as equipments_repo
 
 
 class AbstractUnitOfWork(ABC):
+    equipments_repo: equipments_repo.AbstractEquipmentsRepository
+
     def __enter__(self) -> "AbstractUnitOfWork":
         return self
 
@@ -32,6 +35,7 @@ class DbPoolUnitOfWork(AbstractUnitOfWork):
 
     def __enter__(self):
         self.db_pool = self._db_pool_factory.build(isolation_level=self.isolation_level)
+        self.equipments_repo = equipments_repo.EquipmentsRepository(self.db_pool)
         self.db_pool.__enter__()
         return super().__enter__()
 
