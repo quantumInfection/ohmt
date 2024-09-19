@@ -11,4 +11,4 @@ WORKDIR /app
 COPY . /app
 
 # Run the web service on container startup
-CMD gunicorn --workers=2 main:app --timeout 30
+CMD gunicorn --workers=2 main:app --timeout 60

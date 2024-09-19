@@ -1,25 +1,26 @@
 from flask import blueprints, request
 
-api_equipment = blueprints.Blueprint("api_equipment", __name__)
+app = blueprints.Blueprint("api_equipment", __name__)
 import services.equipment.commands as eq_commands
-import services.equipment.unit_of_work as eq_uow
+import services.unit_of_work as eq_uow
 
 
-@api_equipment.route("/api/equipment", methods=["POST"])
+# TODO: Add auth
+@app.route("/api/equipment", methods=["POST"])
 def create_equipment():
     """
     Create equipment
 
     args:
-        company_id: str,
-        asset_id: str,
-        device_id: str,
-        model: str,
-        serial_number: str,
-        case_id: str,
-        location_id: str,
-        image_url: str,
-        status: eq_model.Status,
+        company_id: str  # TODO: Auth
+        asset_id: str
+        device_id: str
+        model: str
+        serial_number: str
+        case_id: str
+        location_id: str
+        image_url: str
+        status: str
         category_id: str,
         calibration_id: str | None,
     """
@@ -42,3 +43,14 @@ def create_equipment():
     )
 
     return equipment.__dict__
+
+
+@app.route("/api/equipments", methods=["GET"])
+def list_equipments():
+    """
+    List equipments
+
+    args:
+        company_id: str,  # TODO: Auth
+    """
+    pass

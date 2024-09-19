@@ -1,7 +1,10 @@
 from flask import Flask
 from db.cloud_db import CloudDB
+from api import *
 
 app = Flask(__name__)
+app.register_blueprint(api_equipment)  # Register the equipment API blueprint
+app.register_blueprint(api_case)  # Register the case API blueprint
 
 
 @app.route("/")

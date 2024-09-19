@@ -1,0 +1,11 @@
+POST https://clownfish-app-vi4my.ondigitalocean.app/v1/case/
+Content-Type: application/json
+
+{
+  "case_id": "Check case",
+  "company_id": "16edda9a-299f-4ab4-a41c-922e637cad31",
+  "name": "Case 1",
+  "location_id": "4a8a11fe-ce57-4cd3-a83f-5ecc2652ca17"
+}
+
+###

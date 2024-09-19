@@ -24,7 +24,15 @@ create table companies
 );
 
 
-create table equipment
+create table cases (
+    id          text primary key,
+    company_id  uuid references companies (id) not null,
+    name        text not null,
+    location_id uuid references locations (id) not null,
+);
+
+
+create table equipments
 (
     id             uuid primary key,
     company_id     uuid references companies (id)  not null,
