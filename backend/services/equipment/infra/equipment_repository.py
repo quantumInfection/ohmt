@@ -41,7 +41,10 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                 serial_number,
                 case_id,
                 status,
-                category_id
+                category_id,
+                calibration_category,
+                notes,
+                created_at
             )
             values (
                 %(id)s,
@@ -52,7 +55,10 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                 %(serial_number)s,
                 %(case_id)s,
                 %(status)s,
-                %(category_id)s
+                %(category_id)s,
+                %(calibration_category)s,
+                %(notes)s,
+                %(created_at)s
             );
         """
 
@@ -69,6 +75,9 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                     "case_id": equipment.case_id,
                     "status": equipment.status.value,
                     "category_id": equipment.category_id,
+                    "calibration_category": equipment.calibration_category.value,
+                    "notes": equipment.notes,
+                    "created_at": equipment.created_at,
                 },
             )
 
@@ -77,7 +86,9 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                 id,
                 equipment_id,
                 url,
-                is_primary
+                is_primary,
+                created_at,
+                updated_at
             )
             values %s
             ;
@@ -88,8 +99,15 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                 cursor,
                 images_sql,
                 [
-                    (image.id, equipment.id, image.url, image.primary)
+                    (
+                        image.id,
+                        equipment.id,
+                        image.url,
+                        image.primary,
+                        image.created_at,
+                        image.updated_at,
+                    )
                     for image in equipment.images
                 ],
-                template="(%s, %s, %s, %s)",
+                template="(%s, %s, %s, %s, %s, %s)",
             )

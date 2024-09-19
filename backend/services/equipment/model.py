@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from uuid import uuid4
 from enum import Enum
-from datetime import date
+from datetime import date, datetime
 
 
 @dataclass
@@ -66,6 +66,8 @@ class Image:
     id: str
     url: str
     primary: bool
+    created_at: datetime
+    updated_at: datetime | None
 
 
 @dataclass
@@ -81,7 +83,11 @@ class Equipment:
     images: list[Image]
     status: Status
     category_id: str
+    calibration_category: CalibrationCategory
+    notes: str
     calibrations: list[Calibration] | None
+    created_at: datetime
+    updated_at: datetime | None
 
     @classmethod
     def create(
@@ -97,6 +103,8 @@ class Equipment:
         primary_image_index: int,  # Should start from zero
         status: str,
         category_id: str,
+        calibration_category: str,
+        notes: str,
     ):
         return cls(
             id=str(uuid4()),
@@ -108,12 +116,22 @@ class Equipment:
             serial_number=serial_number,
             case_id=case_id,
             images=[
-                Image(id=str(uuid4()), url=url, primary=i == primary_image_index)
+                Image(
+                    id=str(uuid4()),
+                    url=url,
+                    primary=i == primary_image_index,
+                    created_at=datetime.now(),
+                    updated_at=None,
+                )
                 for i, url in enumerate(image_urls)
             ],
             status=Status(status),
             category_id=category_id,
+            calibration_category=CalibrationCategory(calibration_category),
+            notes=notes,
             calibrations=None,
+            created_at=datetime.now(),
+            updated_at=None,
         )
 
     def add_calibration(
@@ -138,6 +156,8 @@ class Equipment:
                 notes=notes,
             )
         )
+
+        self.updated_at = datetime.now()
 
     def add_calibrations(self, calibrations: list[dict]):
         if self.calibrations is None:

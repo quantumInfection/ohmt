@@ -15,6 +15,8 @@ def create_equipment(
     primary_image_index: int,
     status: str,
     category_id: str,
+    calibration_category: str,
+    notes: str,
 ) -> eq_model.Equipment:
     with uow:
         case = uow.cases_repo.get(case_id, company_id)
@@ -36,6 +38,8 @@ def create_equipment(
             primary_image_index=primary_image_index,
             status=status,
             category_id=category_id,
+            calibration_category=calibration_category,
+            notes=notes,
         )
 
         uow.equipments_repo.add(equipment)

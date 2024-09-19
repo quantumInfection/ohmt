@@ -11,9 +11,12 @@ Content-Type: application/json
   "case_id": "Check case",
   "image_urls": [
     "https://example.com/image1.jpg",
-    "https://example.com/image2.jpg"
+    "https://example.com/image2.jpg",
+    "https://example.com/image3.jpg"
   ],
   "primary_image_index": 1,
   "status": "Active",
-  "category_id": "2cc45b02-c9a5-4098-b122-579913168173"
+  "category_id": "2cc45b02-c9a5-4098-b122-579913168173",
+  "calibration_category": "Conformance",
+  "notes": "LOREM IPSUM ASDJASKLDJ ASLKDJLKASDJ LKSD"
 }

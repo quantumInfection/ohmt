@@ -40,6 +40,8 @@ def create_equipment():
         args["primary_image_index"],
         args["status"],
         args["category_id"],
+        args["calibration_category"],
+        args["notes"],
     )
 
     return {
@@ -57,6 +59,8 @@ def create_equipment():
         ],
         "status": equipment.status.value,
         "category_id": equipment.category_id,
+        "calibration_category": equipment.calibration_category.value,
+        "notes": equipment.notes,
     }
 
 
