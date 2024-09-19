@@ -17,10 +17,12 @@ def create_equipment(
     category_id: str,
 ) -> eq_model.Equipment:
     with uow:
-        case = uow.cases_repo.get(case_id)
+        case = uow.cases_repo.get(case_id, company_id)
 
         if not case:
-            raise ValueError("Case not found")
+            raise ValueError(
+                f"Case with CASE: {case_id} and COMPANY: {company_id} not found"
+            )
 
         equipment = eq_model.Equipment.create(
             company_id=company_id,
@@ -29,7 +31,7 @@ def create_equipment(
             device_id=device_id,
             model=model,
             serial_number=serial_number,
-            case_id=case_id,
+            case_id=case.id,
             image_urls=image_urls,
             primary_image_index=primary_image_index,
             status=status,

@@ -2,6 +2,7 @@ import json
 from abc import ABC, abstractmethod
 from db.db_pool import DBPool
 import services.equipment.model as eq_model
+from psycopg2.extras import execute_values
 
 
 class AbstractEquipmentsRepository(ABC):
@@ -30,8 +31,8 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
         return self.db_pool.cursor(*args, **kwargs)
 
     def add(self, equipment: eq_model.Equipment):
-        sql = """
-            insert into equipment (
+        equipments_sql = """
+            insert into equipments (
                 id,
                 company_id,
                 asset_id,
@@ -39,11 +40,8 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                 model,
                 serial_number,
                 case_id,
-                location_id,
-                image_url,
                 status,
-                category_id,
-                calibration_id
+                category_id
             )
             values (
                 %(id)s,
@@ -53,13 +51,45 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                 %(model)s,
                 %(serial_number)s,
                 %(case_id)s,
-                %(location_id)s,
-                %(image_url)s,
                 %(status)s,
-                %(category_id)s,
-                %(calibration_id)s
+                %(category_id)s
             );
         """
 
         with self.db_pool.cursor() as cursor:
-            cursor.execute(sql, equipment.__dict__)
+            cursor.execute(
+                equipments_sql,
+                {
+                    "id": equipment.id,
+                    "company_id": equipment.company_id,
+                    "asset_id": equipment.asset_id,
+                    "device_id": equipment.device_id,
+                    "model": equipment.model,
+                    "serial_number": equipment.serial_number,
+                    "case_id": equipment.case_id,
+                    "status": equipment.status.value,
+                    "category_id": equipment.category_id,
+                },
+            )
+
+        images_sql = """
+            insert into equipment_images (
+                id,
+                equipment_id,
+                url,
+                is_primary
+            )
+            values %s
+            ;
+        """
+
+        with self.db_pool.cursor() as cursor:
+            execute_values(
+                cursor,
+                images_sql,
+                [
+                    (image.id, equipment.id, image.url, image.primary)
+                    for image in equipment.images
+                ],
+                template="(%s, %s, %s, %s)",
+            )

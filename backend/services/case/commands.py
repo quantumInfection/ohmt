@@ -22,12 +22,12 @@ def create_case(
     """
 
     with uow:
-        existing_case = uow.cases_repo.get(case_id)
+        existing_case = uow.cases_repo.get(case_id, company_id)
         if existing_case:
             raise ValueError(f"Case with this ID: {case_id} already exists")
 
         case = case_model.Case.create(
-            id=case_id,
+            case_id=case_id,
             company_id=company_id,
             name=name,
             location_id=location_id,

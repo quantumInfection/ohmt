@@ -1,10 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime
+from uuid import uuid4
 
 
 @dataclass
 class Case:
-    id: str  # unique but human readable
+    id: str
+    case_id: str  # unique but human readable
     company_id: str
     name: str  # unique? maybe
     location_id: str
@@ -12,9 +14,10 @@ class Case:
     updated_at: datetime | None
 
     @classmethod
-    def create(cls, id: str, company_id: str, name: str, location_id: str):
+    def create(cls, case_id: str, company_id: str, name: str, location_id: str):
         return cls(
-            id=id,
+            id=str(uuid4()),
+            case_id=case_id,
             company_id=company_id,
             name=name,
             location_id=location_id,

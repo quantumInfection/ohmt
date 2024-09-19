@@ -1,0 +1,19 @@
+POST https://clownfish-app-vi4my.ondigitalocean.app/v1/equipment/
+Content-Type: application/json
+
+{
+  "company_id": "16edda9a-299f-4ab4-a41c-922e637cad31",
+  "name": "Equipment 1",
+  "asset_id": "Check asset",
+  "device_id": "Check device",
+  "model": "Check model",
+  "serial_number": "Check serial",
+  "case_id": "Check case",
+  "image_urls": [
+    "https://example.com/image1.jpg",
+    "https://example.com/image2.jpg"
+  ],
+  "primary_image_index": 1,
+  "status": "Active",
+  "category_id": "2cc45b02-c9a5-4098-b122-579913168173"
+}

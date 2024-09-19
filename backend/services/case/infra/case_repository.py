@@ -6,10 +6,11 @@ import services.case.model as case_model
 
 class AbstractCaseRepository(ABC):
     @abstractmethod
-    def get(self, case_id: str) -> case_model.Case:
+    def get(self, case_id: str, company_id: str) -> case_model.Case:
         """
-        Get a case by its id.
+        Get a case by its case_id and company_id
         :param case_id:
+        :param company_id:
         :return:
         """
         raise NotImplementedError
@@ -38,21 +39,22 @@ class CaseRepository(AbstractCaseRepository):
     def cursor(self, *args, **kwargs):
         return self.db_pool.cursor(*args, **kwargs)
 
-    def get(self, case_id: str) -> case_model.Case:
+    def get(self, case_id: str, company_id: str) -> case_model.Case:
         sql = """
             select
                 id,
+                case_id,
                 company_id,
                 name,
                 location_id,
                 created_at,
                 updated_at
             from cases
-            where id = %(case_id)s;
+            where case_id = %(case_id)s and company_id = %(company_id)s;
         """
 
         with self.db_pool.dict_cursor() as cursor:
-            cursor.execute(sql, {"case_id": case_id})
+            cursor.execute(sql, {"case_id": case_id, "company_id": company_id})
             r = cursor.fetchone()
 
         return case_model.Case(**r) if r else None
@@ -61,6 +63,7 @@ class CaseRepository(AbstractCaseRepository):
         sql = """
             insert into cases (
                 id,
+                case_id,
                 company_id,
                 name,
                 location_id,
@@ -69,13 +72,14 @@ class CaseRepository(AbstractCaseRepository):
             )
             values (
                 %(id)s,
+                %(case_id)s,
                 %(company_id)s,
                 %(name)s,
                 %(location_id)s,
                 %(created_at)s,
                 %(updated_at)s
             )
-            on conflict (id, company_id) do update
+            on conflict (company_id, case_id) do update
             set
                 location_id = %(location_id)s,
                 updated_at = %(updated_at)s

@@ -6,9 +6,21 @@ create table locations
 
 create table categories
 (
-    id   uuid primary key,
+    id   uuid primary key default gen_random_uuid(),
     name text not null
 );
+
+insert into categories (name)
+values ('Noise'),
+       ('Dust'),
+       ('Gas'),
+       ('Laboratory'),
+       ('Heat'),
+       ('Lighting'),
+       ('IAQ'),
+       ('Vibration'),
+       ('Other');
+
 
 create table calibrations
 (
@@ -24,26 +36,38 @@ create table companies
 );
 
 
-create table cases (
-    id          text primary key,
+create table cases
+(
+    id          uuid primary key                        default gen_random_uuid(),
     company_id  uuid references companies (id) not null,
-    name        text not null,
+    case_id     text                           not null,
+    name        text                           not null,
     location_id uuid references locations (id) not null,
+    created_at  timestamp                      not null default now(),
+    updated_at  timestamp,
+    unique (company_id, case_id)
 );
 
 
 create table equipments
 (
-    id             uuid primary key,
-    company_id     uuid references companies (id)  not null,
-    asset_id       text                            not null,
-    device_id      text                            not null,
-    model          text                            not null,
-    serial_number  text                            not null,
-    case_id        text                            not null,
-    location_id    uuid references locations (id)  not null,
-    image_url      text,
-    status         text                            not null check (status in ('Active', 'Repair', 'Calibration', 'Retired')),
-    category_id    uuid references categories (id) not null,
-    calibration_id uuid references calibrations (id)
+    id            uuid primary key default gen_random_uuid(),
+    company_id    uuid references companies (id)  not null,
+    asset_id      text                            not null,
+    device_id     text                            not null,
+    model         text                            not null,
+    serial_number text                            not null,
+    case_id       uuid                            not null references cases (id),
+    image_url     text,
+    status        text                            not null check (status in ('Active', 'Repair', 'Calibration', 'Retired')),
+    category_id   uuid references categories (id) not null
+);
+
+
+create table equipment_images
+(
+    id           uuid primary key default gen_random_uuid(),
+    equipment_id uuid references equipments (id) not null,
+    url          text                            not null,
+    is_primary   boolean                         not null
 );

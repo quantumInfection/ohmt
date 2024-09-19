@@ -1,9 +1,9 @@
 from flask import blueprints, request
 
-app = blueprints.Blueprint("api_case", __name__, url_prefix="/v1/case")
 import services.case.commands as case_commands
 import services.unit_of_work as suow
-import logging
+
+app = blueprints.Blueprint("api_case", __name__, url_prefix="/v1/case")
 
 
 @app.route("/", methods=["POST"])
@@ -23,7 +23,7 @@ def create_case():
     case = case_commands.create_case(
         suow.DbPoolUnitOfWork(),
         args["case_id"],
-        args["company_id"],
+        args["company_id"],  # TODO: Replace using auth
         args["name"],
         args["location_id"],
     )
