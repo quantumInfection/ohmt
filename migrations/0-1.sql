@@ -21,14 +21,6 @@ values ('Noise'),
        ('Vibration'),
        ('Other');
 
-
-create table calibrations
-(
-    id uuid primary key
-    -- todo: add more fields as the calibration class grows
-);
-
-
 create table companies
 (
     id   uuid primary key,
@@ -78,4 +70,29 @@ create table equipment_images
     is_primary   boolean                         not null,
     created_at   timestamp with time zone        not null default now(),
     updated_at   timestamp with time zone
+);
+
+create table calibration_providers
+(
+    id   uuid primary key default gen_random_uuid(),
+    name text not null
+);
+
+
+create table equipment_calibrations
+(
+    id               uuid primary key                                    default gen_random_uuid(),
+    equipment_id     uuid references equipments (id)            not null,
+    provider_id      uuid references calibration_providers (id) not null,
+    calibration_type text                                       not null check ( calibration_type in
+                                                                                 ('Conformance',
+                                                                                  'Initial',
+                                                                                  'Re-Calibration',
+                                                                                  'Repair')),
+    completion_date  date                                       not null,
+    expiry_date      date                                       not null,
+    pdf_file_url     text                                       not null,
+    notes            text,
+    created_at       timestamp with time zone                   not null default now(),
+    updated_at       timestamp with time zone
 );

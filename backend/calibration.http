@@ -1,0 +1,11 @@
+POST https://clownfish-app-vi4my.ondigitalocean.app/v1/equipment/da9696fa-1a11-4fa6-a772-b7085e3e1ed0/calibration
+Content-Type: application/json
+
+{
+  "provider_id": "227ca55d-d453-482e-903f-6d0ed53c6fa2",
+  "calibration_type": "Initial",
+  "completion_date_iso": "2021-09-01",
+  "expiry_date_iso": "2022-09-01",
+  "pdf_file_url": "https://example.com/calibration.pdf",
+  "notes": "LOREM IPSUM ASDJASKLDJ ASLKDJLKASDJ LKSD"
+}

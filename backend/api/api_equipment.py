@@ -27,10 +27,9 @@ def create_equipment():
     args = request.get_json()
 
     # Create equipment
-    equipment = eq_commands.create_equipment(
+    eq_commands.create_equipment(
         eq_uow.DbPoolUnitOfWork(),
         args["company_id"],  # TODO: Replace using auth
-        args["name"],
         args["asset_id"],
         args["device_id"],
         args["model"],
@@ -44,24 +43,56 @@ def create_equipment():
         args["notes"],
     )
 
-    return {
-        "id": equipment.id,
-        "company_id": equipment.company_id,
-        "name": equipment.name,
-        "asset_id": equipment.asset_id,
-        "device_id": equipment.device_id,
-        "model": equipment.model,
-        "serial_number": equipment.serial_number,
-        "case_id": equipment.case_id,
-        "images": [
-            {"id": image.id, "url": image.url, "primary": image.primary}
-            for image in equipment.images
-        ],
-        "status": equipment.status.value,
-        "category_id": equipment.category_id,
-        "calibration_category": equipment.calibration_category.value,
-        "notes": equipment.notes,
-    }
+    return "OK"
+
+
+@app.route("/<equipment_id>", methods=["PUT"])
+def update_equipment_status(equipment_id):
+    """
+    Update equipment status
+
+    args:
+        company_id: str # TODO: Auth
+    """
+    args = request.get_json()
+
+    # Update equipment status
+    eq_commands.update_equipment_status(
+        eq_uow.DbPoolUnitOfWork(), equipment_id, args["status"]
+    )
+
+    return "OK"
+
+
+@app.route("/<equipment_id>/calibration", methods=["POST"])
+def add_calibration_to_equipment(equipment_id):
+    """
+    Add calibration to equipment
+
+    args:
+        company_id: str
+        provider_id: str
+        calibration_type: str
+        completion_date: date
+        expiry_date: date
+        pdf_file_url: str
+        notes: str
+    """
+    args = request.get_json()
+
+    # Add calibration to equipment
+    eq_commands.add_calibration_to_equipment(
+        eq_uow.DbPoolUnitOfWork(),
+        equipment_id,
+        args["provider_id"],
+        args["calibration_type"],
+        args["completion_date_iso"],
+        args["expiry_date_iso"],
+        args["pdf_file_url"],
+        args["notes"],
+    )
+
+    return "OK"
 
 
 @app.route("/", methods=["GET"])
