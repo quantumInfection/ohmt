@@ -1,11 +1,11 @@
-import services.unit_of_work as eq_uow
+import services.unit_of_work as suow
 import services.equipment.model as eq_model
+from datetime import date
 
 
 def create_equipment(
-    uow: eq_uow.AbstractUnitOfWork,
+    uow: suow.AbstractUnitOfWork,
     company_id: str,
-    name: str,
     asset_id: str,
     device_id: str,
     model: str,
@@ -28,7 +28,6 @@ def create_equipment(
 
         equipment = eq_model.Equipment.create(
             company_id=company_id,
-            name=name,
             asset_id=asset_id,
             device_id=device_id,
             model=model,
@@ -44,4 +43,47 @@ def create_equipment(
 
         uow.equipments_repo.add(equipment)
 
+    return equipment
+
+
+def update_equipment_status(
+    uow: suow.AbstractUnitOfWork, equipment_id: str, status: str
+) -> eq_model.Equipment:
+    with uow:
+        equipment = uow.equipments_repo.equipment_by_id(equipment_id)
+
+        if not equipment:
+            raise ValueError(f"Equipment with ID: {equipment_id} not found")
+
+        equipment.status = eq_model.Status(status)
+
+    return equipment
+
+
+def add_calibration_to_equipment(
+    uow: suow.AbstractUnitOfWork,
+    equipment_id: str,
+    calibration_provider: str,
+    calibration_type: str,
+    completion_date_iso: str,
+    expiry_date_iso: str,
+    pdf_file_url: str,
+    notes: str,
+) -> eq_model.Equipment:
+    with uow:
+        equipment = uow.equipments_repo.equipment_by_id(equipment_id)
+
+        if not equipment:
+            raise ValueError(f"Equipment with ID: {equipment_id} not found")
+
+        equipment.add_calibration(
+            provider_id=calibration_provider,
+            calibration_type=calibration_type,
+            completion_date=date.fromisoformat(completion_date_iso),
+            expiry_date=date.fromisoformat(expiry_date_iso),
+            pdf_file_url=pdf_file_url,
+            notes=notes,
+        )
+
+        uow.equipments_repo.save(equipment)
     return equipment

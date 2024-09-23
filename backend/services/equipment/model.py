@@ -47,11 +47,13 @@ class CalibrationType(Enum):
 class Calibration:
     id: str
     provider_id: str  # References CalibrationProvider
-    type: CalibrationType
+    calibration_type: CalibrationType
     completion_date: date
     expiry_date: date
     pdf_file_url: str  # public or private url
     notes: str | None
+    created_at: datetime
+    updated_at: datetime | None
 
 
 class CalibrationCategory(Enum):
@@ -74,7 +76,6 @@ class Image:
 class Equipment:
     id: str  # uuid
     company_id: str  # References Company
-    name: str
     asset_id: str
     device_id: str
     model: str
@@ -85,7 +86,7 @@ class Equipment:
     category_id: str
     calibration_category: CalibrationCategory
     notes: str
-    calibrations: list[Calibration] | None
+    calibrations: dict[str, Calibration] | None
     created_at: datetime
     updated_at: datetime | None
 
@@ -93,7 +94,6 @@ class Equipment:
     def create(
         cls,
         company_id: str,
-        name: str,
         asset_id: str,
         device_id: str,
         model: str,
@@ -108,7 +108,6 @@ class Equipment:
     ):
         return cls(
             id=str(uuid4()),
-            name=name,
             company_id=company_id,
             asset_id=asset_id,
             device_id=device_id,
@@ -137,30 +136,53 @@ class Equipment:
     def add_calibration(
         self,
         provider_id: str,
-        type: str,
+        calibration_type: str,
         completion_date: date,
         expiry_date: date,
         pdf_file_url: str,
         notes: str | None,
     ):
         if self.calibrations is None:
-            self.calibrations = []
-        self.calibrations.append(
-            Calibration(
-                id=str(uuid4()),
-                provider_id=provider_id,
-                type=CalibrationType(type),
-                completion_date=completion_date,
-                expiry_date=expiry_date,
-                pdf_file_url=pdf_file_url,
-                notes=notes,
-            )
+            self.calibrations = dict()
+        cal_id = str(uuid4())
+        self.calibrations[cal_id] = Calibration(
+            id=cal_id,
+            provider_id=provider_id,
+            calibration_type=CalibrationType(calibration_type),
+            completion_date=completion_date,
+            expiry_date=expiry_date,
+            pdf_file_url=pdf_file_url,
+            notes=notes,
+            created_at=datetime.now(),
+            updated_at=None,
         )
 
         self.updated_at = datetime.now()
 
-    def add_calibrations(self, calibrations: list[dict]):
+    def update_calibration(
+        self,
+        cal_id: str,
+        provider_id: str,
+        calibration_type: str,
+        completion_date: date,
+        expiry_date: date,
+        pdf_file_url: str,
+        notes: str | None,
+    ):
         if self.calibrations is None:
-            self.calibrations = []
-        for calibration in calibrations:
-            self.add_calibration(**calibration)
+            raise ValueError("No calibration found to update.")
+        if cal_id not in self.calibrations:
+            raise ValueError("Calibration not found.")
+        self.calibrations[cal_id] = Calibration(
+            id=cal_id,
+            provider_id=provider_id,
+            calibration_type=CalibrationType(calibration_type),
+            completion_date=completion_date,
+            expiry_date=expiry_date,
+            pdf_file_url=pdf_file_url,
+            notes=notes,
+            created_at=self.calibrations[cal_id].created_at,
+            updated_at=datetime.now(),
+        )
+
+        self.updated_at = datetime.now()
