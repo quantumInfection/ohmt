@@ -1,3 +1,4 @@
+import { Toolbox } from '@phosphor-icons/react';
 import { AddressBook as AddressBookIcon } from '@phosphor-icons/react/dist/ssr/AddressBook';
 import { AlignLeft as AlignLeftIcon } from '@phosphor-icons/react/dist/ssr/AlignLeft';
 import { CalendarCheck as CalendarCheckIcon } from '@phosphor-icons/react/dist/ssr/CalendarCheck';
@@ -23,6 +24,7 @@ import { ShoppingBagOpen as ShoppingBagOpenIcon } from '@phosphor-icons/react/di
 import { ShoppingCartSimple as ShoppingCartSimpleIcon } from '@phosphor-icons/react/dist/ssr/ShoppingCartSimple';
 import { SignOut as SignOutIcon } from '@phosphor-icons/react/dist/ssr/SignOut';
 import { TextAlignLeft as TextAlignLeftIcon } from '@phosphor-icons/react/dist/ssr/TextAlignLeft';
+import { Toolbox as ToolboxIcon } from '@phosphor-icons/react/dist/ssr/Toolbox';
 import { Translate as TranslateIcon } from '@phosphor-icons/react/dist/ssr/Translate';
 import { Truck as TruckIcon } from '@phosphor-icons/react/dist/ssr/Truck';
 import { Upload as UploadIcon } from '@phosphor-icons/react/dist/ssr/Upload';
@@ -60,4 +62,5 @@ export const icons = {
   truck: TruckIcon,
   upload: UploadIcon,
   users: UsersIcon,
+  'tool-box': ToolboxIcon,
 };
