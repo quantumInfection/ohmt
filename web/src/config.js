@@ -4,7 +4,7 @@ import { LogLevel } from '@/lib/logger';
 
 export const config = {
   site: {
-    name: 'Devias Kit Pro',
+    name: 'OHMT',
     description: '',
     language: 'en',
     colorScheme: 'light',

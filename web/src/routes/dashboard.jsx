@@ -14,7 +14,7 @@ export const route = {
     {
       index: true,
       lazy: async () => {
-        const { Page } = await import('@/pages/dashboard/overview');
+        const { Page } = await import('@/pages/cases/cases');
         return { Component: Page };
       },
     },

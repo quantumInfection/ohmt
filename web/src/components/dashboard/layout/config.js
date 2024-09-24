@@ -6,7 +6,7 @@ export const layoutConfig = {
       key: 'dashboards',
       title: 'Dashboards',
       items: [
-        { key: 'overview', title: 'Overview', href: paths.dashboard.overview, icon: 'tool-box' },
+        { key: 'cases', title: 'Cases', href: paths.dashboard.overview, icon: 'tool-box' },
       ],
     },
   ],
