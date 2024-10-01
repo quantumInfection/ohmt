@@ -20,7 +20,7 @@ export function Page() {
   useEffect(() => {
     async function fetchData() {
       try {
-        const response = await fetch('https://run.mocky.io/v3/b208540b-0433-4599-b302-d358f759d770');
+        const response = await fetch('https://clownfish-app-vi4my.ondigitalocean.app/v1/mock/cases');
         const result = await response.json();
         setData(result);
       } catch (error) {
