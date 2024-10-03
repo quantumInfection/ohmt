@@ -55,7 +55,7 @@ export function Page() {
           <Stack spacing={4}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ alignItems: 'flex-start' }}>
               <Box sx={{ flex: '1 1 auto' }}>
-                <Typography variant="h4">Cases</Typography>
+                <Typography variant="h4">Equipments</Typography>
               </Box>
               <div>
                 <Button startIcon={<PlusIcon />} variant="contained">
