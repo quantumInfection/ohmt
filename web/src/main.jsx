@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, Outlet, RouterProvider } from 'react-router-dom';
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
 
 import { routes } from '@/routes';
 import { Root } from '@/root';
@@ -11,6 +11,10 @@ const root = createRoot(document.getElementById('root'));
 const router = createBrowserRouter([
   {
     path: '/',
+    element: <Navigate to="/dashboard" replace />,
+  },
+  {
+    path: '/',
     element: (
       <Root>
         <ScrollRestoration />
@@ -19,7 +23,7 @@ const router = createBrowserRouter([
     ),
     children: [...routes],
   },
-]);
+])
 
 root.render(
   <React.StrictMode>
