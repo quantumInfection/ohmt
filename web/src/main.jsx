@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { createRoot } from 'react-dom/client';
-import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { createBrowserRouter, Navigate, Outlet, RouterProvider } from 'react-router-dom';
 
 import { routes } from '@/routes';
 import { Root } from '@/root';
