@@ -43,26 +43,26 @@ export function UserPopover({ anchorEl, onClose, open }) {
         </Typography>
       </Box>
       <Divider />
-      <List sx={{ p: 1 }}>
-        <MenuItem component={RouterLink} href={paths.dashboard.settings.account} onClick={onClose}>
-          <ListItemIcon>
-            <UserIcon />
-          </ListItemIcon>
-          Account
-        </MenuItem>
-        <MenuItem component={RouterLink} href={paths.dashboard.settings.security} onClick={onClose}>
-          <ListItemIcon>
-            <LockKeyIcon />
-          </ListItemIcon>
-          Security
-        </MenuItem>
-        <MenuItem component={RouterLink} href={paths.dashboard.settings.billing} onClick={onClose}>
-          <ListItemIcon>
-            <CreditCardIcon />
-          </ListItemIcon>
-          Billing
-        </MenuItem>
-      </List>
+      {/*<List sx={{ p: 1 }}>*/}
+      {/*  /!*<MenuItem component={RouterLink} href={paths.dashboard.settings.account} onClick={onClose}>*!/*/}
+      {/*  /!*  <ListItemIcon>*!/*/}
+      {/*  /!*    <UserIcon />*!/*/}
+      {/*  /!*  </ListItemIcon>*!/*/}
+      {/*  /!*  Account*!/*/}
+      {/*  /!*</MenuItem>*!/*/}
+      {/*  <MenuItem component={RouterLink} href={paths.dashboard.settings.security} onClick={onClose}>*/}
+      {/*    <ListItemIcon>*/}
+      {/*      <LockKeyIcon />*/}
+      {/*    </ListItemIcon>*/}
+      {/*    Security*/}
+      {/*  </MenuItem>*/}
+      {/*  <MenuItem component={RouterLink} href={paths.dashboard.settings.billing} onClick={onClose}>*/}
+      {/*    <ListItemIcon>*/}
+      {/*      <CreditCardIcon />*/}
+      {/*    </ListItemIcon>*/}
+      {/*    Billing*/}
+      {/*  </MenuItem>*/}
+      {/*</List>*/}
       <Divider />
       <Box sx={{ p: 1 }}>{config.auth.strategy === AuthStrategy.CUSTOM ? <CustomSignOut /> : null}</Box>
     </Popover>

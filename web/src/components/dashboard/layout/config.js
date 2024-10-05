@@ -4,9 +4,14 @@ export const layoutConfig = {
   navItems: [
     {
       key: 'dashboards',
-      title: 'Dashboards',
       items: [
-        { key: 'overview', title: 'Overview', href: paths.dashboard.overview, icon: 'tool-box' },
+        { key: 'cases', title: 'Cases', href: paths.dashboard.cases.list, icon: 'tool-box' },
+        {
+          key: 'equipments',
+          title: 'Equipments',
+          href: paths.dashboard.equipments.list,
+          icon: 'chart-pie',
+        },
       ],
     },
   ],

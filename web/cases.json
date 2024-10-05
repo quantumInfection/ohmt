@@ -1,0 +1,17 @@
+[
+  {
+    "id": 1,
+    "name": "John Doe",
+    "location": "New York"
+  },
+  {
+    "id": 2,
+    "name": "Jane Smith",
+    "location": "Los Angeles"
+  },
+  {
+    "id": 3,
+    "name": "Alice Johnson",
+    "location": "Chicago"
+  }
+]
