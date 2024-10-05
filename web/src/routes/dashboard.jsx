@@ -1,11 +1,15 @@
 import * as React from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
-import { Layout as DashboardLayout } from '@/components/dashboard/layout/layout';
-import CircularProgress from '@mui/material/CircularProgress';
 import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
+import { Navigate, Outlet } from 'react-router-dom';
 
-const CasesList = React.lazy(() => import('@/pages/cases/list').then(module => ({ default: module.Page })));
-const EquipmentsList = React.lazy(() => import('@/pages/equipments/list').then(module => ({ default: module.Page })));
+import { Layout as DashboardLayout } from '@/components/dashboard/layout/layout';
+
+const CasesList = React.lazy(() => import('@/pages/cases/list').then((module) => ({ default: module.Page })));
+const AddCase = React.lazy(() => import('@/pages/cases/add-case').then((module) => ({ default: module.Page })));
+
+const EquipmentsList = React.lazy(() => import('@/pages/equipments/list').then((module) => ({ default: module.Page })));
+
 const Loader = () => (
   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
     <CircularProgress />
@@ -26,19 +30,47 @@ export const route = {
     },
     {
       path: 'cases',
-      element: (
-        <React.Suspense fallback={<Loader/>}>
-          <CasesList />
-        </React.Suspense>
-      ),
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: (
+            <React.Suspense fallback={<Loader />}>
+              <CasesList />
+            </React.Suspense>
+          ),
+        },
+        {
+          path: 'add',
+          element: (
+            <React.Suspense fallback={<Loader />}>
+              <AddCase />
+            </React.Suspense>
+          ),
+        },
+      ],
     },
     {
       path: 'equipments',
-      element: (
-        <React.Suspense fallback={<Loader/>}>
-          <EquipmentsList />
-        </React.Suspense>
-      ),
+      element: <Outlet />,
+      children: [
+        {
+          index: true,
+          element: (
+            <React.Suspense fallback={<Loader />}>
+              <EquipmentsList />
+            </React.Suspense>
+          ),
+        },
+        // {
+        //   path: 'add',
+        //   element: (
+        //     <React.Suspense fallback={<Loader />}>
+        //       <AddEquipment />
+        //     </React.Suspense>
+        //   ),
+        // },
+      ],
     },
   ],
 };

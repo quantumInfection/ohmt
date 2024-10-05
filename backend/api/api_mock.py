@@ -10,20 +10,35 @@ def get_cases():
     """
     Get mock cases
     """
-    return json.dumps([
-        {
-            "id": 1,
-            "name": "John Doe",
-            "location": "New York"
-        },
-        {
-            "id": 2,
-            "name": "Jane Smith",
-            "location": "Los Angeles"
-        },
-        {
-            "id": 3,
-            "name": "Alice Johnson",
-            "location": "Chicago"
-        }
-    ])
+    return json.dumps({
+        "cases": [
+            {
+                "id": 1,
+                "name": "John Doe",
+                "location": "New York"
+            },
+            {
+                "id": 2,
+                "name": "Jane Smith",
+                "location": "Los Angeles"
+            },
+            {
+                "id": 3,
+                "name": "Alice Johnson",
+                "location": "Chicago"
+            }
+        ], "locations": [
+            {
+                "id": 1,
+                "name": "New York"
+            },
+            {
+                "id": 2,
+                "name": "Los Angeles"
+            },
+            {
+                "id": 3,
+                "name": "Chicago"
+            }
+        ]
+    })
