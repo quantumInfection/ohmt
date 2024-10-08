@@ -10,12 +10,14 @@ import { Helmet } from 'react-helmet-async';
 
 import { config } from '@/config';
 import { DataTable } from '@/pages/equipments/equiments-table';
+import { useNavigate } from 'react-router-dom';
 
 const metadata = { title: `Equipments | ${config.site.name}` };
 
 export function Page() {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchData() {
@@ -58,7 +60,7 @@ export function Page() {
                 <Typography variant="h4">Equipment</Typography>
               </Box>
               <div>
-                <Button startIcon={<PlusIcon />} variant="contained">
+                <Button startIcon={<PlusIcon />} variant="contained" onClick={() => navigate('add')}>
                   Add
                 </Button>
               </div>
