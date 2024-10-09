@@ -1,6 +1,14 @@
+create table companies
+(
+    id   uuid primary key,
+    name text not null
+);
+
+
 create table locations
 (
     id   uuid primary key,
+    company_id uuid references companies (id) not null,
     name text not null
 );
 
@@ -20,12 +28,6 @@ values ('Noise'),
        ('IAQ'),
        ('Vibration'),
        ('Other');
-
-create table companies
-(
-    id   uuid primary key,
-    name text not null
-);
 
 
 create table cases

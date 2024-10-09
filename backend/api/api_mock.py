@@ -47,7 +47,16 @@ def get_cases():
 @app.route("/equipments", methods=["GET"])
 def get_equipments():
     """
-    Get mock equipments
+    Get mock data required for equipments tab.
+    calibration categories:
+
+    class CalibrationCategory(Enum):
+    NIL_CALIBRATION = "Nil Calibration"
+    CONFORMANCE = "Conformance"
+    NORMAL_CALIBRATION = "Normal Calibration"
+    IANZ_NATA_CALIBRATION = "IANZ/NATA Calibration"
+
+
     """
     return json.dumps({
         "equipments": [
@@ -91,5 +100,80 @@ def get_equipments():
                 "calibration_bg": "#4CAF50",
                 "calibration_fg": "#FFFFFF"
             }
+        ],
+        "locations": [
+            {
+                "id": 1,
+                "name": "New York"
+            },
+            {
+                "id": 2,
+                "name": "Los Angeles"
+            },
+            {
+                "id": 3,
+                "name": "Chicago"
+            }
+        ],
+        "cases": [
+            {
+                "id": 1,
+                "name": "John Doe",
+                "location": "New York"
+            },
+            {
+                "id": 2,
+                "name": "Jane Smith",
+                "location": "Los Angeles"
+            },
+            {
+                "id": 3,
+                "name": "Alice Johnson",
+                "location": "Chicago"
+            }
+        ],
+        "categories": [
+            {
+                "id": "2cc45b02-c9a5-4098-b122-579913168173",
+                "name": "Dust"
+            },
+            {
+                "id": "8e632bc1-7a9b-4c04-935a-ffa84c55af62",
+                "name": "Gas"
+            },
+            {
+                "id": "e4a2395d-9f1e-4449-b420-d33417dd1ca3",
+                "name": "Heat"
+            },
+            {
+                "id": "11d52bb6-8d95-46e4-82af-357b0982c8c0",
+                "name": "IAQ"
+            },
+            {
+                "id": "635fafc6-f0df-48a1-9f16-538fa898387c",
+                "name": "Laboratory"
+            },
+            {
+                "id": "69711045-87bb-4ae5-8c19-65b3bef514f8",
+                "name": "Lighting"
+            },
+            {
+                "id": "e7cb2878-ee04-4385-9df5-56072e277656",
+                "name": "Noise"
+            },
+            {
+                "id": "3ca892b7-4de2-4586-97e7-f3c1abd132b9",
+                "name": "Other"
+            },
+            {
+                "id": "409a36e7-1a6a-41b4-84e6-57e78c82ed9e",
+                "name": "Vibration"
+            }
+        ],
+        "calibration_categories": [
+            "Nil Calibration",
+            "Conformance",
+            "Normal Calibration",
+            "IANZ/NATA Calibration"
         ]
     })

@@ -1,15 +1,18 @@
-import React from 'react';
-import { Box, Typography, Stack } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Box, Stack, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
 import { Upload, X } from '@phosphor-icons/react';
+import { useDropzone } from 'react-dropzone';
+
 import { stormGrey } from '@/styles/theme/colors';
 
 export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIndex, setSelectedImageIndex }) {
-  const handleFileChange = (event) => {
-    const files = Array.from(event.target.files);
-    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+  const onDrop = (acceptedFiles) => {
+    setSelectedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
   };
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'image/*' });
 
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
@@ -27,11 +30,18 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
     });
   };
 
+  useEffect(() => {
+    if (selectedFiles.length > 0 && selectedImageIndex === null) {
+      setSelectedImageIndex(0);
+    }
+  }, [selectedFiles, selectedImageIndex, setSelectedImageIndex]);
+
   return (
     <Box sx={{ padding: '40px 0px' }}>
       <Stack direction="column" spacing={3}>
         <Typography variant="h6">Images</Typography>
         <Box
+          {...getRootProps()}
           sx={{
             backgroundColor: stormGrey[50],
             display: 'flex',
@@ -41,39 +51,44 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
             width: '100%',
             borderRadius: '8px',
             flexDirection: 'column',
+            border: isDragActive ? '2px dashed blue' : '2px dashed gray',
           }}
         >
-          <Button
-            variant="outlined"
-            component="label"
-            sx={{
-              borderRadius: '50%',
-              width: '60px',
-              height: '60px',
-              minWidth: '0',
-              padding: '0',
-              backgroundColor: 'white',
-              color: 'black',
-              borderColor: 'white',
-              boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-              '&:hover': {
-                backgroundColor: 'white',
-                borderColor: 'white',
-                boxShadow: '0px 6px 8px rgba(0, 0, 0, 0.15)',
-              },
-            }}
-          >
-            <Upload size={24} />
-            <input type="file" hidden onChange={handleFileChange} accept="image/*" multiple />
-          </Button>
+          <input {...getInputProps()} />
+          {isDragActive ? (
+            <Typography>Drop the files here...</Typography>
+          ) : (
+            <>
+              <Button
+                variant="outlined"
+                component="label"
+                sx={{
+                  borderRadius: '50%',
+                  width: '60px',
+                  height: '60px',
+                  minWidth: '0',
+                  padding: '0',
+                  backgroundColor: 'white',
+                  color: 'black',
+                  borderColor: 'white',
+                  boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+                  '&:hover': {
+                    backgroundColor: 'white',
+                    borderColor: 'white',
+                    boxShadow: '0px 6px 8px rgba(0, 0, 0, 0.15)',
+                  },
+                }}
+              >
+                <Upload size={24} />
+                <input type="file" hidden onChange={(e) => onDrop(e.target.files)} accept="image/*" multiple />
+              </Button>
+              <Typography>Drag & drop some files here, or click to select files</Typography>
+            </>
+          )}
         </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
           {selectedFiles.map((file, index) => (
-            <Box
-              key={index}
-              sx={{ position: 'relative', cursor: 'pointer' }}
-              onClick={() => handleImageClick(index)}
-            >
+            <Box key={index} sx={{ position: 'relative', cursor: 'pointer' }} onClick={() => handleImageClick(index)}>
               <img
                 src={URL.createObjectURL(file)}
                 alt={`Selected file ${index + 1}`}

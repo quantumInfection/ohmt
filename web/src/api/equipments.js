@@ -5,3 +5,19 @@ export async function fetchEquipments() {
   }
   return response.json();
 }
+
+export async function addEquipment(equipmentData) {
+  const response = await fetch('https://your-api-endpoint.com/equipments', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(equipmentData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to add equipment');
+  }
+
+  return response.json();
+}

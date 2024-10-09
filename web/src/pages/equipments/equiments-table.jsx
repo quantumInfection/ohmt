@@ -2,8 +2,9 @@ import * as React from 'react';
 import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
-import { CheckCircle, Eye, FadersHorizontal, MapPin, Pencil, Wrench, XCircle } from '@phosphor-icons/react';
-import { kepple } from '@/styles/theme/colors';
+import { CheckCircle, Eye, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
+
+import { california, kepple, namedColors, redOrange, stormGrey } from '@/styles/theme/colors';
 
 export function DataTable({ data }) {
   // Make a function to get icon of the status
@@ -11,13 +12,14 @@ export function DataTable({ data }) {
   function getStatusIcon(status) {
     switch (status) {
       case 'Active':
-        return <CheckCircle sx={{weight: 'fill'}} />;
+        return <CheckCircle weight={'fill'} color={kepple[500]} />;
       case 'Repair':
-        return <Wrench sx={{color: '#19B7AA'}}/>;
+        return <Wrench weight={'fill'} color={namedColors['info-dark']} />;
       case 'Calibration':
-        return <FadersHorizontal />;
+        return <FadersHorizontal weight={'fill'} color={california[500]} />;
+      default:
       case 'Retired':
-        return <XCircle />;
+        return <XCircle weight={'fill'} color={redOrange[500]} />;
     }
   }
 
@@ -43,15 +45,15 @@ export function DataTable({ data }) {
                   icon={getStatusIcon(row.status_label)}
                   label={row.status_label}
                   variant="outlined"
-                  sx={{ backgroundColor: 'transparent' }}
+                  sx={{ backgroundColor: 'transparent', color: stormGrey[900] }}
                 />
               </TableCell>
               <TableCell>
                 <Chip
-                  icon={<MapPin />}
+                  icon={<MapPin weight={'fill'} />}
                   label={row.location}
                   variant="outlined"
-                  sx={{ backgroundColor: 'transparent' }}
+                  sx={{ backgroundColor: 'transparent', color: stormGrey[500] }}
                 />
               </TableCell>
               <TableCell>{row.case_id}</TableCell>

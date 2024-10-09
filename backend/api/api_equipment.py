@@ -3,7 +3,7 @@ from flask import blueprints, request
 import services.equipment.commands as eq_commands
 import services.unit_of_work as eq_uow
 
-app = blueprints.Blueprint("api_equipment", __name__, url_prefix="/v1/equipment")
+app = blueprints.Blueprint("api_equipment", __name__, url_prefix="/v1/equipments")
 
 
 # TODO: Add auth

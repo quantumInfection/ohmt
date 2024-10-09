@@ -1,5 +1,7 @@
+import { baseUrl } from '@/api/host';
+
 export async function fetchCases() {
-  const response = await fetch('https://clownfish-app-vi4my.ondigitalocean.app/v1/mock/cases');
+  const response = await fetch(`${baseUrl}/v1/cases/`);
   if (!response.ok) {
     throw new Error('Failed to fetch cases');
   }
@@ -7,13 +9,16 @@ export async function fetchCases() {
 }
 
 export async function addCase(caseData) {
-  console.log('caseData:', caseData);
-  const response = await fetch('https://your-api-endpoint.com/cases', {
+  const response = await fetch(`${baseUrl}/v1/cases/`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(caseData),
+    body: JSON.stringify({
+      case_id: caseData.caseId,
+      name: caseData.name,
+      location_id: caseData.location,
+    }),
   });
 
   if (!response.ok) {

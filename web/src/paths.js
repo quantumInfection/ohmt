@@ -56,12 +56,10 @@ export const paths = {
   dashboard: {
     cases: {
       list: '/dashboard/cases',
-      create: '/dashboard/cases/create',
       details: (caseId) => `/dashboard/cases/${caseId}`,
     },
     equipments: {
       list: '/dashboard/equipments',
-      create: '/dashboard/equipments/create',
       details: (equipmentId) => `/dashboard/equipments/${equipmentId}`,
     },
   },

@@ -57,7 +57,20 @@ export function Page() {
                 <Typography variant="h4">Equipment</Typography>
               </Box>
               <div>
-                <Button startIcon={<PlusIcon />} variant="contained" onClick={() => navigate('add')}>
+                <Button
+                  startIcon={<PlusIcon />}
+                  variant="contained"
+                  onClick={() =>
+                    navigate('add', {
+                      state: {
+                        categories: data.categories,
+                        locations: data.locations,
+                        cases: data.cases,
+                        calibrationCategories: data.calibration_categories,
+                      },
+                    })
+                  }
+                >
                   Add
                 </Button>
               </div>

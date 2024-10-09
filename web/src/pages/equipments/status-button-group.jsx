@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 import { Button } from '@mui/material';
 import { CheckCircle, FadersHorizontal, Wrench, XCircle } from '@phosphor-icons/react';
+
 import { kepple, stormGrey } from '@/styles/theme/colors';
 
 const StatusButton = ({ icon, status, selectedStatus, onClick }) => (
   <Button
     startIcon={icon}
     onClick={onClick}
-    variant='outlined'
+    variant="outlined"
     disableElevation
     sx={{
       margin: '0 8px 8px 0',
       opacity: selectedStatus === status ? 1 : 0.5,
-      backgroundColor: selectedStatus === status ? kepple[50] : `${stormGrey[100]} !important`,
+      backgroundColor: selectedStatus === status ? kepple[50] : stormGrey[100],
       color: selectedStatus === status ? stormGrey[900] : stormGrey[400],
       borderColor: selectedStatus === status ? kepple[600] : stormGrey[400],
-      pointerEvents: 'auto'
+      pointerEvents: 'auto',
     }}
   >
     {status}

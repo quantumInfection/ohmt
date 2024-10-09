@@ -62,7 +62,7 @@ export function Page() {
                   variant="contained"
                   onClick={() =>
                     navigate('add', {
-                      state: { locations: data.locations },
+                      state: { locations: data.locations, existingCases: data.cases },
                     })
                   }
                 >
