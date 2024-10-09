@@ -1,7 +1,4 @@
-;
-// Make something to add a case
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { addEquipment } from '@/api/equipments';
 import { TextField } from '@mui/material';
 import Box from '@mui/material/Box';
@@ -12,20 +9,14 @@ import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { ArrowLeft } from '@phosphor-icons/react';
 import { Helmet } from 'react-helmet-async';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
-
-
 
 import { config } from '@/config';
 import { ImageUploader } from '@/pages/equipments/image-upload-box';
 import { StatusButtonGroup } from '@/pages/equipments/status-button-group';
 import { RouterLink } from '@/components/core/link';
-
-
-
-
 
 export function Page() {
   const location = useLocation();
@@ -33,10 +24,11 @@ export function Page() {
 
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
+  const [isLocationDisabled, setIsLocationDisabled] = useState(false);
 
   const metadata = { title: `Add case | ${config.site.name}` };
   const navigate = useNavigate();
-  const { register, handleSubmit } = useForm();
+  const { control, register, handleSubmit, watch, resetField } = useForm();
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   const { mutate, isLoading } = useMutation(addEquipment, {
@@ -52,6 +44,17 @@ export function Page() {
     }
     mutate({ ...data, status: selectedStatus });
   };
+
+  const caseId = watch('caseId');
+
+  useEffect(() => {
+    if (caseId) {
+      resetField('location');
+      setIsLocationDisabled(true);
+    } else {
+      setIsLocationDisabled(false);
+    }
+  }, [caseId, resetField]);
 
   return (
     <>
@@ -127,13 +130,20 @@ export function Page() {
                       </MenuItem>
                     ))}
                   </TextField>
-                  <TextField label="Location" {...register('location', { required: true })} select fullWidth>
-                    {locations.map((location) => (
-                      <MenuItem key={location.id} value={location.id}>
-                        {location.name}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                  <Controller
+                    name="location"
+                    control={control}
+                    defaultValue=""
+                    render={({ field }) => (
+                      <TextField {...field} label="Location" select fullWidth disabled={isLocationDisabled}>
+                        {locations.map((location) => (
+                          <MenuItem key={location.id} value={location.id}>
+                            {location.name}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    )}
+                  />
                 </Stack>
               </Stack>
             </Box>
