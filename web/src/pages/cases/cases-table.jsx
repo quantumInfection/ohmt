@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import { MapPin, Pencil } from '@phosphor-icons/react';
 
-export function DataTable({data}) {
+export function DataTable({ data }) {
   return (
     <Box sx={{ width: '100%', overflow: 'auto' }}>
       <Table>
@@ -19,7 +19,7 @@ export function DataTable({data}) {
         <TableBody>
           {data.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.id}</TableCell>
+              <TableCell>{row.case_id}</TableCell>
               <TableCell>{row.name}</TableCell>
               <TableCell>
                 <Chip

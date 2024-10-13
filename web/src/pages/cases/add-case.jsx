@@ -46,7 +46,7 @@ export function Page() {
   });
 
   const onSubmit = (data) => {
-    if (existingCases.some((caseItem) => caseItem.id === data.caseId)) {
+    if (existingCases.some((caseItem) => caseItem.case_id === data.caseId)) {
       setError('caseId', { type: 'manual', message: 'Case ID already exists' });
     } else {
       clearErrors('caseId');

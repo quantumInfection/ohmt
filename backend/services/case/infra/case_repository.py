@@ -1,7 +1,7 @@
-import json
 from abc import ABC, abstractmethod
-from db.db_pool import DBPool
+
 import services.case.model as case_model
+from db.db_pool import DBPool
 
 
 class AbstractCaseRepository(ABC):
@@ -50,7 +50,7 @@ class CaseRepository(AbstractCaseRepository):
                 created_at,
                 updated_at
             from cases
-            where case_id = %(case_id)s and company_id = %(company_id)s;
+            where id = %(case_id)s and company_id = %(company_id)s;
         """
 
         with self.db_pool.dict_cursor() as cursor:

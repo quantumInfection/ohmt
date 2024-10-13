@@ -48,15 +48,6 @@ def get_cases():
 def get_equipments():
     """
     Get mock data required for equipments tab.
-    calibration categories:
-
-    class CalibrationCategory(Enum):
-    NIL_CALIBRATION = "Nil Calibration"
-    CONFORMANCE = "Conformance"
-    NORMAL_CALIBRATION = "Normal Calibration"
-    IANZ_NATA_CALIBRATION = "IANZ/NATA Calibration"
-
-
     """
     return json.dumps({
         "equipments": [

@@ -1,18 +1,88 @@
+import { baseUrl } from '@/api/host';
+
+const equipmentsUrl = `${baseUrl}/v1/equipments/`;
+
 export async function fetchEquipments() {
-  const response = await fetch('https://clownfish-app-vi4my.ondigitalocean.app/v1/mock/equipments');
+  const response = await fetch(equipmentsUrl);
   if (!response.ok) {
     throw new Error('Failed to fetch equipments');
   }
   return response.json();
 }
 
+async function fetchImagesSignedUrls(filepaths) {
+  const response = await fetch(
+    `${equipmentsUrl}images-signed-url?file_names=${encodeURIComponent(JSON.stringify(filepaths))}`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to fetch signed URLs');
+  }
+
+  return response.json();
+}
+
+async function uploadImagesToSignedUrls(signedUrls, images) {
+  const uploadPromises = images.map((image) => {
+    return fetch(signedUrls[image.name], {
+      method: 'PUT',
+      headers: {
+        'Content-Type': image.type,
+        'x-amz-acl': 'public-read',
+      },
+      body: image,
+    });
+  });
+
+  // Check error in uploading images
+  const responses = await Promise.all(uploadPromises);
+  const allUploadsSuccessful = responses.every((response) => response.ok);
+
+  if (!allUploadsSuccessful) {
+    const errorResponses = await Promise.all(responses.map((response) => response.text()));
+    throw new Error(`Failed to upload images: ${errorResponses.join(', ')}`);
+  }
+}
+
 export async function addEquipment(equipmentData) {
-  const response = await fetch('https://your-api-endpoint.com/equipments', {
+  console.log('1 ', equipmentData);
+  // Get signed URLs for images
+  const filePaths = equipmentData.files.map((file) => file.name);
+  const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
+  console.log('2 ', signedUrlsResponse);
+
+  // Upload images to signed URLs
+  try {
+    await uploadImagesToSignedUrls(signedUrlsResponse, equipmentData.files);
+  } catch (error) {
+    throw new Error('Failed to upload images');
+  }
+
+  const response = await fetch(equipmentsUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify(equipmentData),
+    body: JSON.stringify({
+      asset_id: equipmentData.assetId,
+      device_id: equipmentData.deviceId,
+      model: equipmentData.model,
+      serial_number: equipmentData.serial,
+      case_id: equipmentData.caseId,
+      location_id: equipmentData.location,
+      image_urls: filePaths,
+      primary_image_index: equipmentData.selectedImageIndex.idx,
+      status: equipmentData.status,
+      category_id: equipmentData.category,
+      calibration_category: equipmentData.calibrationCategory,
+      notes: equipmentData.notes,
+    }),
   });
 
   if (!response.ok) {

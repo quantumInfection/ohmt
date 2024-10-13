@@ -1,7 +1,9 @@
 import { baseUrl } from '@/api/host';
 
+const casesUrl = `${baseUrl}/v1/cases/`;
+
 export async function fetchCases() {
-  const response = await fetch(`${baseUrl}/v1/cases/`);
+  const response = await fetch(casesUrl);
   if (!response.ok) {
     throw new Error('Failed to fetch cases');
   }
@@ -9,7 +11,7 @@ export async function fetchCases() {
 }
 
 export async function addCase(caseData) {
-  const response = await fetch(`${baseUrl}/v1/cases/`, {
+  const response = await fetch(casesUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

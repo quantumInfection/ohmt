@@ -26,14 +26,14 @@ export function Page() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [isLocationDisabled, setIsLocationDisabled] = useState(false);
 
-  const metadata = { title: `Add case | ${config.site.name}` };
+  const metadata = { title: `Add equipment | ${config.site.name}` };
   const navigate = useNavigate();
-  const { control, register, handleSubmit, watch, resetField } = useForm();
+  const { control, register, handleSubmit, watch, resetField, setValue } = useForm();
   const [selectedStatus, setSelectedStatus] = useState(null);
 
   const { mutate, isLoading } = useMutation(addEquipment, {
     onSuccess: () => {
-      navigate('/dashboard/cases');
+      navigate('/dashboard/equipments');
     },
   });
 
@@ -42,19 +42,37 @@ export function Page() {
       alert('Please select a status.');
       return;
     }
-    mutate({ ...data, status: selectedStatus });
+    mutate({
+      ...data,
+      status: selectedStatus,
+      files: selectedFiles,
+      selectedImageIndex: {
+        idx: selectedImageIndex,
+      },
+    });
   };
 
   const caseId = watch('caseId');
 
   useEffect(() => {
     if (caseId) {
-      resetField('location');
+      const selectedCase = cases.find((caseItem) => caseItem.id === caseId);
       setIsLocationDisabled(true);
+      if (selectedCase) {
+        resetField('location', { defaultValue: selectedCase.location });
+      }
     } else {
       setIsLocationDisabled(false);
     }
-  }, [caseId, resetField]);
+  }, [caseId, resetField, cases]);
+
+  const handleImageUpload = (files) => {
+    setSelectedFiles(files);
+    setValue(
+      'files',
+      files.map((file) => file.url)
+    );
+  };
 
   return (
     <>
@@ -126,7 +144,7 @@ export function Page() {
                   <TextField label="Case ID" {...register('caseId', { required: true })} fullWidth select>
                     {cases.map((caseItem) => (
                       <MenuItem key={caseItem.id} value={caseItem.id}>
-                        {caseItem.name + ' - ' + caseItem.location}
+                        {caseItem.case_id + ' - ' + caseItem.location}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -193,7 +211,7 @@ export function Page() {
             {/*Image uploader*/}
             <ImageUploader
               selectedFiles={selectedFiles}
-              setSelectedFiles={setSelectedFiles}
+              setSelectedFiles={handleImageUpload}
               selectedImageIndex={selectedImageIndex}
               setSelectedImageIndex={setSelectedImageIndex}
             />

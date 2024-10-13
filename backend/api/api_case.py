@@ -44,8 +44,8 @@ def get_all_cases():
     locations = reads.get_company_locations(suow.DbPoolUnitOfWork(), company_id)
 
     return {
-        "cases": cases,
-        "locations": locations,
+        "cases": list(cases.values()),
+        "locations": list(locations.values()),
     }
 
 

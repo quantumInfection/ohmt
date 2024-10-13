@@ -90,7 +90,7 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
           {selectedFiles.map((file, index) => (
             <Box key={index} sx={{ position: 'relative', cursor: 'pointer' }} onClick={() => handleImageClick(index)}>
               <img
-                src={URL.createObjectURL(file)}
+                src={file.url || URL.createObjectURL(file)}
                 alt={`Selected file ${index + 1}`}
                 style={{
                   width: '100px',
