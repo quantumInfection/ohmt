@@ -1,6 +1,7 @@
-import services.unit_of_work as suow
-import services.equipment.model as eq_model
 from datetime import date
+
+import services.equipment.model as eq_model
+import services.unit_of_work as suow
 
 
 def create_equipment(
@@ -10,7 +11,8 @@ def create_equipment(
     device_id: str,
     model: str,
     serial_number: str,
-    case_id: str,
+    case_id: str | None,
+    location_id: str | None,
     image_urls: list[str],
     primary_image_index: int,
     status: str,
@@ -19,12 +21,14 @@ def create_equipment(
     notes: str,
 ) -> eq_model.Equipment:
     with uow:
-        case = uow.cases_repo.get(case_id, company_id)
-
-        if not case:
-            raise ValueError(
-                f"Case with CASE: {case_id} and COMPANY: {company_id} not found"
-            )
+        if case_id:
+            case = uow.cases_repo.get_by_id(case_id)
+            if not case:
+                raise ValueError(
+                    f"Case with CASE: {case_id} and COMPANY: {company_id} not found"
+                )
+        else:
+            assert location_id, "Location ID is required if case ID is not provided"
 
         equipment = eq_model.Equipment.create(
             company_id=company_id,
@@ -32,7 +36,8 @@ def create_equipment(
             device_id=device_id,
             model=model,
             serial_number=serial_number,
-            case_id=case.id,
+            case_id=case_id,
+            location_id=location_id if not case_id else None,
             image_urls=image_urls,
             primary_image_index=primary_image_index,
             status=status,

@@ -1,9 +1,15 @@
+import json
+
 from flask import blueprints, request
 
+import external_services.storage as storage
 import services.equipment.commands as eq_commands
+import services.reads as reads
 import services.unit_of_work as eq_uow
 
-app = blueprints.Blueprint("api_equipment", __name__, url_prefix="/v1/equipment")
+app = blueprints.Blueprint("api_equipment", __name__, url_prefix="/v1/equipments")
+
+# Configure Spaces access
 
 
 # TODO: Add auth
@@ -13,7 +19,6 @@ def create_equipment():
     Create equipment
 
     args:
-        company_id: str  # TODO: Auth
         asset_id: str
         device_id: str
         model: str
@@ -21,29 +26,35 @@ def create_equipment():
         case_id: str
         location_id: str
         image_urls: str
+        primary_image_index: int
         status: str
-        category_id: str,
+        category_id: str
     """
+    company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"  # TODO: Replace using auth
     args = request.get_json()
 
     # Create equipment
-    eq_commands.create_equipment(
+    e = eq_commands.create_equipment(
         eq_uow.DbPoolUnitOfWork(),
-        args["company_id"],  # TODO: Replace using auth
-        args["asset_id"],
-        args["device_id"],
-        args["model"],
-        args["serial_number"],
-        args["case_id"],
-        args["image_urls"],
-        args["primary_image_index"],
-        args["status"],
-        args["category_id"],
-        args["calibration_category"],
-        args["notes"],
+        company_id=company_id,  # TODO: Replace using auth
+        asset_id=args["asset_id"],
+        device_id=args["device_id"],
+        model=args["model"],
+        serial_number=args["serial_number"],
+        case_id=args.get("case_id"),
+        location_id=args.get("location_id"),
+        image_urls=args["image_urls"],
+        primary_image_index=args["primary_image_index"],
+        status=args["status"],
+        category_id=args["category_id"],
+        calibration_category=args["calibration_category"],
+        notes=args["notes"],
     )
 
-    return "OK"
+    return {
+        "id": e.id,
+        "name": e.model,
+    }
 
 
 @app.route("/<equipment_id>", methods=["PUT"])
@@ -95,12 +106,70 @@ def add_calibration_to_equipment(equipment_id):
     return "OK"
 
 
+def _view_equipment(
+    equipment: dict, locations_lookup: dict, cases_lookup: dict
+) -> dict:
+    """Returns a view of the equipment, represents equipment in table format"""
+    calibrations = equipment["calibrations"]
+    if not calibrations:
+        calibration_due_label = "NA"
+        calibration_bg = "#F1F1F4"
+        calibration_fg = "#212636"
+    else:
+        calibration_due_label = "NA"
+        calibration_bg = "#F1F1F4"
+        calibration_fg = "#212636"
+
+    if equipment["case_id"] is None:
+        case_id = None
+        location_name = locations_lookup[equipment["location_id"]]["name"]
+    else:
+        case_id = equipment["case_id"]
+        case = cases_lookup[case_id]
+        case_id = case["case_id"]
+        location_name = case["location"]
+
+    return {
+        "id": equipment["id"],
+        "name": equipment["model"],
+        "status_label": equipment["status"],
+        "location": location_name,
+        "case_id": case_id,
+        "calibration_due_label": calibration_due_label,
+        "calibration_bg": calibration_bg,
+        "calibration_fg": calibration_fg,
+    }
+
+
 @app.route("/", methods=["GET"])
 def list_equipments():
     """
     List equipments
-
-    args:
-        company_id: str,  # TODO: Auth
     """
-    pass
+    company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"
+
+    calibration_categories = reads.get_calibration_categories()
+    locations = reads.get_company_locations(eq_uow.DbPoolUnitOfWork(), company_id)
+    categories = reads.get_company_categories(eq_uow.DbPoolUnitOfWork(), company_id)
+    cases = reads.get_company_cases(eq_uow.DbPoolUnitOfWork(), company_id)
+    equipments = reads.get_company_equipments(eq_uow.DbPoolUnitOfWork(), company_id)
+
+    return {
+        "equipments": [_view_equipment(e, locations, cases) for e in equipments],
+        "calibration_categories": calibration_categories,
+        "locations": list(locations.values()),
+        "categories": categories,
+        "cases": list(cases.values()),
+    }
+
+
+@app.route("/images-signed-url", methods=["GET"])
+def get_images_signed_url():
+    """
+    Get signed urls for images
+    """
+    args = request.args
+    file_names = args.get("file_names")
+
+    # Get signed urls for images
+    return storage.get_signed_urls("equipment", json.loads(file_names))

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { fetchCases } from '@/api/cases';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -29,7 +29,7 @@ export function Page() {
     },
   });
 
-  React.useEffect(() => {
+  useEffect(() => {
     mutate();
   }, [mutate]);
 
@@ -62,7 +62,7 @@ export function Page() {
                   variant="contained"
                   onClick={() =>
                     navigate('add', {
-                      state: { locations: data.locations },
+                      state: { locations: data.locations, existingCases: data.cases },
                     })
                   }
                 >

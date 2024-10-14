@@ -1,16 +1,25 @@
-import json
 from abc import ABC, abstractmethod
-from db.db_pool import DBPool
+
 import services.case.model as case_model
+from db.db_pool import DBPool
 
 
 class AbstractCaseRepository(ABC):
     @abstractmethod
-    def get(self, case_id: str, company_id: str) -> case_model.Case:
+    def get(self, case_id: str, company_id: str) -> case_model.Case | None:
         """
         Get a case by its case_id and company_id
         :param case_id:
         :param company_id:
+        :return:
+        """
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_by_id(self, id) -> case_model.Case | None:
+        """
+        Get a case by its id
+        :param id:
         :return:
         """
         raise NotImplementedError
@@ -55,6 +64,26 @@ class CaseRepository(AbstractCaseRepository):
 
         with self.db_pool.dict_cursor() as cursor:
             cursor.execute(sql, {"case_id": case_id, "company_id": company_id})
+            r = cursor.fetchone()
+
+        return case_model.Case(**r) if r else None
+
+    def get_by_id(self, id) -> case_model.Case:
+        sql = """
+            select
+                id,
+                case_id,
+                company_id,
+                name,
+                location_id,
+                created_at,
+                updated_at
+            from cases
+            where id = %(id)s;
+        """
+
+        with self.db_pool.dict_cursor() as cursor:
+            cursor.execute(sql, {"id": id})
             r = cursor.fetchone()
 
         return case_model.Case(**r) if r else None

@@ -1,12 +1,21 @@
+create table companies
+(
+    id   uuid primary key,
+    name text not null
+);
+
+
 create table locations
 (
     id   uuid primary key,
+    company_id uuid references companies (id) not null,
     name text not null
 );
 
 create table categories
 (
     id   uuid primary key default gen_random_uuid(),
+    company_id uuid references companies (id) not null,
     name text not null
 );
 
@@ -20,12 +29,6 @@ values ('Noise'),
        ('IAQ'),
        ('Vibration'),
        ('Other');
-
-create table companies
-(
-    id   uuid primary key,
-    name text not null
-);
 
 
 create table cases
@@ -48,7 +51,8 @@ create table equipments
     device_id            text                            not null,
     model                text                            not null,
     serial_number        text                            not null,
-    case_id              uuid                            not null references cases (id),
+    case_id              uuid                            references cases (id),
+    location_id          uuid                            references locations (id),
     status               text                            not null check (status in ('Active', 'Repair', 'Calibration', 'Retired')),
     category_id          uuid references categories (id) not null,
     calibration_category text                            not null check (calibration_category in

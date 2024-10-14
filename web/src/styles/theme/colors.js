@@ -137,3 +137,7 @@ export const tomatoOrange = {
   900: '#7e1110',
   950: '#440608',
 };
+
+export const namedColors = {
+  'info-dark': '#06AED4',
+};

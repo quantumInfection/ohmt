@@ -9,6 +9,9 @@ const CasesList = React.lazy(() => import('@/pages/cases/list').then((module) =>
 const AddCase = React.lazy(() => import('@/pages/cases/add-case').then((module) => ({ default: module.Page })));
 
 const EquipmentsList = React.lazy(() => import('@/pages/equipments/list').then((module) => ({ default: module.Page })));
+const AddEquipment = React.lazy(() =>
+  import('@/pages/equipments/add-equipment').then((module) => ({ default: module.Page }))
+);
 
 const Loader = () => (
   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -62,14 +65,14 @@ export const route = {
             </React.Suspense>
           ),
         },
-        // {
-        //   path: 'add',
-        //   element: (
-        //     <React.Suspense fallback={<Loader />}>
-        //       <AddEquipment />
-        //     </React.Suspense>
-        //   ),
-        // },
+        {
+          path: 'add',
+          element: (
+            <React.Suspense fallback={<Loader />}>
+              <AddEquipment />
+            </React.Suspense>
+          ),
+        },
       ],
     },
   ],

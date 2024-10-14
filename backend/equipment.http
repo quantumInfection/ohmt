@@ -1,4 +1,14 @@
-POST https://clownfish-app-vi4my.ondigitalocean.app/v1/equipment/
+GET https://clownfish-app-vi4my.ondigitalocean.app/v1/equipments/images-signed-url
+Content-Type: application/json
+
+{
+  "file_names": [
+    "Screenshot 2024-03-05 at 00.29.12.png"
+  ]
+}
+
+###
+POST https://clownfish-app-vi4my.ondigitalocean.app/v1/equipments/
 Content-Type: application/json
 
 {
@@ -20,3 +30,5 @@ Content-Type: application/json
   "calibration_category": "Conformance",
   "notes": "LOREM IPSUM ASDJASKLDJ ASLKDJLKASDJ LKSD"
 }
+
+

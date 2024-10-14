@@ -80,7 +80,8 @@ class Equipment:
     device_id: str
     model: str
     serial_number: str
-    case_id: str  # References Case
+    case_id: str | None  # References Case
+    location_id: str | None  # References Location
     images: list[Image]
     status: Status
     category_id: str
@@ -98,7 +99,8 @@ class Equipment:
         device_id: str,
         model: str,
         serial_number: str,
-        case_id: str,
+        case_id: str | None,
+        location_id: str | None,
         image_urls: list[str],
         primary_image_index: int,  # Should start from zero
         status: str,
@@ -114,6 +116,7 @@ class Equipment:
             model=model,
             serial_number=serial_number,
             case_id=case_id,
+            location_id=location_id,
             images=[
                 Image(
                     id=str(uuid4()),
