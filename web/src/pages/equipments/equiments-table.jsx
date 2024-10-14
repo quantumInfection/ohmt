@@ -1,14 +1,21 @@
 import * as React from 'react';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Box, Table, TableBody, TableCell, TableHead, TableRow, Modal } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import { CheckCircle, Eye, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
-
 import { california, kepple, namedColors, redOrange, stormGrey } from '@/styles/theme/colors';
+import Updatecase from '../cases/update-case';
+import { useNavigate } from 'react-router-dom';
+
 
 export function DataTable({ data }) {
-  // Make a function to get icon of the status
 
+  const navigate = useNavigate();
+
+  const [open, setOpen] = React.useState(false);
+  const [selectedRow, setSelectedRow] = React.useState(null);
+
+  // Function to get icon for the status
   function getStatusIcon(status) {
     switch (status) {
       case 'Active':
@@ -22,6 +29,18 @@ export function DataTable({ data }) {
         return <XCircle weight={'fill'} color={redOrange[500]} />;
     }
   }
+
+  // Function to open the modal
+  const handleOpenModal = (row) => {
+    setSelectedRow(row);
+    setOpen(true);
+  };
+
+  // Function to close the modal
+  const handleCloseModal = () => {
+    setOpen(false);
+    setSelectedRow(null);
+  };
 
   return (
     <Box sx={{ width: '100%', overflow: 'auto' }}>
@@ -56,7 +75,9 @@ export function DataTable({ data }) {
                   sx={{ backgroundColor: 'transparent', color: stormGrey[500] }}
                 />
               </TableCell>
-              <TableCell>{row.case_id}</TableCell>
+              <TableCell onClick={() => handleOpenModal(row)} style={{ cursor: 'pointer' }}>
+                {row.case_id}
+              </TableCell>
               <TableCell>
                 <Chip
                   label={row.calibration_due_label || 'NA'}
@@ -66,13 +87,23 @@ export function DataTable({ data }) {
               </TableCell>
               <TableCell align="right">
                 <IconButton color="gray">
-                  <Eye />
+                  <Eye
+                    onClick={() =>
+                      navigate('view')
+                    }
+
+                  />
                 </IconButton>
               </TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
+
+      {/* Modal for showing details */}
+      <Modal open={open} onClose={handleCloseModal}>
+        <Updatecase onClose={handleCloseModal} />
+      </Modal>
     </Box>
   );
 }
