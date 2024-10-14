@@ -1,10 +1,35 @@
 import * as React from 'react';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import {
+  Box, Table, TableBody, TableCell, TableHead, TableRow,
+  Modal, Typography, Button, TextField, MenuItem
+} from '@mui/material';
 import Chip from '@mui/material/Chip';
+
 import IconButton from '@mui/material/IconButton';
-import { MapPin, Pencil } from '@phosphor-icons/react';
+import {  MapPin, Pencil } from '@phosphor-icons/react';
+import Updatecase from './update-case';
 
 export function DataTable({ data }) {
+  console.log(data)
+  const [open, setOpen] = React.useState(false);
+  const [selectedRow, setSelectedRow] = React.useState(null);
+
+  const handleOpen = (row) => {
+    setSelectedRow(row);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+    setSelectedRow(null);
+  };
+
+
+
+
+
+
+
   return (
     <Box sx={{ width: '100%', overflow: 'auto' }}>
       <Table>
@@ -30,7 +55,7 @@ export function DataTable({ data }) {
                 />
               </TableCell>
               <TableCell align="right">
-                <IconButton color="gray">
+                <IconButton color="gray" onClick={() => handleOpen(row)}>
                   <Pencil />
                 </IconButton>
               </TableCell>
@@ -38,6 +63,10 @@ export function DataTable({ data }) {
           ))}
         </TableBody>
       </Table>
+
+      <Modal open={open} onClose={handleClose}>
+    <Updatecase onClose={handleClose}/>
+      </Modal>
     </Box>
   );
 }
