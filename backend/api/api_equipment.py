@@ -1,5 +1,4 @@
 import json
-import logging
 
 from flask import blueprints, request
 
@@ -33,7 +32,6 @@ def create_equipment():
     """
     company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"  # TODO: Replace using auth
     args = request.get_json()
-    logging.warning(args)
 
     # Create equipment
     e = eq_commands.create_equipment(

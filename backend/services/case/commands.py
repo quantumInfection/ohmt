@@ -1,7 +1,5 @@
-import logging
-
-import services.unit_of_work as suow
 import services.case.model as case_model
+import services.unit_of_work as suow
 
 
 def create_case(
@@ -47,7 +45,7 @@ def update_case_location(uow: suow.AbstractUnitOfWork, case_id: str, location_id
     :return:
     """
     with uow:
-        case = uow.cases_repo.get(case_id)
+        case = uow.cases_repo.get_by_id(case_id)
 
         if not case:
             raise ValueError(f"Case with ID: {case_id} not found")

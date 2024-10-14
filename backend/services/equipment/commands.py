@@ -1,4 +1,3 @@
-import logging
 from datetime import date
 
 import services.equipment.model as eq_model
@@ -23,9 +22,7 @@ def create_equipment(
 ) -> eq_model.Equipment:
     with uow:
         if case_id:
-            case = uow.cases_repo.get(case_id, company_id)
-
-            logging.warning(f"CASE: {case}")
+            case = uow.cases_repo.get_by_id(case_id)
             if not case:
                 raise ValueError(
                     f"Case with CASE: {case_id} and COMPANY: {company_id} not found"

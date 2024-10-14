@@ -51,13 +51,8 @@ async function uploadImagesToSignedUrls(signedUrls, images) {
 }
 
 export async function addEquipment(equipmentData) {
-  console.log('1 ', equipmentData);
-  // Get signed URLs for images
   const filePaths = equipmentData.files.map((file) => file.name);
   const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
-  console.log('2 ', signedUrlsResponse);
-
-  // Upload images to signed URLs
   try {
     await uploadImagesToSignedUrls(signedUrlsResponse, equipmentData.files);
   } catch (error) {
