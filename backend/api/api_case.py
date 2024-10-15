@@ -19,7 +19,7 @@ def create_case():
         location_id: str
     """
     args = request.get_json()
-    company_id = '16edda9a-299f-4ab4-a41c-922e637cad31'
+    company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"
 
     # Create case
     case = case_commands.create_case(
@@ -38,13 +38,24 @@ def get_all_cases():
     """
     Get all cases
     """
-    company_id = '16edda9a-299f-4ab4-a41c-922e637cad31'
+    company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"
+    _uow = suow.DbPoolUnitOfWork()
 
-    cases = reads.get_company_cases(suow.DbPoolUnitOfWork(), company_id)
-    locations = reads.get_company_locations(suow.DbPoolUnitOfWork(), company_id)
+    cases = reads.get_company_cases(_uow, company_id)
+    equipments = reads.get_company_equipments(_uow, company_id)
+    locations = reads.get_company_locations(_uow, company_id)
+
+    cases = list(cases.values())
+
+    for case in cases:
+        case["equipments"] = []
+        for equipment in equipments:
+            if equipment["case_id"] == case["id"]:
+                case["equipments"].append(equipment)
+        case["equipments"].sort(key=lambda x: x["created_at"])
 
     return {
-        "cases": list(cases.values()),
+        "cases": cases,
         "locations": list(locations.values()),
     }
 
