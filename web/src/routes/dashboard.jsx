@@ -3,8 +3,8 @@ import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import { Navigate, Outlet } from 'react-router-dom';
 
+// import EditEquipment from '@/pages/equipments/EditEquipment';
 import { Layout as DashboardLayout } from '@/components/dashboard/layout/layout';
-import ViewEquipment from '@/pages/equipments/ViewEquipment';
 
 const CasesList = React.lazy(() => import('@/pages/cases/list').then((module) => ({ default: module.Page })));
 const AddCase = React.lazy(() => import('@/pages/cases/add-case').then((module) => ({ default: module.Page })));
@@ -14,7 +14,13 @@ const AddEquipment = React.lazy(() =>
   import('@/pages/equipments/add-equipment').then((module) => ({ default: module.Page }))
 );
 
+const ViewEquipment = React.lazy(() =>
+  import('@/pages/equipments/ViewEquipment').then((module) => ({ default: module.Page }))
+);
 
+const EditEquipment = React.lazy(() =>
+  import('@/pages/equipments/EditEquipment').then((module) => ({ default: module.Page }))
+);
 
 const Loader = () => (
   <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
@@ -81,6 +87,15 @@ export const route = {
           element: (
             <React.Suspense fallback={<Loader />}>
               <ViewEquipment />
+            </React.Suspense>
+          ),
+        }, 
+        
+        {
+          path: 'edit',
+          element: (
+            <React.Suspense fallback={<Loader />}>
+              <EditEquipment />
             </React.Suspense>
           ),
         },

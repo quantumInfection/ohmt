@@ -6,16 +6,18 @@ import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { Helmet } from 'react-helmet-async';
-
+import { Link, useNavigate } from 'react-router-dom';
 import { config } from '@/config';
+import { ArrowLeft ,Plus } from '@phosphor-icons/react';
 
 import Calibrationbox from './calibration/Calibrationbox';
 import Deviceinformation from './calibration/Deviceinformation';
 
 const metadata = { title: `Equipments | ${config.site.name}` };
 
-const ViewEquipment = () => {
+export function Page()  {
   const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
   return (
     <React.Fragment>
@@ -39,7 +41,29 @@ const ViewEquipment = () => {
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ alignItems: 'flex-start' }}>
               <Box sx={{ flex: '1 1 auto' }}>
                 <Typography variant="h4">Equipment - AID12</Typography>
+                <Stack direction="row" alignItems="center">
+                    <Button onClick={() => navigate(-1)} sx={{ textTransform: 'none', color: 'gray' }}>
+                      <Stack direction="row" spacing={1} alignItems="center">
+                        <ArrowLeft />
+                        <Typography>Equipments</Typography>
+                      </Stack>
+                    </Button>
+                    <Typography>/ Equipment - AID12</Typography>
+                  </Stack>
               </Box>
+
+              <Box >
+              <Button
+                  startIcon={<Plus />}
+                  variant="contained"
+                  onClick={() =>
+                    navigate('/dashboard/equipments/edit')
+                  }
+                >
+                  Edit
+                </Button>
+                
+                </Box>
             </Stack>
 
             <Box sx={{ flexGrow: 1 }}>
@@ -59,4 +83,5 @@ const ViewEquipment = () => {
   );
 };
 
-export default ViewEquipment;
+
+
