@@ -10,3 +10,5 @@ Dockerfile*
 README.md
 LICENSE
 .idea/
+.vscode/
+.env.local

@@ -33,6 +33,10 @@ export function AuthGuard({ children }) {
           navigate(paths.auth.custom.signIn, { replace: true });
           return;
         }
+        case AuthStrategy.SUPABASE: {
+          navigate(paths.auth.supabase.signIn, { replace: true });
+          return;
+        }
         default: {
           logger.error('[AuthGuard]: Unknown auth strategy');
           return;

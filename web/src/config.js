@@ -14,7 +14,7 @@ export const config = {
     version: import.meta.env.VITE_SITE_VERSION || '0.0.0',
   },
   logLevel: import.meta.env.VITE_LOG_LEVEL || LogLevel.ALL,
-  auth: { strategy: import.meta.env.VITE_AUTH_STRATEGY || AuthStrategy.CUSTOM },
+  auth: { strategy: import.meta.env.VITE_AUTH_STRATEGY || AuthStrategy.SUPABASE },
   auth0: { domain: import.meta.env.VITE_AUTH0_DOMAIN, clientId: import.meta.env.VITE_AUTH0_CLIENT_ID },
   cognito: {
     identityPoolId: import.meta.env.VITE_COGNITO_IDENTITY_POOL_ID,
