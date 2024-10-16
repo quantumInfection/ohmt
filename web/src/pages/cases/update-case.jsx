@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { fetchCases } from '@/api/cases';
+import { fetchCases, UpdateCase } from '@/api/cases';
 import {
   Box,
   Button,
@@ -8,7 +8,6 @@ import {
   FormControl,
   InputLabel,
   MenuItem,
-  Modal,
   OutlinedInput,
   Stack,
   Table,
@@ -25,28 +24,52 @@ import { useMutation } from 'react-query';
 import { california, kepple, redOrange, stormGrey } from '@/styles/theme/colors';
 
 const Updatecase = ({ onClose, selectedRow }) => {
-  const [locations, setLocations] = useState([[]]);
+  // console.log(selectedRow?.id)
+  const [locations, setLocations] = useState([]);
+  const [selectedLocationId, setSelectedLocationId] = useState(locations?._id || '');
 
-  const { mutate, isLoading } = useMutation(fetchCases, {
+  const { mutate: fetchCasesMutate, isLoading: isFetching } = useMutation(fetchCases, {
     onSuccess: (data) => {
       setLocations(data.locations);
     },
     onError: (error) => {
-      console.error(error);
+      console.error('Failed to fetch cases:', error);
     },
   });
 
-  useEffect(() => {
-    mutate();
-  }, [mutate]);
+  // Mutation for updating a case
+  const { mutate: updateCaseMutate, isLoading: isUpdating } = useMutation(UpdateCase, {
+    onSuccess: () => {
+      console.log('Case updated successfully');
+      fetchCasesMutate();
+    },
+    onError: (error) => {
+      console.error('Failed to update case:', error); // Log the error message
+    },
+  });
 
-  const getStatusIcon = (status) =>
+  // Fetch cases on component mount
+  useEffect(() => {
+    fetchCasesMutate();
+  }, [fetchCasesMutate]);
+
+  const handleUpdateCase = () => {
+    console.log(selectedLocationId)
+    if ( selectedRow?.id &&  selectedLocationId) {
+      // Ensure case_id is available
+      updateCaseMutate( { caseId: selectedRow.id, selectedLocationId } );
+    } else {
+      console.error('Location ID or Case ID is not set.');
+    }
+  };
+
+  const getStatusIcon = (status_label) =>
     ({
       Active: <CheckCircle weight="fill" color={kepple[500]} />,
       Repair: <Wrench weight="fill" color={stormGrey[900]} />,
       Calibration: <FadersHorizontal weight="fill" color={california[500]} />,
       Retired: <XCircle weight="fill" color={redOrange[500]} />,
-    })[status] || <XCircle weight="fill" color={redOrange[500]} />;
+    })[status_label] || <XCircle weight="fill" color={redOrange[500]} />;
 
   return (
     <Box
@@ -77,7 +100,14 @@ const Updatecase = ({ onClose, selectedRow }) => {
           <OutlinedInput name="name" type="text" value={selectedRow?.name !== undefined ? selectedRow.name : ''} />
         </FormControl>
       </Stack>
-      <TextField label="Location" select fullWidth sx={{ mt: 2 }} defaultValue="">
+      <TextField
+        label="Location"
+        select
+        fullWidth
+        sx={{ mt: 2 }}
+        value={selectedLocationId}
+        onChange={(e) => setSelectedLocationId(e.target.value)} // Update selected location
+      >
         {locations.map((location) => (
           <MenuItem key={location.id} value={location.id}>
             {location.name}
@@ -98,13 +128,13 @@ const Updatecase = ({ onClose, selectedRow }) => {
           </TableHead>
           <TableBody>
             {selectedRow?.equipments && selectedRow.equipments.length > 0 ? (
-              selectedRow.equipments.map(({ id, name, status, case_id, serial_number }) => (
+              selectedRow.equipments.map(({ id, name, status_label, case_id, serial_number, location }) => (
                 <TableRow key={id}>
-                  <TableCell>aaa</TableCell>
+                  <TableCell>{name}</TableCell>
                   <TableCell>
                     <Chip
-                      icon={getStatusIcon(status)}
-                      label={status}
+                      icon={getStatusIcon(status_label)}
+                      label={status_label}
                       variant="outlined"
                       sx={{ backgroundColor: 'transparent', color: stormGrey[900] }}
                     />
@@ -112,7 +142,7 @@ const Updatecase = ({ onClose, selectedRow }) => {
                   <TableCell>
                     <Chip
                       icon={<MapPin weight="fill" />}
-                      label="location"
+                      label={location}
                       variant="outlined"
                       sx={{ backgroundColor: 'transparent', color: stormGrey[500] }}
                     />
@@ -125,8 +155,7 @@ const Updatecase = ({ onClose, selectedRow }) => {
               <TableRow>
                 <TableCell colSpan={5} align="center">
                   No equipments available.
-                </TableCell>{' '}
-                {/* Adjust colSpan based on your table structure */}
+                </TableCell>
               </TableRow>
             )}
           </TableBody>
@@ -146,8 +175,9 @@ const Updatecase = ({ onClose, selectedRow }) => {
           Close
         </Button>
         <Button
-          onClick={onClose}
+          onClick={handleUpdateCase} // Call the update function
           sx={{ color: 'white', px: 5, backgroundColor: 'black', '&:hover': { backgroundColor: '#333' } }}
+          disabled={isUpdating} // Disable the button while updating
         >
           Update
         </Button>

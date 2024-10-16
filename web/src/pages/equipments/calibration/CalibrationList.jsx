@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import {
+  Box,
+  Button,
   IconButton,
   Link,
   Paper,
@@ -10,8 +12,11 @@ import {
   TableHead,
   TablePagination,
   TableRow,
+  Typography,
 } from '@mui/material';
 import { FilePdf, Pencil } from '@phosphor-icons/react';
+
+import { stormGrey } from '@/styles/theme/colors';
 
 import EditCalibrationModal from './EditCalibrationModal';
 
@@ -49,6 +54,18 @@ const CalibrationList = () => {
 
   return (
     <>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          padding: '16px',
+        }}
+      >
+        <Typography variant="h6">Calibrations</Typography>
+        <Button style={{ backgroundColor: stormGrey[900], color: '#fff' }} onClick={handleModalOpen}>Add Calibrations</Button>
+      </Box>
+
       <Paper>
         <TableContainer>
           <Table>

@@ -1,9 +1,8 @@
 import React from 'react';
-import { Box, Button, Card, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Card, Tab, Tabs, Typography } from '@mui/material';
 import { CheckCircle, FadersHorizontal, MapPin } from '@phosphor-icons/react';
 import PropTypes from 'prop-types';
 
-import { stormGrey } from '@/styles/theme/colors';
 
 import CalibrationList from './CalibrationList';
 
@@ -106,17 +105,7 @@ const Calibrationbox = () => {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          <Box
-            sx={{
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              padding: '16px',
-            }}
-          >
-            <Typography variant="h6">Calibrations</Typography>
-            <Button style={{ backgroundColor: stormGrey[900], color: '#fff' }}>Add Calibrations</Button>
-          </Box>
+       
           <CalibrationList />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
