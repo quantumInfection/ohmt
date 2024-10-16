@@ -16,8 +16,6 @@ export function createClient() {
     return client;
   }
 
-  console.log('Config:', config);
-
   client = createBrowserClient(config.supabase.url, config.supabase.anonKey);
 
   return client;
