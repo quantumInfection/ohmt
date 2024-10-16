@@ -6,6 +6,7 @@ import external_services.storage as storage
 import services.equipment.commands as eq_commands
 import services.reads as reads
 import services.unit_of_work as eq_uow
+import view.view as view
 
 app = blueprints.Blueprint("api_equipment", __name__, url_prefix="/v1/equipments")
 
@@ -106,41 +107,6 @@ def add_calibration_to_equipment(equipment_id):
     return "OK"
 
 
-def _view_equipment(
-    equipment: dict, locations_lookup: dict, cases_lookup: dict
-) -> dict:
-    """Returns a view of the equipment, represents equipment in table format"""
-    calibrations = equipment["calibrations"]
-    if not calibrations:
-        calibration_due_label = "NA"
-        calibration_bg = "#F1F1F4"
-        calibration_fg = "#212636"
-    else:
-        calibration_due_label = "NA"
-        calibration_bg = "#F1F1F4"
-        calibration_fg = "#212636"
-
-    if equipment["case_id"] is None:
-        case_id = None
-        location_name = locations_lookup[equipment["location_id"]]["name"]
-    else:
-        case_id = equipment["case_id"]
-        case = cases_lookup[case_id]
-        case_id = case["case_id"]
-        location_name = case["location"]
-
-    return {
-        "id": equipment["id"],
-        "name": equipment["model"],
-        "status_label": equipment["status"],
-        "location": location_name,
-        "case_id": case_id,
-        "calibration_due_label": calibration_due_label,
-        "calibration_bg": calibration_bg,
-        "calibration_fg": calibration_fg,
-    }
-
-
 @app.route("/", methods=["GET"])
 def list_equipments():
     """
@@ -155,7 +121,7 @@ def list_equipments():
     equipments = reads.get_company_equipments(eq_uow.DbPoolUnitOfWork(), company_id)
 
     return {
-        "equipments": [_view_equipment(e, locations, cases) for e in equipments],
+        "equipments": [view.make_equipment(e, locations, cases) for e in equipments],
         "calibration_categories": calibration_categories,
         "locations": list(locations.values()),
         "categories": categories,

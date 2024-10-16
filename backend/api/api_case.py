@@ -3,6 +3,7 @@ from flask import blueprints, request
 import services.case.commands as case_commands
 import services.reads as reads
 import services.unit_of_work as suow
+import view.view as view
 
 app = blueprints.Blueprint("api_case", __name__, url_prefix="/v1/cases")
 
@@ -41,18 +42,19 @@ def get_all_cases():
     company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"
     _uow = suow.DbPoolUnitOfWork()
 
-    cases = reads.get_company_cases(_uow, company_id)
+    cases_lookup = reads.get_company_cases(_uow, company_id)
     equipments = reads.get_company_equipments(_uow, company_id)
     locations = reads.get_company_locations(_uow, company_id)
 
-    cases = list(cases.values())
+    cases = list(cases_lookup.values())
 
     for case in cases:
         case["equipments"] = []
         for equipment in equipments:
             if equipment["case_id"] == case["id"]:
-                case["equipments"].append(equipment)
-        case["equipments"].sort(key=lambda x: x["created_at"])
+                case["equipments"].append(
+                    view.make_equipment(equipment, locations, cases_lookup)
+                )
 
     return {
         "cases": cases,
