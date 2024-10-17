@@ -5,6 +5,7 @@ from datetime import date, datetime
 
 
 IMAGE_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/images/equipment/"
+PDF_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/pdfs/calibrations/"
 
 @dataclass
 class Company:
@@ -57,6 +58,27 @@ class Calibration:
     created_at: datetime
     updated_at: datetime | None
 
+    @classmethod
+    def create(
+        cls,
+        provider_id: str,
+        calibration_type: str,
+        completion_date: date,
+        expiry_date: date,
+        pdf_file_url: str,
+        notes: str | None,
+    ):
+        return cls(
+            id=str(uuid4()),
+            provider_id=provider_id,
+            calibration_type=CalibrationType(calibration_type),
+            completion_date=completion_date,
+            expiry_date=expiry_date,
+            pdf_file_url=f"{PDF_URL_CDN_PREFIX}{pdf_file_url}",
+            notes=notes,
+            created_at=datetime.now(),
+            updated_at=None,
+        )
 
 class CalibrationCategory(Enum):
     NIL_CALIBRATION = "Nil Calibration"
@@ -150,16 +172,13 @@ class Equipment:
         if self.calibrations is None:
             self.calibrations = dict()
         cal_id = str(uuid4())
-        self.calibrations[cal_id] = Calibration(
-            id=cal_id,
+        self.calibrations[cal_id] = Calibration.create(
             provider_id=provider_id,
-            calibration_type=CalibrationType(calibration_type),
+            calibration_type=calibration_type,
             completion_date=completion_date,
             expiry_date=expiry_date,
             pdf_file_url=pdf_file_url,
             notes=notes,
-            created_at=datetime.now(),
-            updated_at=None,
         )
 
         self.updated_at = datetime.now()
@@ -178,16 +197,11 @@ class Equipment:
             raise ValueError("No calibration found to update.")
         if cal_id not in self.calibrations:
             raise ValueError("Calibration not found.")
-        self.calibrations[cal_id] = Calibration(
-            id=cal_id,
+        self.calibrations[cal_id] = Calibration.create(
             provider_id=provider_id,
-            calibration_type=CalibrationType(calibration_type),
+            calibration_type=calibration_type,
             completion_date=completion_date,
             expiry_date=expiry_date,
             pdf_file_url=pdf_file_url,
             notes=notes,
-            created_at=self.calibrations[cal_id].created_at,
-            updated_at=datetime.now(),
         )
-
-        self.updated_at = datetime.now()
