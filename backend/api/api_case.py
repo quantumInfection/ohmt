@@ -46,6 +46,8 @@ def get_all_cases():
     equipments = reads.get_company_equipments(_uow, company_id)
     locations = reads.get_company_locations(_uow, company_id)
     calibration_providers = reads.get_calibration_providers(_uow)
+    categories = reads.get_company_categories(_uow, company_id)
+    categories_lookup = {c["id"]: c for c in categories}
 
     cases = list(cases_lookup.values())
 
@@ -54,7 +56,7 @@ def get_all_cases():
         for equipment in equipments:
             if equipment["case_id"] == case["id"]:
                 case["equipments"].append(
-                    view.make_equipment(equipment, locations, cases_lookup, calibration_providers)
+                    view.make_equipment(equipment, locations, cases_lookup, calibration_providers, categories_lookup)
                 )
 
     return {
