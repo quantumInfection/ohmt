@@ -2,7 +2,37 @@ import services.unit_of_work as suow
 import services.equipment.model as eq_mdl
 
 
-def get_company_locations(uow: suow.DbPoolUnitOfWork, company_id: str) -> dict[str, dict]:
+def get_calibration_providers(uow: suow.DbPoolUnitOfWork) -> dict[str, dict]:
+    """
+    Get all calibration providers
+    :param uow:
+    :return:
+    """
+
+    sql = """
+        select
+            id,
+            name
+        from calibration_providers
+        order by name
+    """
+
+    with uow, uow.db_pool.dict_cursor() as curs:
+        curs.execute(sql)
+        providers = curs.fetchall()
+
+    return {
+        provider["id"]: {
+            "id": provider["id"],
+            "name": provider["name"],
+        }
+        for provider in providers
+    }
+
+
+def get_company_locations(
+    uow: suow.DbPoolUnitOfWork, company_id: str
+) -> dict[str, dict]:
     """
     Get all locations for a company
     :param uow:
@@ -125,8 +155,8 @@ def get_company_equipments(uow: suow.DbPoolUnitOfWork, company_id: str) -> list[
             e.notes,
             e.created_at,
             e.updated_at,
-            json_agg(to_json(i.*) order by e.created_at) as images,
-            json_agg(to_json(c.*) order by e.created_at) as calibrations
+            coalesce(json_agg(to_json(i.*) order by e.created_at) filter ( where i.equipment_id is not null ), json_build_array()) as images,
+            coalesce(json_agg(to_json(c.*) order by e.created_at) filter ( where c.equipment_id is not null ), json_build_array()) as calibrations
         from equipments e
         left join equipment_images i on e.id = i.equipment_id
         left join equipment_calibrations c on e.id = c.equipment_id
@@ -154,7 +184,16 @@ def get_company_equipments(uow: suow.DbPoolUnitOfWork, company_id: str) -> list[
             "notes": equipment["notes"],
             "created_at": equipment["created_at"],
             "updated_at": equipment["updated_at"],
-            "images": equipment["images"],
+            "images": [
+                {
+                    "id": image["id"],
+                    "url": image["url"],
+                    "is_primary": image["is_primary"],
+                    "created_at": image["created_at"],
+                    "updated_at": image["updated_at"],
+                }
+                for image in equipment["images"]
+            ],
             "calibrations": equipment["calibrations"],
         }
         for equipment in equipments

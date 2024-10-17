@@ -1,4 +1,4 @@
-POST https://clownfish-app-vi4my.ondigitalocean.app/v1/equipment/da9696fa-1a11-4fa6-a772-b7085e3e1ed0/calibration
+POST https://clownfish-app-vi4my.ondigitalocean.app/v1/equipments/7b36c42a-2074-4778-97e2-7a7f4d18d3ca/calibration
 Content-Type: application/json
 
 {
