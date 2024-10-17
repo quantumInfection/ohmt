@@ -4,6 +4,8 @@ from enum import Enum
 from datetime import date, datetime
 
 
+IMAGE_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/images/equipment/"
+
 @dataclass
 class Company:
     id: str
@@ -120,7 +122,7 @@ class Equipment:
             images=[
                 Image(
                     id=str(uuid4()),
-                    url=url,
+                    url=f"{IMAGE_URL_CDN_PREFIX}{url}",
                     primary=i == primary_image_index,
                     created_at=datetime.now(),
                     updated_at=None,

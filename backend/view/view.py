@@ -20,7 +20,6 @@ def make_equipment(
             {
                 "id": calibration["id"],
                 "type": calibration["calibration_type"],
-                "status": calibration["status"],
                 "provider": calibration_providers_lookup[calibration["provider_id"]]["name"],
                 "pdf_file_url": calibration["pdf_file_url"],
                 "expiry_date": calibration["expiry_date"],
@@ -45,6 +44,9 @@ def make_equipment(
         "status_label": equipment["status"],
         "location": location_name,
         "device_id": equipment["device_id"],
+        "model": equipment["model"],
+        "asset_id": equipment["asset_id"],
+        "serial_number": equipment["serial_number"],
         "category": categories_lookup[equipment["category_id"]]["name"],
         "calibration_category": equipment["calibration_category"],
         "notes": equipment["notes"],
