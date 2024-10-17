@@ -33,31 +33,21 @@ export async function addCase(caseData) {
 
 
 
-export async function UpdateCase({ caseId, selectedLocationId }) {
-  console.log('Case ID:', caseId, 'Selected Location ID:', selectedLocationId);
-  const requestBody = JSON.stringify({
-    location_id: selectedLocationId,
+export async function UpdateCase({ caseId, selectedLocationId }) { 
+  const response = await fetch(`${casesUrl}${caseId}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      location_id: selectedLocationId
+    }),
   });
 
-  console.log('Request Body:', requestBody); // Log the request body
 
-  try {
-    const response = await fetch(`${casesUrl}/${caseId}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: requestBody,
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text(); // Get the response text
-      throw new Error(`Failed to update case: ${response.status} ${errorText}`);
-    }
-
-    return response.json();
-  } catch (error) {
-    console.error('Error during fetch:', error); // Log the error for debugging
-    throw new Error('Network error: ' + error.message);
+  if (!response.ok) {
+    throw new Error('Failed to add equipment');
   }
+
+  return response.json();
 }

@@ -23,8 +23,7 @@ import { useMutation } from 'react-query';
 
 import { california, kepple, redOrange, stormGrey } from '@/styles/theme/colors';
 
-const Updatecase = ({ onClose, selectedRow }) => {
-  // console.log(selectedRow?.id)
+const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
   const [locations, setLocations] = useState([]);
   const [selectedLocationId, setSelectedLocationId] = useState(locations?._id || '');
 
@@ -40,8 +39,8 @@ const Updatecase = ({ onClose, selectedRow }) => {
   // Mutation for updating a case
   const { mutate: updateCaseMutate, isLoading: isUpdating } = useMutation(UpdateCase, {
     onSuccess: () => {
-      console.log('Case updated successfully');
-      fetchCasesMutate();
+      fetchCasesAgain();
+      onClose();
     },
     onError: (error) => {
       console.error('Failed to update case:', error); // Log the error message
@@ -54,9 +53,7 @@ const Updatecase = ({ onClose, selectedRow }) => {
   }, [fetchCasesMutate]);
 
   const handleUpdateCase = () => {
-    console.log(selectedLocationId)
     if ( selectedRow?.id &&  selectedLocationId) {
-      // Ensure case_id is available
       updateCaseMutate( { caseId: selectedRow.id, selectedLocationId } );
     } else {
       console.error('Location ID or Case ID is not set.');
