@@ -115,18 +115,41 @@ def list_equipments():
     company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"
 
     calibration_categories = reads.get_calibration_categories()
+    calibration_providers = reads.get_calibration_providers(eq_uow.DbPoolUnitOfWork())
     locations = reads.get_company_locations(eq_uow.DbPoolUnitOfWork(), company_id)
     categories = reads.get_company_categories(eq_uow.DbPoolUnitOfWork(), company_id)
+    categories_lookup = {c["id"]: c for c in categories}
     cases = reads.get_company_cases(eq_uow.DbPoolUnitOfWork(), company_id)
     equipments = reads.get_company_equipments(eq_uow.DbPoolUnitOfWork(), company_id)
 
     return {
-        "equipments": [view.make_equipment(e, locations, cases) for e in equipments],
+        "equipments": [view.make_equipment(e, locations, cases, calibration_providers, categories_lookup) for e in equipments],
         "calibration_categories": calibration_categories,
         "locations": list(locations.values()),
         "categories": categories,
         "cases": list(cases.values()),
     }
+
+
+@app.route("/<equipment_id>", methods=["GET"])
+def get_equipment(equipment_id):
+    """
+    Get equipment
+    """
+    company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"
+
+    _uow = eq_uow.DbPoolUnitOfWork()
+
+    calibration_providers = reads.get_calibration_providers(_uow)
+    locations = reads.get_company_locations(_uow, company_id)
+    categories = reads.get_company_categories(_uow, company_id)
+    categories_lookup = {c["id"]: c for c in categories}
+    cases = reads.get_company_cases(_uow, company_id)
+    equipments = reads.get_company_equipments(_uow, company_id)
+
+    equipment = next(e for e in equipments if e["id"] == equipment_id)
+
+    return view.make_equipment(equipment, locations, cases, calibration_providers, categories_lookup)
 
 
 @app.route("/images-signed-url", methods=["GET"])
