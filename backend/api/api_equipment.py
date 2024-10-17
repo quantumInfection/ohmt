@@ -124,6 +124,7 @@ def list_equipments():
     return {
         "equipments": [view.make_equipment(e, locations, cases, calibration_providers, categories_lookup) for e in equipments],
         "calibration_categories": calibration_categories,
+        "calibration_providers": list(calibration_providers.values()),
         "locations": list(locations.values()),
         "categories": categories,
         "cases": list(cases.values()),
