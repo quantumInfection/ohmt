@@ -26,7 +26,7 @@ import { DynamicLogo } from '@/components/core/logo';
 import { toast } from '@/components/core/toaster';
 
 const oAuthProviders = [
-  { id: 'google', name: 'Google', logo: '/assets/logo-google.svg' },
+  { id: 'github', name: 'Github', logo: '/assets/logo-github.svg' },
   { id: 'discord', name: 'Discord', logo: '/assets/logo-discord.svg' },
 ];
 
