@@ -5,7 +5,7 @@ from datetime import date, datetime
 
 
 IMAGE_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/images/equipment/"
-PDF_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/pdfs/calibrations/"
+PDF_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/pdfs/calibration/"
 
 @dataclass
 class Company:

@@ -163,4 +163,16 @@ def get_images_signed_url():
     file_names = args.get("file_names")
 
     # Get signed urls for images
-    return storage.get_signed_urls("equipment", json.loads(file_names))
+    return storage.get_signed_urls_for_images("equipment", json.loads(file_names))
+
+
+@app.route("/pdf-signed-url", methods=["GET"])
+def get_pdf_signed_url():
+    """
+    Get signed url for PDF
+    """
+    args = request.args
+    file_name = args["file_name"]
+
+    # Get signed url for PDF
+    return storage.get_signed_url_for_pdfs("calibration", file_name)
