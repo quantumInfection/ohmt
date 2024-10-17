@@ -82,7 +82,6 @@ def add_calibration_to_equipment(equipment_id):
     Add calibration to equipment
 
     args:
-        company_id: str
         provider_id: str
         calibration_type: str
         completion_date: date
@@ -148,6 +147,9 @@ def get_equipment(equipment_id):
     equipments = reads.get_company_equipments(_uow, company_id)
 
     equipment = next(e for e in equipments if e["id"] == equipment_id)
+
+    if not equipment:
+        return "Equipment not found", 404
 
     return view.make_equipment(equipment, locations, cases, calibration_providers, categories_lookup)
 
