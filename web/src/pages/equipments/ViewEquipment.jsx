@@ -1,24 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState ,useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
+import { ArrowLeft, Plus } from '@phosphor-icons/react';
 import { Helmet } from 'react-helmet-async';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { fetchSepecificEquipments } from '@/api/equipments';
+import { useMutation } from 'react-query';
+
 import { config } from '@/config';
-import { ArrowLeft ,Plus } from '@phosphor-icons/react';
 
 import Calibrationbox from './calibration/Calibrationbox';
 import Deviceinformation from './calibration/Deviceinformation';
 
 const metadata = { title: `Equipments | ${config.site.name}` };
 
-export function Page()  {
-  const [isLoading, setIsLoading] = useState(false);
+export function Page() {
+
   const navigate = useNavigate();
 
+  const location = useLocation();
+  const { id ,provider } = location.state || {}; // Retrieve the 'id' from the state
+
+  if (!id) {
+    return <div>Error: No row ID provided.</div>;
+  }
+
+
+  const [data, setData] = useState({});
+  
+
+  const { mutate, isLoading } = useMutation(fetchSepecificEquipments, {
+    onSuccess: (data) => {
+      setData(data);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+  console.log(data);
+
+
+  useEffect(() => {
+    if (id) {
+      mutate(id); 
+    }
+  }, [mutate, id]);
   return (
     <React.Fragment>
       <Helmet>
@@ -40,39 +70,32 @@ export function Page()  {
           <Stack spacing={4}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ alignItems: 'flex-start' }}>
               <Box sx={{ flex: '1 1 auto' }}>
-                <Typography variant="h4">Equipment - AID12</Typography>
+                <Typography variant="h4">Equipment - {data.name}</Typography>
                 <Stack direction="row" alignItems="center">
-                    <Button onClick={() => navigate(-1)} sx={{ textTransform: 'none', color: 'gray' }}>
-                      <Stack direction="row" spacing={1} alignItems="center">
-                        <ArrowLeft />
-                        <Typography>Equipments</Typography>
-                      </Stack>
-                    </Button>
-                    <Typography>/ Equipment - AID12</Typography>
-                  </Stack>
+                  <Button onClick={() => navigate(-1)} sx={{ textTransform: 'none', color: 'gray' }}>
+                    <Stack direction="row" spacing={1} alignItems="center">
+                      <ArrowLeft />
+                      <Typography>Equipments</Typography>
+                    </Stack>
+                  </Button>
+                  <Typography>/ Equipment - {data.name}</Typography>
+                </Stack>
               </Box>
 
-              <Box >
-              <Button
-                  startIcon={<Plus />}
-                  variant="contained"
-                  onClick={() =>
-                    navigate('/dashboard/equipments/edit')
-                  }
-                >
+              <Box>
+                <Button startIcon={<Plus />} variant="contained" onClick={() => navigate('/dashboard/equipments/edit')}>
                   Edit
                 </Button>
-                
-                </Box>
+              </Box>
             </Stack>
 
             <Box sx={{ flexGrow: 1 }}>
               <Grid container>
                 <Grid md={8}>
-                  <Calibrationbox />
+                  <Calibrationbox data={data} providerList={provider}/>
                 </Grid>
                 <Grid md={4} padding={2} paddingTop={0}>
-                  <Deviceinformation />
+                  <Deviceinformation data={data}/>
                 </Grid>
               </Grid>
             </Box>
@@ -81,7 +104,4 @@ export function Page()  {
       )}
     </React.Fragment>
   );
-};
-
-
-
+}

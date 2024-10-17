@@ -76,7 +76,7 @@ export function Page() {
                 </Button>
               </div>
             </Stack>
-            {data && Object.keys(data).length > 0 && <DataTable data={data.equipments} />}
+            {data && Object.keys(data).length > 0 && <DataTable data={data} />}
           </Stack>
         </Box>
       )}
