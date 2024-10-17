@@ -59,7 +59,7 @@ CustomTabPanel.propTypes = {
   index: PropTypes.number.isRequired,
 };
 
-const Calibrationbox = () => {
+const Calibrationbox = ({data ,providerList}) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -77,12 +77,12 @@ const Calibrationbox = () => {
           alignItems: 'center',
         }}
       >
-        <StatusCard icon={<MapPin size={32} />} title="Location" value="Cromwell, NZ" iconBgColor="#FFB3B3" />
+        <StatusCard icon={<MapPin size={32} />} title="Location" value={data.location} iconBgColor="#FFB3B3" />
         <StatusCard icon={<CheckCircle size={32} />} title="Status" value="Active" iconBgColor="#B3FFD9" />
         <StatusCard
           icon={<FadersHorizontal size={32} />}
           title="Calibration due"
-          value="40 days"
+          value={data.calibration_due_label}
           iconBgColor="#FFE0B3"
         />
       </Box>
@@ -105,8 +105,7 @@ const Calibrationbox = () => {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-       
-          <CalibrationList />
+          <CalibrationList calibrations={data} providerList={providerList}/>
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           Item Two

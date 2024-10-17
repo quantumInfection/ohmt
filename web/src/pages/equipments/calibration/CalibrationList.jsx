@@ -20,19 +20,11 @@ import { stormGrey } from '@/styles/theme/colors';
 
 import EditCalibrationModal from './EditCalibrationModal';
 
-const data = [
-  { type: 'Conformance', expiryDate: 'August 30, 2023', provider: 'Acu-Vibe (AUS)', attachment: 'View PDF' },
-  { type: 'Initial', expiryDate: 'August 30, 2023', provider: 'Diatec (NZ)', attachment: 'View PDF' },
-  { type: 'Re-Calibration', expiryDate: 'August 30, 2023', provider: 'Tecnosys (NZ)', attachment: 'View PDF' },
-  { type: 'Repair', expiryDate: 'August 30, 2023', provider: 'LSI (ITALY)', attachment: 'View PDF' },
-  { type: 'Re-Calibration', expiryDate: 'August 30, 2023', provider: 'Draeger', attachment: 'View PDF' },
-  { type: 'Re-Calibration', expiryDate: 'July 30, 2023', provider: 'Wedderburn (NZ)', attachment: 'View PDF' },
-];
-
-const CalibrationList = () => {
+const CalibrationList = (calibrations) => {
+  console.log("ss" ,calibrations)
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+  const [currentCalibration, setCurrentCalibration] = useState(null); 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -44,12 +36,14 @@ const CalibrationList = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleModalOpen = () => {
-    setIsModalOpen(true);
+  const handleModalOpen = (calibration = null) => {
+    setCurrentCalibration(calibration); // Set calibration data (null for add)
+    setIsModalOpen(true); // Open modal
   };
 
   const handleModalClose = () => {
     setIsModalOpen(false);
+    setCurrentCalibration(null); // Clear data when modal closes
   };
 
   return (
@@ -63,7 +57,9 @@ const CalibrationList = () => {
         }}
       >
         <Typography variant="h6">Calibrations</Typography>
-        <Button style={{ backgroundColor: stormGrey[900], color: '#fff' }} onClick={handleModalOpen}>Add Calibrations</Button>
+        <Button style={{ backgroundColor: stormGrey[900], color: '#fff' }} onClick={() => handleModalOpen()}>
+          Add Calibrations
+        </Button>
       </Box>
 
       <Paper>
@@ -79,32 +75,42 @@ const CalibrationList = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
-                <TableRow key={index}>
-                  <TableCell>{row.type}</TableCell>
-                  <TableCell>{row.expiryDate}</TableCell>
-                  <TableCell>{row.provider}</TableCell>
-                  <TableCell>
-                    <IconButton size="small" sx={{ color: '#E84924' }}>
-                      <FilePdf fontSize="small" />
-                    </IconButton>
-                    <Link href="#" sx={{ color: '#E84924', textDecoration: 'none', ml: 1 }}>
-                      {row.attachment}
-                    </Link>
-                  </TableCell>
-                  <TableCell align="right">
-                    <IconButton size="small" onClick={handleModalOpen}>
-                      <Pencil />
-                    </IconButton>
+              {calibrations.calibrations.calibrations && calibrations.calibrations.calibrations.length > 0 ? (
+                calibrations.calibrations.calibrations
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => (
+                    <TableRow key={index}>
+                      <TableCell>{row.type}</TableCell>
+                      <TableCell>{row.expiry_date}</TableCell>
+                      <TableCell>{row.provider}</TableCell>
+                      <TableCell>
+                        <IconButton size="small" sx={{ color: '#E84924' }}>
+                          <FilePdf fontSize="large" />
+                        </IconButton>
+                        <Link href={row.pdf_file_url} sx={{ color: '#E84924', textDecoration: 'none', ml: 1 }}>
+                          View PDF
+                        </Link>
+                      </TableCell>
+                      <TableCell align="right">
+                        <IconButton size="small" onClick={() => handleModalOpen(row)}>
+                          <Pencil />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={5} align="center">
+                    There is no calibration now
                   </TableCell>
                 </TableRow>
-              ))}
+              )}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
           component="div"
-          count={data.length}
+          count={calibrations?.calibrations?.calibrations?.length}
           page={page}
           onPageChange={handleChangePage}
           rowsPerPage={rowsPerPage}
@@ -115,7 +121,7 @@ const CalibrationList = () => {
         />
       </Paper>
 
-      <EditCalibrationModal open={isModalOpen} onClose={handleModalClose} />
+      <EditCalibrationModal open={isModalOpen} onClose={handleModalClose} providerList={calibrations.providerList} calibrationData={currentCalibration} />
     </>
   );
 };

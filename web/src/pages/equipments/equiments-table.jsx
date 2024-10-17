@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { Box, Table, TableBody, TableCell, TableHead, TableRow, Modal } from '@mui/material';
+import { Box, Modal, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import { CheckCircle, Eye, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
-import { california, kepple, namedColors, redOrange, stormGrey } from '@/styles/theme/colors';
-import Updatecase from '../cases/update-case';
 import { useNavigate } from 'react-router-dom';
 
+import { california, kepple, namedColors, redOrange, stormGrey } from '@/styles/theme/colors';
+
+import Updatecase from '../cases/update-case';
 
 export function DataTable({ data }) {
-
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
@@ -56,7 +56,7 @@ export function DataTable({ data }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.map((row) => (
+          {data.equipments.map((row) => (
             <TableRow key={row.id}>
               <TableCell>{row.name}</TableCell>
               <TableCell>
@@ -89,9 +89,14 @@ export function DataTable({ data }) {
                 <IconButton color="gray">
                   <Eye
                     onClick={() =>
-                      navigate('view')
-                    }
+                      navigate('view', {
+                        state: {
+                          id: row?.id,
+                          provider: data?.calibration_providers,
 
+                        },
+                      })
+                    }
                   />
                 </IconButton>
               </TableCell>
