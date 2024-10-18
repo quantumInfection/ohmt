@@ -113,6 +113,7 @@ def add_calibration_to_equipment(equipment_id):
         "name": e.model,
     }
 
+
 @app.route("/<equipment_id>/calibration/<calibration_id>", methods=["PUT"])
 def update_calibration(equipment_id, calibration_id):
     """
@@ -121,8 +122,8 @@ def update_calibration(equipment_id, calibration_id):
     args:
         provider_id: str
         calibration_type: str
-        completion_date: date
-        expiry_date: date
+        completion_date_iso: str
+        expiry_date_iso: str
         pdf_file_url: str
         notes: str
     """
@@ -164,7 +165,12 @@ def list_equipments():
     equipments = reads.get_company_equipments(suow.DbPoolUnitOfWork(), company_id)
 
     return {
-        "equipments": [view.make_equipment(e, locations, cases, calibration_providers, categories_lookup) for e in equipments],
+        "equipments": [
+            view.make_equipment(
+                e, locations, cases, calibration_providers, categories_lookup
+            )
+            for e in equipments
+        ],
         "calibration_categories": calibration_categories,
         "calibration_types": calibration_types,
         "calibration_providers": list(calibration_providers.values()),
@@ -195,7 +201,9 @@ def get_equipment(equipment_id):
     if not equipment:
         return "Equipment not found", 404
 
-    return view.make_equipment(equipment, locations, cases, calibration_providers, categories_lookup)
+    return view.make_equipment(
+        equipment, locations, cases, calibration_providers, categories_lookup
+    )
 
 
 @app.route("/images-signed-url", methods=["GET"])
