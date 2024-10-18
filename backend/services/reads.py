@@ -101,6 +101,9 @@ def get_company_cases(uow: suow.DbPoolUnitOfWork, company_id: str) -> dict[str, 
 def get_calibration_categories():
     return [category.value for category in eq_mdl.CalibrationCategory]
 
+def get_calibration_types():
+    return [category.value for category in eq_mdl.CalibrationType]
+
 
 def get_company_categories(uow: suow.DbPoolUnitOfWork, company_id: str) -> list[dict]:
     """
