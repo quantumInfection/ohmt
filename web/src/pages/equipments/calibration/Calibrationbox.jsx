@@ -1,8 +1,9 @@
 import React from 'react';
 import { Box, Card, Tab, Tabs, Typography } from '@mui/material';
-import { CheckCircle, FadersHorizontal, MapPin } from '@phosphor-icons/react';
+import { CheckCircle, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
 import PropTypes from 'prop-types';
 
+import { california, kepple, namedColors, redOrange } from '@/styles/theme/colors';
 
 import CalibrationList from './CalibrationList';
 
@@ -59,12 +60,26 @@ CustomTabPanel.propTypes = {
   index: PropTypes.number.isRequired,
 };
 
-const Calibrationbox = ({data ,providerList}) => {
+const Calibrationbox = ({ data, providerList, equipmentsdata, equipmentid }) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  function getStatusIcon(status) {
+    switch (status) {
+      case 'Active':
+        return <CheckCircle weight={'fill'} color={kepple[500]} />;
+      case 'Repair':
+        return <Wrench weight={'fill'} color={namedColors['info-dark']} />;
+      case 'Calibration':
+        return <FadersHorizontal weight={'fill'} color={california[500]} />;
+      default:
+      case 'Retired':
+        return <XCircle weight={'fill'} color={redOrange[500]} />;
+    }
+  }
 
   return (
     <div>
@@ -78,7 +93,13 @@ const Calibrationbox = ({data ,providerList}) => {
         }}
       >
         <StatusCard icon={<MapPin size={32} />} title="Location" value={data.location} iconBgColor="#FFB3B3" />
-        <StatusCard icon={<CheckCircle size={32} />} title="Status" value="Active" iconBgColor="#B3FFD9" />
+        <StatusCard
+          icon={getStatusIcon(data.status_label)}
+          size={32}
+          title="Status"
+          value={data?.status_label}
+          iconBgColor="#B3FFD9"
+        />
         <StatusCard
           icon={<FadersHorizontal size={32} />}
           title="Calibration due"
@@ -105,7 +126,12 @@ const Calibrationbox = ({data ,providerList}) => {
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>
-          <CalibrationList calibrations={data} providerList={providerList}/>
+          <CalibrationList
+            calibrations={data}
+            providerList={providerList}
+            equipmentid={equipmentid}
+            calibrationcategories={equipmentsdata?.calibration_types}
+          />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
           Item Two

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Button,
@@ -19,11 +19,11 @@ import {
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import dayjs from 'dayjs';
-import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { FileDropzone } from '@/components/core/file-dropzone';
 import { FileIcon } from '@/components/core/file-icon';
-import { addCalibrations } from '@/api/equipments';
+import { addCalibrations, editCalibration } from '@/api/equipments'; // Import the editCalibration API function
+import { useFecthSpecificEquip } from '../MutateContext';
 
 function bytesToSize(bytes, decimals = 2) {
   if (bytes === 0) {
@@ -38,93 +38,98 @@ function bytesToSize(bytes, decimals = 2) {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
-function EditCalibrationModal({ open, onClose, providerList, calibrationData }) {
+function EditCalibrationModal({ open, onClose, providerList, calibrationData, calibration_categories, equipmentid }) {
 
-    // console.log(calibrationData.notes)
-  const { register, handleSubmit, setValue } = useForm({
-    defaultValues: {
-      provider: calibrationData?.provider || '',
-      calibrationType: calibrationData?.calibration_type || 'Conformance',
-      dateCompleted: dayjs(calibrationData?.completion_date || '2023-08-30'),
-      expiryDate: dayjs(calibrationData?.expiry_date || '2024-08-30'),
-      notes: '', 
-    },
-  });
+  const [provider, setProvider] = useState(calibrationData?.provider || '');
+  const [calibrationType, setCalibrationType] = useState(calibrationData?.calibration_type || '');
+  const [dateCompleted, setDateCompleted] = useState(dayjs(calibrationData?.completion_date || '12-04-2024'));
+  const [expiryDate, setExpiryDate] = useState(dayjs(calibrationData?.expiry_date || '12-05-2024'));
+  const [notes, setNotes] = useState(calibrationData?.notes || '');
+  const [files, setFiles] = useState([]);
 
-  const [files, setFiles] = React.useState([]);
-
-  React.useEffect(() => {
+  useEffect(() => {
     setFiles([]);
   }, [open]);
 
-  const handleDrop = React.useCallback((newFiles) => {
-    setFiles((prevFiles) => {
-      return [...prevFiles, ...newFiles];
-    });
+  const handleDrop = useCallback((newFiles) => {
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   }, []);
 
-  const handleRemove = React.useCallback((file) => {
-    setFiles((prevFiles) => {
-      return prevFiles.filter((_file) => _file.path !== file.path);
-    });
+  const handleRemove = useCallback((file) => {
+    setFiles((prevFiles) => prevFiles.filter((_file) => _file.path !== file.path));
   }, []);
 
-  const handleRemoveAll = React.useCallback(() => {
+  const handleRemoveAll = useCallback(() => {
     setFiles([]);
   }, []);
 
+  const fecthEquip = useFecthSpecificEquip();
 
-
-  const { mutate, isLoading } = useMutation(addCalibrations, {
+  const { mutate, isLoading } = useMutation((data) => {
+    return calibrationData ? editCalibration(data) : addCalibrations(data); // Call editCalibration if calibrationData exists, otherwise addCalibrations
+  }, {
     onSuccess: () => {
-      navigate('/dashboard/equipments');
+      fecthEquip(equipmentid);
     },
   });
 
-  const onSubmit = (data) => {
+  const onSubmit = () => {
     const formattedData = {
-      ...data,
-      dateCompleted: data.dateCompleted.format('YYYY-MM-DD'), // Convert date to string
-      expiryDate: data.expiryDate.format('YYYY-MM-DD'), // Convert date to string
+      provider,
+      calibrationType,
+      dateCompleted: dateCompleted.format('YYYY-MM-DD'),
+      expiryDate: expiryDate.format('YYYY-MM-DD'),
+      notes,
+      callibrationid : calibrationData?.id,
+      equipmentid,
     };
-    mutate(
-        formattedData
-      );
-    console.log(formattedData); // Log formatted form data on submit
+    mutate(formattedData);
+  
   };
+
+  // Find the provider name based on the selected provider ID
+  const selectedProviderName = providerList.find((p) => p.id === provider)?.name || '';
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>Edit Calibration Details</DialogTitle>
-      <form onSubmit={handleSubmit(onSubmit)}> {/* Wrap form elements with the onSubmit handler */}
+      <DialogTitle>{calibrationData ? 'Edit Calibration Details' : 'Add Calibration Details'}</DialogTitle>
+      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Provider</InputLabel>
                 <Select
-                  {...register('provider')} 
-                  defaultValue={calibrationData?.provider || ''}
-                  onChange={(e) => setValue('provider', e.target.value)} // Update value in form state
+                  value={provider}
+                  onChange={(e) => setProvider(e.target.value)}
+                  displayEmpty
                 >
-                  {providerList.map((providerName, index) => (
-                    <MenuItem key={index} value={providerName.id}>
-                      {providerName.name}
+                  <MenuItem value="" disabled>
+                    Select a Provider
+                  </MenuItem>
+                  {providerList.map((providerItem) => (
+                    <MenuItem key={providerItem.id} value={providerItem.id}>
+                      {providerItem.name}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
+              <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
+                {selectedProviderName}
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Calibration type</InputLabel>
                 <Select
-                  {...register('calibrationType')} 
-                  defaultValue={calibrationData?.calibration_type || 'Conformance'}
-                  onChange={(e) => setValue('calibrationType', e.target.value)} // Update value in form state
+                  value={calibrationType}
+                  onChange={(e) => setCalibrationType(e.target.value)}
                 >
-                  <MenuItem value="Conformance">Conformance</MenuItem>
-                  <MenuItem value="Performance">Performance</MenuItem>
+                  {calibration_categories.map((category, index) => (
+                    <MenuItem key={index} value={category}>
+                      {category}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -134,8 +139,8 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData }) 
                 <DesktopDatePicker
                   label="Date Completed"
                   inputFormat="MMMM dd, yyyy"
-                  value={dayjs(calibrationData?.completion_date || '2023-08-30')}
-                  onChange={(newValue) => setValue('dateCompleted', newValue)} // Update value in form state
+                  value={dateCompleted}
+                  onChange={(newValue) => setDateCompleted(newValue)}
                   renderInput={(params) => <TextField {...params} fullWidth />}
                 />
               </FormControl>
@@ -145,8 +150,8 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData }) 
                 <DesktopDatePicker
                   label="Expiry Date"
                   inputFormat="MMMM dd, yyyy"
-                  value={dayjs(calibrationData?.expiry_date || '2024-08-30')}
-                  onChange={(newValue) => setValue('expiryDate', newValue)} // Update value in form state
+                  value={expiryDate}
+                  onChange={(newValue) => setExpiryDate(newValue)}
                   renderInput={(params) => <TextField {...params} fullWidth />}
                 />
               </FormControl>
@@ -159,8 +164,9 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData }) 
                   fullWidth
                   multiline
                   rows={4}
-                  placeholder="Lorem ipsum odor amet, consectetuer adipiscing elit. Primis nec at semper eget interdum mauris lobortis pretium? Dignissim odio eros habitant eu porttitor sem; mollis class. Eu vulputate ultrices tristique quis commodo libero consequat."
-                  {...register('notes')} // Register notes field
+                  placeholder="Enter your notes or comments here"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
                 />
               </FormControl>
             </Grid>
@@ -168,9 +174,7 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData }) 
 
           <Stack spacing={3} mt={3}>
             <FileDropzone
-              accept={{
-                'application/pdf': ['.pdf'],
-              }}
+              accept={{ 'application/pdf': ['.pdf'] }}
               caption="Max file size is 3 MB"
               files={files}
               onDrop={handleDrop}
@@ -187,13 +191,7 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData }) 
                         direction="row"
                         key={file.path}
                         spacing={2}
-                        sx={{
-                          alignItems: 'center',
-                          border: '1px solid var(--mui-palette-divider)',
-                          borderRadius: 1,
-                          flex: '1 1 auto',
-                          p: 1,
-                        }}
+                        sx={{ alignItems: 'center', border: '1px solid var(--mui-palette-divider)', borderRadius: 1, flex: '1 1 auto', p: 1 }}
                       >
                         <FileIcon extension={extension} />
                         <Box sx={{ flex: '1 1 auto' }}>
@@ -202,12 +200,7 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData }) 
                             {bytesToSize(file.size)}
                           </Typography>
                         </Box>
-                        <Tooltip
-                          title="Remove"
-                          onClick={() => {
-                            handleRemove(file);
-                          }}
-                        >
+                        <Tooltip title="Remove" onClick={() => handleRemove(file)}>
                           <Button>
                             <XIcon />
                           </Button>
@@ -217,7 +210,7 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData }) 
                   })}
                 </Stack>
                 <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-                  <Button color="secondary" onClick={handleRemoveAll} size="small" type="button">
+                  <Button color="secondary" onClick={handleRemoveAll} size="small">
                     Remove all
                   </Button>
                 </Stack>
@@ -229,8 +222,8 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData }) 
           <Button onClick={onClose} variant="outlined">
             Cancel
           </Button>
-          <Button type="submit" variant="contained"> {/* Use type="submit" */}
-            Update
+          <Button type="submit" variant="contained" disabled={isLoading}>
+            {calibrationData ? 'Update' : 'Add'}
           </Button>
         </DialogActions>
       </form>
