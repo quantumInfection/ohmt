@@ -86,18 +86,18 @@ export function DataTable({ data }) {
                 />
               </TableCell>
               <TableCell align="right">
-                <IconButton color="gray">
-                  <Eye
-                    onClick={() =>
-                      navigate('view', {
-                        state: {
-                          id: row?.id,
-                          provider: data?.calibration_providers,
-
-                        },
-                      })
-                    }
-                  />
+                <IconButton
+                  color="gray"
+                  onClick={() =>
+                    navigate('view', {
+                      state: {
+                        id: row?.id,
+                        equipmentsdata: data,
+                      },
+                    })
+                  }
+                >
+                  <Eye />
                 </IconButton>
               </TableCell>
             </TableRow>

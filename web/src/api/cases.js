@@ -33,7 +33,7 @@ export async function addCase(caseData) {
 
 
 
-export async function UpdateCase({ caseId, selectedLocationId }) { 
+export async function updateCase({ caseId, selectedLocationId }) { 
   const response = await fetch(`${casesUrl}${caseId}`, {
     method: 'PUT',
     headers: {

@@ -88,7 +88,39 @@ export async function addEquipment(equipmentData) {
 }
 
 
-export async function fetchSepecificEquipments(id) {
+export async function editEquipment(equipmentData) {
+  // const filePaths = equipmentData.files.map((file) => file.name);
+  // const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
+  // try {
+  //   await uploadImagesToSignedUrls(signedUrlsResponse, equipmentData.files);
+  // } catch (error) {
+  //   throw new Error('Failed to upload images');
+  // }
+
+  const response = await fetch(equipmentsUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      status: equipmentData.status,
+      case_id: equipmentData.caseId,
+      location_id: equipmentData.location,
+      image_urls: [ 'https://example.com/calibration.pdf' ,'https://example.com/calibration.pdf'],
+      primary_image_index: 'https://example.com/calibration.pdf',
+      notes: equipmentData.notes,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to add equipment');
+  }
+
+  return response.json();
+}
+
+
+export async function fetchuniqeEquipments(id) {
   console.log(id)
   const response = await fetch(`${equipmentsUrl}${id}`);
   if (!response.ok) {
@@ -109,17 +141,9 @@ export async function addCalibrations(formattedData) {
   //   throw new Error('Failed to upload images');
   // }
 
-  const bodydata ={
-    provider_id: formattedData.provider,
-    calibration_type: formattedData.calibrationType,
-    completion_date_iso: formattedData.dateCompleted,
-    expiry_date_iso: formattedData.expiryDate,
-    pdf_file_url: 'https://example.com/calibration.pdf',
-    notes: formattedData.notes,
-  }
-  console.log(bodydata)
 
-  const response = await fetch((`${equipmentsUrl}7b36c42a-2074-4778-97e2-7a7f4d18d3ca/calibration`), {
+
+  const response = await fetch((`${equipmentsUrl}${formattedData.equipmentid}/calibration`), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -131,7 +155,43 @@ export async function addCalibrations(formattedData) {
       expiry_date_iso: formattedData.expiryDate,
       pdf_file_url: 'https://example.com/calibration.pdf',
       notes: formattedData.notes,
-      
+
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to add equipment');
+  }
+
+  return response.json();
+}
+
+
+
+export async function editCalibration(formattedData) {
+  // const filePaths = equipmentData.files.map((file) => file.name);
+  // const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
+  // try {
+  //   await uploadImagesToSignedUrls(signedUrlsResponse, equipmentData.files);
+  // } catch (error) {
+  //   throw new Error('Failed to upload images');
+  // }
+
+
+
+  const response = await fetch((`${equipmentsUrl}${formattedData.equipmentid}/calibration/${formattedData.callibrationid}`), {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      provider_id: formattedData.provider,
+      calibration_type: formattedData.calibrationType,
+      completion_date_iso: formattedData.dateCompleted,
+      expiry_date_iso: formattedData.expiryDate,
+      pdf_file_url: 'https://example.com/calibration.pdf',
+      notes: formattedData.notes,
+
     }),
   });
 
