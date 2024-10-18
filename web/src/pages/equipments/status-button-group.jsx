@@ -23,8 +23,8 @@ const StatusButton = ({ icon, status, selectedStatus, onClick }) => (
   </Button>
 );
 
-export function StatusButtonGroup({ onStatusChange }) {
-  const [selectedStatus, setSelectedStatus] = useState(null);
+export function StatusButtonGroup({ onStatusChange ,initialstatus}) {
+  const [selectedStatus, setSelectedStatus] = useState(initialstatus || null);
 
   const handleButtonClick = (status) => {
     setSelectedStatus(status);

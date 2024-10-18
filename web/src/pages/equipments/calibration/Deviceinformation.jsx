@@ -33,33 +33,33 @@ const Deviceinformation = ({ data }) => {
               <Typography variant="body2" color="textSecondary">
                 Asset ID
               </Typography>
-              <Typography variant="body1">{data.asset_id}</Typography>
+              <Typography variant="body1">{data?.asset_id}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body2" color="textSecondary">
                 Device ID
               </Typography>
-              <Typography variant="body1">{data.device_id}</Typography>
+              <Typography variant="body1">{data?.device_id}</Typography>
             </Grid>
 
             <Grid item xs={6}>
               <Typography variant="body2" color="textSecondary">
                 Model
               </Typography>
-              <Typography variant="body1">{data.model}</Typography>
+              <Typography variant="body1">{data?.model}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body2" color="textSecondary">
                 Serial Number
               </Typography>
-              <Typography variant="body1">{data.serial_number}</Typography>
+              <Typography variant="body1">{data?.serial_number}</Typography>
             </Grid>
 
             <Grid item xs={6}>
               <Typography variant="body2" color="textSecondary">
                 Case ID
               </Typography>
-              <Typography variant="body1">{data.case_id}</Typography>
+              <Typography variant="body1">{data?.case_id}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body2" color="textSecondary">
@@ -72,14 +72,14 @@ const Deviceinformation = ({ data }) => {
               <Typography variant="body2" color="textSecondary">
                 Category
               </Typography>
-              <Typography variant="body1">{data.calibration_category}</Typography>
+              <Typography variant="body1">{data?.calibration_category}</Typography>
             </Grid>
 
             <Grid item xs={12}>
               <Typography variant="body2" color="textSecondary">
                 Notes / Comments
               </Typography>
-              <Typography variant="body1">{data.notes}</Typography>
+              <Typography variant="body1">{data?.notes}</Typography>
             </Grid>
           </Grid>
 

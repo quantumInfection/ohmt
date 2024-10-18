@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { fetchCases, UpdateCase } from '@/api/cases';
+import { fetchCases, updateCase } from '@/api/cases';
 import {
   Box,
   Button,
@@ -37,7 +37,7 @@ const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
   });
 
   // Mutation for updating a case
-  const { mutate: updateCaseMutate, isLoading: isUpdating } = useMutation(UpdateCase, {
+  const { mutate: updateCaseMutate, isLoading: isUpdating } = useMutation(updateCase, {
     onSuccess: () => {
       fetchCasesAgain();
       onClose();

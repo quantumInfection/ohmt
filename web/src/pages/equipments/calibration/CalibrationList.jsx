@@ -21,10 +21,9 @@ import { stormGrey } from '@/styles/theme/colors';
 import EditCalibrationModal from './EditCalibrationModal';
 
 const CalibrationList = (calibrations) => {
-  console.log("ss" ,calibrations)
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  const [currentCalibration, setCurrentCalibration] = useState(null); 
+  const [currentCalibration, setCurrentCalibration] = useState(null);
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -121,7 +120,14 @@ const CalibrationList = (calibrations) => {
         />
       </Paper>
 
-      <EditCalibrationModal open={isModalOpen} onClose={handleModalClose} providerList={calibrations.providerList} calibrationData={currentCalibration} />
+      <EditCalibrationModal
+        open={isModalOpen}
+        equipmentid={calibrations.equipmentid}
+        onClose={handleModalClose}
+        providerList={calibrations.providerList}
+        calibrationData={currentCalibration}
+        calibration_categories={calibrations.calibrationcategories}
+      />
     </>
   );
 };
