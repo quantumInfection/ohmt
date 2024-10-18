@@ -5,7 +5,7 @@ from flask import blueprints, request
 import external_services.storage as storage
 import services.equipment.commands as eq_commands
 import services.reads as reads
-import services.unit_of_work as eq_uow
+import services.unit_of_work as suow
 import view.view as view
 
 app = blueprints.Blueprint("api_equipment", __name__, url_prefix="/v1/equipments")
@@ -36,7 +36,7 @@ def create_equipment():
 
     # Create equipment
     e = eq_commands.create_equipment(
-        eq_uow.DbPoolUnitOfWork(),
+        suow.DbPoolUnitOfWork(),
         company_id=company_id,  # TODO: Replace using auth
         asset_id=args["asset_id"],
         device_id=args["device_id"],
@@ -54,26 +54,31 @@ def create_equipment():
 
     return {
         "id": e.id,
-        "name": e.model,
     }
 
 
 @app.route("/<equipment_id>", methods=["PUT"])
-def update_equipment_status(equipment_id):
-    """
-    Update equipment status
+def update_equipment(equipment_id):
+    """Updates equipment"""
 
-    args:
-        company_id: str # TODO: Auth
-    """
     args = request.get_json()
 
-    # Update equipment status
-    eq_commands.update_equipment_status(
-        eq_uow.DbPoolUnitOfWork(), equipment_id, args["status"]
+    # Update equipment
+    e = eq_commands.update_equipment(
+        suow.DbPoolUnitOfWork(),
+        equipment_id,
+        args["status"],
+        args["case_id"],
+        args["location_id"],
+        args["image_urls"],
+        args["primary_image_index"],
+        args["notes"],
     )
 
-    return "OK"
+    return {
+        "id": e.id,
+        "name": e.model,
+    }
 
 
 @app.route("/<equipment_id>/calibration", methods=["POST"])
@@ -92,8 +97,8 @@ def add_calibration_to_equipment(equipment_id):
     args = request.get_json()
 
     # Add calibration to equipment
-    eq_commands.add_calibration_to_equipment(
-        eq_uow.DbPoolUnitOfWork(),
+    e = eq_commands.add_calibration_to_equipment(
+        suow.DbPoolUnitOfWork(),
         equipment_id,
         args["provider_id"],
         args["calibration_type"],
@@ -103,7 +108,44 @@ def add_calibration_to_equipment(equipment_id):
         args["notes"],
     )
 
-    return "OK"
+    return {
+        "id": e.id,
+        "name": e.model,
+    }
+
+
+@app.route("/<equipment_id>/calibration/<calibration_id>", methods=["PUT"])
+def update_calibration(equipment_id, calibration_id):
+    """
+    Update calibration
+
+    args:
+        provider_id: str
+        calibration_type: str
+        completion_date_iso: str
+        expiry_date_iso: str
+        pdf_file_url: str
+        notes: str
+    """
+    args = request.get_json()
+
+    # Update calibration
+    e = eq_commands.update_calibration_on_equipment(
+        suow.DbPoolUnitOfWork(),
+        equipment_id,
+        calibration_id,
+        args["provider_id"],
+        args["calibration_type"],
+        args["completion_date_iso"],
+        args["expiry_date_iso"],
+        args["pdf_file_url"],
+        args["notes"],
+    )
+
+    return {
+        "id": e.id,
+        "name": e.model,
+    }
 
 
 @app.route("/", methods=["GET"])
@@ -114,16 +156,23 @@ def list_equipments():
     company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"
 
     calibration_categories = reads.get_calibration_categories()
-    calibration_providers = reads.get_calibration_providers(eq_uow.DbPoolUnitOfWork())
-    locations = reads.get_company_locations(eq_uow.DbPoolUnitOfWork(), company_id)
-    categories = reads.get_company_categories(eq_uow.DbPoolUnitOfWork(), company_id)
+    calibration_providers = reads.get_calibration_providers(suow.DbPoolUnitOfWork())
+    calibration_types = reads.get_calibration_types()
+    locations = reads.get_company_locations(suow.DbPoolUnitOfWork(), company_id)
+    categories = reads.get_company_categories(suow.DbPoolUnitOfWork(), company_id)
     categories_lookup = {c["id"]: c for c in categories}
-    cases = reads.get_company_cases(eq_uow.DbPoolUnitOfWork(), company_id)
-    equipments = reads.get_company_equipments(eq_uow.DbPoolUnitOfWork(), company_id)
+    cases = reads.get_company_cases(suow.DbPoolUnitOfWork(), company_id)
+    equipments = reads.get_company_equipments(suow.DbPoolUnitOfWork(), company_id)
 
     return {
-        "equipments": [view.make_equipment(e, locations, cases, calibration_providers, categories_lookup) for e in equipments],
+        "equipments": [
+            view.make_equipment(
+                e, locations, cases, calibration_providers, categories_lookup
+            )
+            for e in equipments
+        ],
         "calibration_categories": calibration_categories,
+        "calibration_types": calibration_types,
         "calibration_providers": list(calibration_providers.values()),
         "locations": list(locations.values()),
         "categories": categories,
@@ -138,7 +187,7 @@ def get_equipment(equipment_id):
     """
     company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"
 
-    _uow = eq_uow.DbPoolUnitOfWork()
+    _uow = suow.DbPoolUnitOfWork()
 
     calibration_providers = reads.get_calibration_providers(_uow)
     locations = reads.get_company_locations(_uow, company_id)
@@ -152,7 +201,9 @@ def get_equipment(equipment_id):
     if not equipment:
         return "Equipment not found", 404
 
-    return view.make_equipment(equipment, locations, cases, calibration_providers, categories_lookup)
+    return view.make_equipment(
+        equipment, locations, cases, calibration_providers, categories_lookup
+    )
 
 
 @app.route("/images-signed-url", methods=["GET"])

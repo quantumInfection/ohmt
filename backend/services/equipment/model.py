@@ -7,6 +7,7 @@ from datetime import date, datetime
 IMAGE_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/images/equipment/"
 PDF_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/pdfs/calibration/"
 
+
 @dataclass
 class Company:
     id: str
@@ -79,6 +80,7 @@ class Calibration:
             created_at=datetime.now(),
             updated_at=None,
         )
+
 
 class CalibrationCategory(Enum):
     NIL_CALIBRATION = "Nil Calibration"
@@ -160,6 +162,31 @@ class Equipment:
             updated_at=None,
         )
 
+    def update(
+        self,
+        status: str,
+        case_id: str | None,
+        location_id: str | None,
+        image_urls: list[str],
+        primary_image_index: int,
+        notes: str,
+    ):
+        self.status = Status(status)
+        self.case_id = case_id
+        self.location_id = location_id
+        self.images = [
+            Image(
+                id=str(uuid4()),
+                url=f"{IMAGE_URL_CDN_PREFIX}{url}",
+                primary=i == primary_image_index,
+                created_at=datetime.now(),
+                updated_at=None,
+            )
+            for i, url in enumerate(image_urls)
+        ]
+        self.notes = notes
+        self.updated_at = datetime.now()
+
     def add_calibration(
         self,
         provider_id: str,
@@ -197,11 +224,12 @@ class Equipment:
             raise ValueError("No calibration found to update.")
         if cal_id not in self.calibrations:
             raise ValueError("Calibration not found.")
-        self.calibrations[cal_id] = Calibration.create(
-            provider_id=provider_id,
-            calibration_type=calibration_type,
-            completion_date=completion_date,
-            expiry_date=expiry_date,
-            pdf_file_url=pdf_file_url,
-            notes=notes,
-        )
+
+        calibration = self.calibrations[cal_id]
+        calibration.provider_id = provider_id
+        calibration.calibration_type = CalibrationType(calibration_type)
+        calibration.completion_date = completion_date
+        calibration.expiry_date = expiry_date
+        calibration.pdf_file_url = f"{PDF_URL_CDN_PREFIX}{pdf_file_url}"
+        calibration.notes = notes
+        calibration.updated_at = datetime.now()
