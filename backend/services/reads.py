@@ -158,13 +158,18 @@ def get_company_equipments(uow: suow.DbPoolUnitOfWork, company_id: str) -> list[
             e.notes,
             e.created_at,
             e.updated_at,
-            coalesce(json_agg(to_json(i.*) order by e.created_at) filter ( where i.equipment_id is not null ), json_build_array()) as images,
-            coalesce(json_agg(to_json(c.*) order by e.created_at) filter ( where c.equipment_id is not null ), json_build_array()) as calibrations
+            (
+                select json_agg(to_json(i.*) order by i.created_at)
+                from equipment_images i
+                where i.equipment_id = e.id
+            ) as images,
+            (
+                select json_agg(to_json(c.*) order by c.created_at)
+                from equipment_calibrations c
+                where c.equipment_id = e.id
+            ) as calibrations
         from equipments e
-        left join equipment_images i on e.id = i.equipment_id
-        left join equipment_calibrations c on e.id = c.equipment_id
         where e.company_id = %s
-        group by e.id, e.created_at
         order by e.created_at;
     """
 
