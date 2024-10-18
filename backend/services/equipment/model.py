@@ -225,11 +225,11 @@ class Equipment:
         if cal_id not in self.calibrations:
             raise ValueError("Calibration not found.")
 
-        self.calibrations[cal_id] = Calibration.create(
-            provider_id=provider_id,
-            calibration_type=calibration_type,
-            completion_date=completion_date,
-            expiry_date=expiry_date,
-            pdf_file_url=pdf_file_url,
-            notes=notes,
-        )
+        calibration = self.calibrations[cal_id]
+        calibration.provider_id = provider_id
+        calibration.calibration_type = CalibrationType(calibration_type)
+        calibration.completion_date = completion_date
+        calibration.expiry_date = expiry_date
+        calibration.pdf_file_url = f"{PDF_URL_CDN_PREFIX}{pdf_file_url}"
+        calibration.notes = notes
+        calibration.updated_at = datetime.now()

@@ -129,7 +129,7 @@ def update_calibration(equipment_id, calibration_id):
     args = request.get_json()
 
     # Update calibration
-    eq_commands.update_calibration_on_equipment(
+    e = eq_commands.update_calibration_on_equipment(
         suow.DbPoolUnitOfWork(),
         equipment_id,
         calibration_id,
@@ -141,7 +141,10 @@ def update_calibration(equipment_id, calibration_id):
         args["notes"],
     )
 
-    return "OK"
+    return {
+        "id": e.id,
+        "name": e.model,
+    }
 
 
 @app.route("/", methods=["GET"])
