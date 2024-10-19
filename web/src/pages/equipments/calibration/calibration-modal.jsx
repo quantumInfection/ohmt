@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { addCalibrations, editCalibration } from '@/api/equipments';
 import {
   Box,
   Button,
@@ -20,10 +21,11 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import dayjs from 'dayjs';
 import { useMutation } from 'react-query';
+
 import { FileDropzone } from '@/components/core/file-dropzone';
 import { FileIcon } from '@/components/core/file-icon';
-import { addCalibrations, editCalibration } from '@/api/equipments'; // Import the editCalibration API function
-import { useFecthSpecificEquip } from '../MutateContext';
+
+import { useFetchSpecificEquip } from '../MutateContext';
 
 function bytesToSize(bytes, decimals = 2) {
   if (bytes === 0) {
@@ -38,14 +40,32 @@ function bytesToSize(bytes, decimals = 2) {
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
-function EditCalibrationModal({ open, onClose, providerList, calibrationData, calibration_categories, equipmentid }) {
-
-  const [provider, setProvider] = useState(calibrationData?.provider || '');
-  const [calibrationType, setCalibrationType] = useState(calibrationData?.calibration_type || '');
-  const [dateCompleted, setDateCompleted] = useState(dayjs(calibrationData?.completion_date || '12-04-2024'));
-  const [expiryDate, setExpiryDate] = useState(dayjs(calibrationData?.expiry_date || '12-05-2024'));
-  const [notes, setNotes] = useState(calibrationData?.notes || '');
+function EditCalibrationModal({ mode, open, onClose, providerList, calibrationData, calibrationTypes, equipmentId }) {
+  const [provider, setProvider] = useState('');
+  const [calibrationType, setCalibrationType] = useState('');
+  const [dateCompleted, setDateCompleted] = useState(null);
+  const [expiryDate, setExpiryDate] = useState(null);
+  const [notes, setNotes] = useState('');
   const [files, setFiles] = useState([]);
+
+  useEffect(() => {
+    if (mode === 'edit' && calibrationData) {
+      console.log('provider list', providerList);
+      console.log('provider', calibrationData.provider);
+      setProvider('Diatec (NZ)');
+      setCalibrationType(calibrationData.type || '');
+      setDateCompleted(calibrationData.completion_date ? dayjs(calibrationData.completion_date) : null);
+      setExpiryDate(calibrationData.expiry_date ? dayjs(calibrationData.expiry_date) : null);
+      setNotes(calibrationData.notes || '');
+    } else {
+      // Reset the form fields
+      setProvider('');
+      setCalibrationType('');
+      setDateCompleted(null);
+      setExpiryDate(null);
+      setNotes('');
+    }
+  }, [mode, calibrationData]);
 
   useEffect(() => {
     setFiles([]);
@@ -63,15 +83,18 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData, ca
     setFiles([]);
   }, []);
 
-  const fecthEquip = useFecthSpecificEquip();
+  const fetchEquipment = useFetchSpecificEquip();
 
-  const { mutate, isLoading } = useMutation((data) => {
-    return calibrationData ? editCalibration(data) : addCalibrations(data); // Call editCalibration if calibrationData exists, otherwise addCalibrations
-  }, {
-    onSuccess: () => {
-      fecthEquip(equipmentid);
+  const { mutate, isLoading } = useMutation(
+    (data) => {
+      return calibrationData ? editCalibration(data) : addCalibrations(data);
     },
-  });
+    {
+      onSuccess: () => {
+        fetchEquipment(equipmentId);
+      },
+    }
+  );
 
   const onSubmit = () => {
     const formattedData = {
@@ -80,52 +103,45 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData, ca
       dateCompleted: dateCompleted.format('YYYY-MM-DD'),
       expiryDate: expiryDate.format('YYYY-MM-DD'),
       notes,
-      callibrationid : calibrationData?.id,
-      equipmentid,
+      callibrationid: calibrationData?.id,
+      equipmentId,
     };
     mutate(formattedData);
-  
   };
-
-  // Find the provider name based on the selected provider ID
-  const selectedProviderName = providerList.find((p) => p.id === provider)?.name || '';
-
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>{calibrationData ? 'Edit Calibration Details' : 'Add Calibration Details'}</DialogTitle>
-      <form onSubmit={(e) => { e.preventDefault(); onSubmit(); }}>
+      <DialogTitle>{mode === 'edit' ? 'Edit Calibration Details' : 'Add Calibration Details'}</DialogTitle>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          onSubmit();
+        }}
+      >
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Provider</InputLabel>
-                <Select
-                  value={provider}
-                  onChange={(e) => setProvider(e.target.value)}
-                  displayEmpty
-                >
+                <Select value={provider} onChange={(e) => setProvider(e.target.value)}>
                   <MenuItem value="" disabled>
-                    Select a Provider
+                    Select Provider
                   </MenuItem>
                   {providerList.map((providerItem) => (
-                    <MenuItem key={providerItem.id} value={providerItem.id}>
+                    <MenuItem key={providerItem.id} value={providerItem.name}>
                       {providerItem.name}
                     </MenuItem>
                   ))}
                 </Select>
               </FormControl>
-              <Typography variant="body2" color="textSecondary" sx={{ mt: 1 }}>
-                {selectedProviderName}
-              </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
                 <InputLabel>Calibration type</InputLabel>
-                <Select
-                  value={calibrationType}
-                  onChange={(e) => setCalibrationType(e.target.value)}
-                >
-                  {calibration_categories.map((category, index) => (
+                <Select value={calibrationType} onChange={(e) => setCalibrationType(e.target.value)}>
+                  <MenuItem value="" disabled>
+                    e.g Conformance, initial...
+                  </MenuItem>
+                  {calibrationTypes.map((category, index) => (
                     <MenuItem key={index} value={category}>
                       {category}
                     </MenuItem>
@@ -184,14 +200,19 @@ function EditCalibrationModal({ open, onClose, providerList, calibrationData, ca
                 <Stack component="ul" spacing={1} sx={{ listStyle: 'none', m: 0, p: 0 }}>
                   {files.map((file) => {
                     const extension = file.name.split('.').pop();
-
                     return (
                       <Stack
                         component="li"
                         direction="row"
                         key={file.path}
                         spacing={2}
-                        sx={{ alignItems: 'center', border: '1px solid var(--mui-palette-divider)', borderRadius: 1, flex: '1 1 auto', p: 1 }}
+                        sx={{
+                          alignItems: 'center',
+                          border: '1px solid var(--mui-palette-divider)',
+                          borderRadius: 1,
+                          flex: '1 1 auto',
+                          p: 1,
+                        }}
                       >
                         <FileIcon extension={extension} />
                         <Box sx={{ flex: '1 1 auto' }}>
