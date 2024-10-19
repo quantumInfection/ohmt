@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 
 import { california, kepple, namedColors, redOrange } from '@/styles/theme/colors';
 
-import CalibrationList from './CalibrationList';
+import CalibrationList from './calibration-list';
 
 const StatusCard = ({ icon, title, value, iconBgColor }) => (
   <Card
@@ -60,7 +60,7 @@ CustomTabPanel.propTypes = {
   index: PropTypes.number.isRequired,
 };
 
-const Calibrationbox = ({ data, providerList, equipmentsdata, equipmentid }) => {
+const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -92,18 +92,18 @@ const Calibrationbox = ({ data, providerList, equipmentsdata, equipmentid }) => 
           alignItems: 'center',
         }}
       >
-        <StatusCard icon={<MapPin size={32} />} title="Location" value={data.location} iconBgColor="#FFB3B3" />
+        <StatusCard icon={<MapPin size={32} />} title="Location" value={equipment.location} iconBgColor="#FFB3B3" />
         <StatusCard
-          icon={getStatusIcon(data.status_label)}
+          icon={getStatusIcon(equipment.status_label)}
           size={32}
           title="Status"
-          value={data?.status_label}
+          value={equipment?.status_label}
           iconBgColor="#B3FFD9"
         />
         <StatusCard
           icon={<FadersHorizontal size={32} />}
           title="Calibration due"
-          value={data.calibration_due_label}
+          value={equipment.calibration_due_label}
           iconBgColor="#FFE0B3"
         />
       </Box>
@@ -127,10 +127,10 @@ const Calibrationbox = ({ data, providerList, equipmentsdata, equipmentid }) => 
         </Box>
         <CustomTabPanel value={value} index={0}>
           <CalibrationList
-            calibrations={data}
+            calibrations={equipment.calibrations}
             providerList={providerList}
-            equipmentid={equipmentid}
-            calibrationcategories={equipmentsdata?.calibration_types}
+            equipmentId={equipment.id}
+            calibrationTypes={allEquipments.calibration_types}
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>

@@ -88,7 +88,6 @@ export async function addEquipment(equipmentData) {
   return response.json();
 }
 
-
 export async function editEquipment(equipmentData) {
   // const filePaths = equipmentData.files.map((file) => file.name);
   // const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
@@ -107,7 +106,7 @@ export async function editEquipment(equipmentData) {
       status: equipmentData.status,
       case_id: equipmentData.caseId,
       location_id: equipmentData.location,
-      image_urls: [ 'https://example.com/calibration.pdf' ,'https://example.com/calibration.pdf'],
+      image_urls: ['https://example.com/calibration.pdf', 'https://example.com/calibration.pdf'],
       primary_image_index: 'https://example.com/calibration.pdf',
       notes: equipmentData.notes,
     }),
@@ -120,18 +119,13 @@ export async function editEquipment(equipmentData) {
   return response.json();
 }
 
-
-export async function fetchuniqeEquipments(id) {
-  console.log(id)
+export async function fetchEquipment(id) {
   const response = await fetch(`${equipmentsUrl}${id}`);
   if (!response.ok) {
-    throw new Error('Failed to fetch equipments');
+    throw new Error('Failed to fetch equipment');
   }
   return response.json();
 }
-
-
-
 
 export async function addCalibrations(formattedData) {
   // const filePaths = equipmentData.files.map((file) => file.name);
@@ -142,9 +136,7 @@ export async function addCalibrations(formattedData) {
   //   throw new Error('Failed to upload images');
   // }
 
-
-
-  const response = await fetch((`${equipmentsUrl}${formattedData.equipmentid}/calibration`), {
+  const response = await fetch(`${equipmentsUrl}${formattedData.equipmentid}/calibration`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -156,7 +148,6 @@ export async function addCalibrations(formattedData) {
       expiry_date_iso: formattedData.expiryDate,
       pdf_file_url: 'https://example.com/calibration.pdf',
       notes: formattedData.notes,
-
     }),
   });
 
@@ -167,8 +158,6 @@ export async function addCalibrations(formattedData) {
   return response.json();
 }
 
-
-
 export async function editCalibration(formattedData) {
   // const filePaths = equipmentData.files.map((file) => file.name);
   // const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
@@ -178,23 +167,23 @@ export async function editCalibration(formattedData) {
   //   throw new Error('Failed to upload images');
   // }
 
-
-
-  const response = await fetch((`${equipmentsUrl}${formattedData.equipmentid}/calibration/${formattedData.callibrationid}`), {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      provider_id: formattedData.provider,
-      calibration_type: formattedData.calibrationType,
-      completion_date_iso: formattedData.dateCompleted,
-      expiry_date_iso: formattedData.expiryDate,
-      pdf_file_url: 'https://example.com/calibration.pdf',
-      notes: formattedData.notes,
-
-    }),
-  });
+  const response = await fetch(
+    `${equipmentsUrl}${formattedData.equipmentid}/calibration/${formattedData.callibrationid}`,
+    {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        provider_id: formattedData.provider,
+        calibration_type: formattedData.calibrationType,
+        completion_date_iso: formattedData.dateCompleted,
+        expiry_date_iso: formattedData.expiryDate,
+        pdf_file_url: 'https://example.com/calibration.pdf',
+        notes: formattedData.notes,
+      }),
+    }
+  );
 
   if (!response.ok) {
     throw new Error('Failed to add equipment');

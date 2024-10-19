@@ -42,6 +42,12 @@ export function Page() {
       alert('Please select a status.');
       return;
     }
+
+    if (selectedFiles.length === 0) {
+      alert('Please upload at least one image.');
+      return;
+    }
+
     mutate({
       ...data,
       status: selectedStatus,
@@ -133,15 +139,44 @@ export function Page() {
               <Stack direction="column" spacing={4}>
                 <Typography variant="h6">Device Information</Typography>
                 <Stack direction="row" spacing={3}>
-                  <TextField label="Asset ID" {...register('assetId', { required: true })} fullWidth />
-                  <TextField label="Device ID" {...register('deviceId', { required: true })} fullWidth />
+                  <TextField
+                    placeholder="e.g AD125205"
+                    label="Asset ID"
+                    {...register('assetId', { required: true })}
+                    fullWidth
+                  />
+                  <TextField
+                    placeholder="e.g 01"
+                    label="Device ID"
+                    {...register('deviceId', { required: true })}
+                    fullWidth
+                  />
                 </Stack>
                 <Stack direction="row" spacing={3}>
-                  <TextField label="Model" {...register('model', { required: true })} fullWidth />
-                  <TextField label="Serial Number" {...register('serial', { required: true })} fullWidth />
+                  <TextField
+                    placeholder="e.g SV 104IS"
+                    label="Model"
+                    {...register('model', { required: true })}
+                    fullWidth
+                  />
+                  <TextField
+                    placeholder="e.g 23123123213"
+                    label="Serial Number"
+                    {...register('serial', { required: true })}
+                    fullWidth
+                  />
                 </Stack>
                 <Stack direction="row" spacing={3}>
-                  <TextField label="Case ID" {...register('caseId', { required: true })} fullWidth select>
+                  <TextField
+                    label="Case ID"
+                    {...register('caseId', { required: true })}
+                    fullWidth
+                    select
+                    defaultValue=""
+                  >
+                    <MenuItem value="" disabled>
+                      e.g 01
+                    </MenuItem>
                     {cases.map((caseItem) => (
                       <MenuItem key={caseItem.id} value={caseItem.id}>
                         {caseItem.case_id + ' - ' + caseItem.location}
@@ -154,6 +189,9 @@ export function Page() {
                     defaultValue=""
                     render={({ field }) => (
                       <TextField {...field} label="Location" select fullWidth disabled={isLocationDisabled}>
+                        <MenuItem value="" disabled>
+                          e.g Cromwell
+                        </MenuItem>
                         {locations.map((location) => (
                           <MenuItem key={location.id} value={location.id}>
                             {location.name}
@@ -169,7 +207,14 @@ export function Page() {
             {/*Notes*/}
 
             <Box sx={{ padding: '40px 0px' }}>
-              <TextField label="Notes" {...register('notes', { required: true })} multiline rows={4} fullWidth />
+              <TextField
+                placeholder="Please write comments or notes"
+                label="Notes / Comments"
+                {...register('notes', { required: true })}
+                multiline
+                rows={4}
+                fullWidth
+              />
             </Box>
 
             {/*status*/}
