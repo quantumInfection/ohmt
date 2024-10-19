@@ -91,8 +91,8 @@ export function DataTable({ data }) {
                   onClick={() =>
                     navigate('view', {
                       state: {
-                        id: row?.id,
-                        equipmentsdata: data,
+                        equipmentId: row.id,
+                        allEquipments: data,
                       },
                     })
                   }

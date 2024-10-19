@@ -170,7 +170,7 @@ def get_company_equipments(uow: suow.DbPoolUnitOfWork, company_id: str) -> list[
             ) as calibrations
         from equipments e
         where e.company_id = %s
-        order by e.created_at;
+        order by e.created_at desc;
     """
 
     with uow, uow.db_pool.dict_cursor() as curs:
