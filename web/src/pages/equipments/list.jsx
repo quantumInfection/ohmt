@@ -28,7 +28,7 @@ export function Page() {
       console.error(error);
     },
   });
-  console.log("eqquipments" ,data);
+
   useEffect(() => {
     mutate();
   }, [mutate]);

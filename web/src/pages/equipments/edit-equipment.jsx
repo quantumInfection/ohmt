@@ -12,6 +12,7 @@ import { Helmet } from 'react-helmet-async';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
+
 import { config } from '@/config';
 import { ImageUploader } from '@/pages/equipments/image-upload-box';
 import { StatusButtonGroup } from '@/pages/equipments/status-button-group';
@@ -20,43 +21,57 @@ import { RouterLink } from '@/components/core/link';
 export function Page() {
   const location = useLocation();
   const { data, equipmentsdata } = location.state || {};
-  console.log('editdata', data);
-  // const { categories, locations, cases, calibrationCategories } = location.state || {};
 
-  const cases = [
-    { id: 1, case_id: 'CASE001', location: 'Warehouse 1' },
-    { id: 2, case_id: 'CASE002', location: 'Warehouse 2' },
-    { id: 3, case_id: 'CASE003', location: 'Main Office' },
-  ];
+  const [notes, setNotes] = useState(data?.notes || '');
+  const [calibrationCategory, setCalibrationCategory] = useState(data?.calibration_category || '');
+  const [category, setCategory] = useState(data?.category || '');
 
+  const handleCategorychange = (event) => {
+    setCategory(event.target.value); // Update state on change
+  };
+  const handleCalibrationCategory = (event) => {
+    setCalibrationCategory(event.target.value); // Update state on change
+  };
+  const handleNotesChange = (event) => {
+    setNotes(event.target.value);
+  };
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [isLocationDisabled, setIsLocationDisabled] = useState(false);
 
   const metadata = { title: `Edit equipment | ${config.site.name}` };
   const navigate = useNavigate();
-  const { control, register, handleSubmit, watch, resetField, setValue } = useForm();
+  const {
+    control,
+    register,
+    handleSubmit,
+    watch,
+    resetField,
+    setValue,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
+      assetId: data.asset_id || '',
+      deviceId: data.device_id || '',
+      model: data.model || '',
+      serial: data.serial_number || '',
+      // Add other fields with their default values if needed
+    },
+  });
+
+  useEffect(() => {
+    console.log('Form errors:', errors);
+  }, [errors]);
+
   const [selectedStatus, setSelectedStatus] = useState(data?.status_label || '');
 
-console.log(selectedStatus)
+  const equip_id = data?.id;
 
   const { mutate, isLoading } = useMutation(editEquipment, {
     onSuccess: () => {
       navigate('/');
     },
   });
-
-  const onSubmit = (data) => {
-    if (!selectedStatus) {
-       alert('Please select a status.');
-       return;
-    }
-    console.log('Form submitted with data:', { ...data, status: selectedStatus }); // Add this line
-    mutate({
-       ...data,
-       status: selectedStatus,
-    });
- };
 
   const caseId = watch('caseId');
 
@@ -80,6 +95,34 @@ console.log(selectedStatus)
     );
   };
 
+  const onSubmit = (data) => {
+    if (!selectedStatus) {
+      alert('Please select a status.');
+      return;
+    }
+
+    if (selectedFiles.length === 0) {
+      alert('Please upload at least one image.');
+      return;
+    }
+
+    if (!selectedStatus) {
+      alert('Please select a status.');
+      return;
+    }
+    // Add this log
+    console.log('Data to be sent:', { ...data, status: selectedStatus, equip_id });
+
+    mutate({
+      ...data,
+      equip_id,
+      status: selectedStatus,
+      files: selectedFiles,
+      selectedImageIndex: {
+        idx: selectedImageIndex,
+      },
+    });
+  };
   return (
     <>
       <Helmet>
@@ -134,32 +177,14 @@ console.log(selectedStatus)
             <Stack direction="column" spacing={4}>
               <Typography variant="h6">Device Information</Typography>
               <Stack direction="row" spacing={3}>
-                <TextField
-                  label="Asset ID"
-                  {...register('assetId', { required: true })}
-                  fullWidth
-                  value={data.asset_id}
-                  disabled
-                />
-                <TextField
-                  label="Device ID"
-                  {...register('deviceId', { required: true })}
-                  fullWidth
-                  value={data.device_id}
-                  disabled
-                />
+                <TextField label="Asset ID" {...register('assetId')} fullWidth value={data.asset_id} disabled />
+                <TextField label="Device ID" {...register('deviceId')} fullWidth value={data.device_id} disabled />
               </Stack>
               <Stack direction="row" spacing={3}>
-                <TextField
-                  label="Model"
-                  {...register('model', { required: true })}
-                  fullWidth
-                  value={data.model}
-                  disabled
-                />
+                <TextField label="Model" {...register('model')} fullWidth value={data.model} disabled />
                 <TextField
                   label="Serial Number"
-                  {...register('serial', { required: true })}
+                  {...register('serial')}
                   fullWidth
                   value={data.serial_number}
                   disabled
@@ -169,7 +194,7 @@ console.log(selectedStatus)
                 <TextField label="Case ID" {...register('caseId', { required: true })} fullWidth select>
                   {equipmentsdata?.cases?.map((caseItem) => (
                     <MenuItem key={caseItem.id} value={caseItem.id}>
-                      {caseItem.case_id + ' - ' + caseItem.location}
+                      {`${caseItem.case_id} - ${caseItem.location}`}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -194,14 +219,22 @@ console.log(selectedStatus)
           {/*Notes*/}
 
           <Box sx={{ padding: '40px 0px' }}>
-            <TextField label="Notes" {...register('notes', { required: true })} multiline rows={4} fullWidth />
+            <TextField
+              label="Notes"
+              {...register('notes', { required: true })}
+              multiline
+              rows={4}
+              fullWidth
+              value={notes} // Bind the value of the TextField to the notes state
+              onChange={handleNotesChange} // Update the state on change
+            />
           </Box>
 
           {/*status*/}
           <Box sx={{ padding: '20px 0px' }}>
             <Stack direction="column" spacing={3}>
               <Typography variant="h6">Status</Typography>
-              <StatusButtonGroup onStatusChange={setSelectedStatus} initialstatus={data?.status_label}/>
+              <StatusButtonGroup onStatusChange={setSelectedStatus} initialstatus={data?.status_label} />
             </Stack>
           </Box>
 
@@ -210,7 +243,14 @@ console.log(selectedStatus)
             <Stack direction="column" spacing={3}>
               <Typography variant="h6">Specifications</Typography>
               <Stack direction="row" spacing={3}>
-                <TextField label="Category" {...register('category', { required: true })} fullWidth select>
+                <TextField
+                  label="Category"
+                  {...register('category', { required: true })}
+                  fullWidth
+                  select
+                  value={category} // Bind the value to state
+                  onChange={handleCategorychange}
+                >
                   {equipmentsdata?.categories.map((category) => (
                     <MenuItem key={category.id} value={category.id}>
                       {category.name}
@@ -222,6 +262,8 @@ console.log(selectedStatus)
                   {...register('calibrationCategory', { required: true })}
                   fullWidth
                   select
+                  value={calibrationCategory} // Bind the value to state
+                  onChange={handleCalibrationCategory} // Update state on change
                 >
                   {equipmentsdata?.calibration_categories.map((category) => (
                     <MenuItem key={category} value={category}>

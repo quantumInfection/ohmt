@@ -21,10 +21,8 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import dayjs from 'dayjs';
 import { useMutation } from 'react-query';
-
 import { FileDropzone } from '@/components/core/file-dropzone';
 import { FileIcon } from '@/components/core/file-icon';
-
 import { useFetchSpecificEquip } from '../MutateContext';
 
 function bytesToSize(bytes, decimals = 2) {
@@ -49,14 +47,14 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
+    console.log(calibrationData)
     if (mode === 'edit' && calibrationData) {
-      console.log('provider list', providerList);
-      console.log('provider', calibrationData.provider);
-      setProvider('Diatec (NZ)');
+      setProvider(calibrationData.provider_id || '');
       setCalibrationType(calibrationData.type || '');
       setDateCompleted(calibrationData.completion_date ? dayjs(calibrationData.completion_date) : null);
       setExpiryDate(calibrationData.expiry_date ? dayjs(calibrationData.expiry_date) : null);
       setNotes(calibrationData.notes || '');
+      setFiles(calibrationData.pdf_file_url || '');
     } else {
       // Reset the form fields
       setProvider('');
@@ -64,6 +62,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       setDateCompleted(null);
       setExpiryDate(null);
       setNotes('');
+      setFiles(null)
     }
   }, [mode, calibrationData]);
 
@@ -71,12 +70,14 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
     setFiles([]);
   }, [open]);
 
-  const handleDrop = useCallback((newFiles) => {
-    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
-  }, []);
+  const handleDrop = (acceptedFiles) => {
+    if (acceptedFiles.length > 0) {
+      setFiles(acceptedFiles);
+    }
+  };
 
   const handleRemove = useCallback((file) => {
-    setFiles((prevFiles) => prevFiles.filter((_file) => _file.path !== file.path));
+    setFiles((prevFiles) => prevFiles.filter((_file) => _file.name !== file.name));
   }, []);
 
   const handleRemoveAll = useCallback(() => {
@@ -86,28 +87,34 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
   const fetchEquipment = useFetchSpecificEquip();
 
   const { mutate, isLoading } = useMutation(
-    (data) => {
-      return calibrationData ? editCalibration(data) : addCalibrations(data);
+    async (data) => {
+      const response = calibrationData ? await editCalibration(data) : await addCalibrations(data);
+      return response;
     },
     {
       onSuccess: () => {
         fetchEquipment(equipmentId);
       },
+      onError: (error) => {
+        console.error(error);
+      },
     }
   );
 
-  const onSubmit = () => {
+  const onSubmit =  () => {
     const formattedData = {
       provider,
       calibrationType,
       dateCompleted: dateCompleted.format('YYYY-MM-DD'),
       expiryDate: expiryDate.format('YYYY-MM-DD'),
       notes,
-      callibrationid: calibrationData?.id,
       equipmentId,
+      callibrationId: calibrationData?.id,
+      pdfFile: files[0], 
     };
     mutate(formattedData);
   };
+
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
       <DialogTitle>{mode === 'edit' ? 'Edit Calibration Details' : 'Add Calibration Details'}</DialogTitle>
@@ -127,7 +134,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                     Select Provider
                   </MenuItem>
                   {providerList.map((providerItem) => (
-                    <MenuItem key={providerItem.id} value={providerItem.name}>
+                    <MenuItem key={providerItem.id} value={providerItem.id}>
                       {providerItem.name}
                     </MenuItem>
                   ))}
@@ -136,7 +143,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
             </Grid>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth>
-                <InputLabel>Calibration type</InputLabel>
+                <InputLabel>Calibration Type</InputLabel>
                 <Select value={calibrationType} onChange={(e) => setCalibrationType(e.target.value)}>
                   <MenuItem value="" disabled>
                     e.g Conformance, initial...
@@ -204,7 +211,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                       <Stack
                         component="li"
                         direction="row"
-                        key={file.path}
+                        key={file.name}
                         spacing={2}
                         sx={{
                           alignItems: 'center',

@@ -51,6 +51,7 @@
     "dayjs": "1.11.12",
     "embla-carousel": "8.2.0",
     "embla-carousel-react": "8.2.0",
+    "force": "^0.0.3",
     "i18next": "23.14.0",
     "mapbox-gl": "3.6.0",
     "react": "18.3.1",

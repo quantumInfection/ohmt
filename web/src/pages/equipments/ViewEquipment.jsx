@@ -10,9 +10,7 @@ import { ArrowLeft, Plus } from '@phosphor-icons/react';
 import { Helmet } from 'react-helmet-async';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
-
 import { config } from '@/config';
-
 import Calibrationbox from './calibration/calibration-box';
 import Deviceinformation from './calibration/Deviceinformation';
 import { MutateProvider } from './MutateContext';
@@ -86,8 +84,8 @@ export function Page() {
                       onClick={() =>
                         navigate('/dashboard/equipments/edit', {
                           state: {
-                            equipment: equipment,
-                            allEquipments: allEquipments,
+                            data: equipment,
+                            equipmentsdata: allEquipments,
                           },
                         })
                       }
