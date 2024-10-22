@@ -1,3 +1,5 @@
+"""This module contains functions that are used to create views of the data for the frontend"""
+
 def make_equipment(
     equipment: dict,
     locations_lookup: dict,
@@ -20,6 +22,7 @@ def make_equipment(
             {
                 "id": calibration["id"],
                 "type": calibration["calibration_type"],
+                "provider_id": calibration["provider_id"],
                 "provider": calibration_providers_lookup[calibration["provider_id"]][
                     "name"
                 ],
