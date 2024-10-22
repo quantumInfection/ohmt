@@ -155,14 +155,16 @@ def list_equipments():
     """
     company_id = "16edda9a-299f-4ab4-a41c-922e637cad31"
 
+    _uow = suow.DbPoolUnitOfWork()
+
     calibration_categories = reads.get_calibration_categories()
-    calibration_providers = reads.get_calibration_providers(suow.DbPoolUnitOfWork())
+    calibration_providers = reads.get_calibration_providers(_uow)
     calibration_types = reads.get_calibration_types()
-    locations = reads.get_company_locations(suow.DbPoolUnitOfWork(), company_id)
-    categories = reads.get_company_categories(suow.DbPoolUnitOfWork(), company_id)
+    locations = reads.get_company_locations(_uow, company_id)
+    categories = reads.get_company_categories(_uow, company_id)
     categories_lookup = {c["id"]: c for c in categories}
-    cases = reads.get_company_cases(suow.DbPoolUnitOfWork(), company_id)
-    equipments = reads.get_company_equipments(suow.DbPoolUnitOfWork(), company_id)
+    cases = reads.get_company_cases(_uow, company_id)
+    equipments = reads.get_company_equipments(_uow, company_id)
 
     return {
         "equipments": [

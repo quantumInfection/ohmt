@@ -20,7 +20,9 @@ def make_equipment(
             {
                 "id": calibration["id"],
                 "type": calibration["calibration_type"],
-                "provider": calibration_providers_lookup[calibration["provider_id"]]["name"],
+                "provider": calibration_providers_lookup[calibration["provider_id"]][
+                    "name"
+                ],
                 "pdf_file_url": calibration["pdf_file_url"],
                 "expiry_date": calibration["expiry_date"],
                 "completion_date": calibration["completion_date"],
@@ -31,11 +33,12 @@ def make_equipment(
 
     if equipment["case_id"] is None:
         case_id = None
+        case_readable_id = None
         location_name = locations_lookup[equipment["location_id"]]["name"]
     else:
         case_id = equipment["case_id"]
         case = cases_lookup[case_id]
-        case_id = case["case_id"]
+        case_readable_id = case["case_id"]
         location_name = case["location"]
 
     return {
@@ -47,10 +50,12 @@ def make_equipment(
         "model": equipment["model"],
         "asset_id": equipment["asset_id"],
         "serial_number": equipment["serial_number"],
+        "catagory_id": equipment["category_id"],
         "category": categories_lookup[equipment["category_id"]]["name"],
         "calibration_category": equipment["calibration_category"],
         "notes": equipment["notes"],
         "case_id": case_id,
+        "case_readable_id": case_readable_id,
         "calibration_due_label": calibration_due_label,
         "calibration_bg": calibration_bg,
         "calibration_fg": calibration_fg,
