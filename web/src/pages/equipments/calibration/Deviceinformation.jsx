@@ -59,7 +59,7 @@ const Deviceinformation = ({ data }) => {
               <Typography variant="body2" color="textSecondary">
                 Case ID
               </Typography>
-              <Typography variant="body1">{data?.case_id}</Typography>
+              <Typography variant="body1">{data?.case_readable_id}</Typography>
             </Grid>
             <Grid item xs={6}>
               <Typography variant="body2" color="textSecondary">

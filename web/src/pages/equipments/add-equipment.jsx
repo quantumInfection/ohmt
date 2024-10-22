@@ -64,6 +64,7 @@ export function Page() {
     if (caseId) {
       const selectedCase = cases.find((caseItem) => caseItem.id === caseId);
       setIsLocationDisabled(true);
+      console.log(selectedCase)
       if (selectedCase) {
         resetField('location', { defaultValue: selectedCase.location });
       }

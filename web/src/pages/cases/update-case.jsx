@@ -25,7 +25,7 @@ import { california, kepple, redOrange, stormGrey } from '@/styles/theme/colors'
 
 const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
   const [locations, setLocations] = useState([]);
-  const [selectedLocationId, setSelectedLocationId] = useState(locations?._id || '');
+  const [selectedLocationId, setSelectedLocationId] = useState(selectedRow?.location_id || '');
 
   const { mutate: fetchCasesMutate, isLoading: isFetching } = useMutation(fetchCases, {
     onSuccess: (data) => {
@@ -125,7 +125,7 @@ const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
           </TableHead>
           <TableBody>
             {selectedRow?.equipments && selectedRow.equipments.length > 0 ? (
-              selectedRow.equipments.map(({ id, name, status_label, case_id, serial_number, location }) => (
+              selectedRow.equipments.map(({ id, name, status_label, case_readable_id, serial_number, location }) => (
                 <TableRow key={id}>
                   <TableCell>{name}</TableCell>
                   <TableCell>
@@ -144,7 +144,7 @@ const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
                       sx={{ backgroundColor: 'transparent', color: stormGrey[500] }}
                     />
                   </TableCell>
-                  <TableCell>{case_id}</TableCell>
+                  <TableCell>{case_readable_id}</TableCell>
                   <TableCell>{serial_number || 'NA'}</TableCell>
                 </TableRow>
               ))

@@ -53,7 +53,6 @@ async function uploadImagesToSignedUrls(signedUrls, images) {
 
 export async function addEquipment(equipmentData) {
 
-
   const filePaths = equipmentData.files.map((file) => file.name);
   const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
   try {
@@ -62,7 +61,21 @@ export async function addEquipment(equipmentData) {
     throw new Error('Failed to upload images');
   }
 
-
+  const equipdata ={
+    asset_id: equipmentData.assetId,
+        device_id: equipmentData.deviceId,
+        model: equipmentData.model,
+        serial_number: equipmentData.serial,
+        case_id: equipmentData.caseId,
+        location_id: equipmentData.location,
+        image_urls: filePaths,
+        primary_image_index: equipmentData.selectedImageIndex.idx,
+        status: equipmentData.status,
+        category_id: equipmentData.category,
+        calibration_category: equipmentData.calibrationCategory,
+        notes: equipmentData.notes,
+  }
+  console.log("equipdata" ,equipdata)
 
   const response = await fetch(equipmentsUrl, {
     method: 'POST',
