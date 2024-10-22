@@ -47,7 +47,6 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
   const [files, setFiles] = useState([]);
 
   useEffect(() => {
-    console.log(calibrationData)
     if (mode === 'edit' && calibrationData) {
       setProvider(calibrationData.provider_id || '');
       setCalibrationType(calibrationData.type || '');
@@ -55,6 +54,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       setExpiryDate(calibrationData.expiry_date ? dayjs(calibrationData.expiry_date) : null);
       setNotes(calibrationData.notes || '');
       setFiles(calibrationData.pdf_file_url || '');
+      console.log(calibrationData.pdf_file_url)
     } else {
       // Reset the form fields
       setProvider('');
@@ -102,6 +102,17 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
   );
 
   const onSubmit =  () => {
+    if (!files || files.length === 0) {
+      alert("Kindly choose one PDF file.");
+      return; 
+    }
+  
+    // Check if the selected file is a PDF
+    const selectedFile = files[0]; // Only handling the first file
+    if (selectedFile.type !== "application/pdf") {
+      alert("Only PDF files are allowed.");
+      return; 
+    }
     const formattedData = {
       provider,
       calibrationType,
@@ -211,7 +222,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                       <Stack
                         component="li"
                         direction="row"
-                        key={file.name}
+                        key={ file.name}
                         spacing={2}
                         sx={{
                           alignItems: 'center',
@@ -223,7 +234,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                       >
                         <FileIcon extension={extension} />
                         <Box sx={{ flex: '1 1 auto' }}>
-                          <Typography variant="subtitle2">{file.name}</Typography>
+                          <Typography variant="subtitle2">{calibrationData.pdf_file_url || file.name}</Typography>
                           <Typography color="text.secondary" variant="body2">
                             {bytesToSize(file.size)}
                           </Typography>

@@ -12,12 +12,7 @@ export async function fetchEquipments() {
 }
 
 async function fetchImagesSignedUrls(filepaths) {
-<<<<<<< HEAD
   const response = await customFetch(
-=======
-  console.log(filepaths)
-  const response = await fetch(
->>>>>>> 26a5140 (21 oct)
     `${equipmentsUrl}images-signed-url?file_names=${encodeURIComponent(JSON.stringify(filepaths))}`,
     {
       method: 'GET',
@@ -58,7 +53,6 @@ async function uploadImagesToSignedUrls(signedUrls, images) {
 
 export async function addEquipment(equipmentData) {
 
-
   const filePaths = equipmentData.files.map((file) => file.name);
   const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
   try {
@@ -67,13 +61,7 @@ export async function addEquipment(equipmentData) {
     throw new Error('Failed to upload images');
   }
 
-<<<<<<< HEAD
   const response = await customFetch(equipmentsUrl, {
-=======
-
-
-  const response = await fetch(equipmentsUrl, {
->>>>>>> 26a5140 (21 oct)
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

@@ -76,7 +76,7 @@ export function DataTable({ data }) {
                 />
               </TableCell>
               <TableCell onClick={() => handleOpenModal(row)} style={{ cursor: 'pointer' }}>
-                {row.case_id}
+                {row.case_readable_id}
               </TableCell>
               <TableCell>
                 <Chip

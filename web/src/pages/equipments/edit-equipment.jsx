@@ -21,10 +21,9 @@ import { RouterLink } from '@/components/core/link';
 export function Page() {
   const location = useLocation();
   const { data, equipmentsdata } = location.state || {};
-
   const [notes, setNotes] = useState(data?.notes || '');
   const [calibrationCategory, setCalibrationCategory] = useState(data?.calibration_category || '');
-  const [category, setCategory] = useState(data?.category || '');
+  const [category, setCategory] = useState(data?.catagory_id || '');
 
   const handleCategorychange = (event) => {
     setCategory(event.target.value); // Update state on change
@@ -38,7 +37,11 @@ export function Page() {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [isLocationDisabled, setIsLocationDisabled] = useState(false);
+  const [selectedCaseId, setSelectedCaseId] = useState(data?.case_id || '');
 
+  const handleCaseIdChange = (event) => {
+    setSelectedCaseId(event.target.value); // Update the state on change
+  };
   const metadata = { title: `Edit equipment | ${config.site.name}` };
   const navigate = useNavigate();
   const {
@@ -51,10 +54,10 @@ export function Page() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      assetId: data.asset_id || '',
-      deviceId: data.device_id || '',
-      model: data.model || '',
-      serial: data.serial_number || '',
+      assetId: data?.asset_id || '',
+      deviceId: data?.device_id || '',
+      model: data?.model || '',
+      serial: data?.serial_number || '',
       // Add other fields with their default values if needed
     },
   });
@@ -69,7 +72,7 @@ export function Page() {
 
   const { mutate, isLoading } = useMutation(editEquipment, {
     onSuccess: () => {
-      navigate('/');
+      navigate(-1);
     },
   });
 
@@ -80,7 +83,7 @@ export function Page() {
       const selectedCase = equipmentsdata?.cases.find((caseItem) => caseItem.id === caseId);
       setIsLocationDisabled(true);
       if (selectedCase) {
-        resetField('location', { defaultValue: selectedCase.location });
+        resetField('location', { defaultValue: selectedCase.location_id });
       }
     } else {
       setIsLocationDisabled(false);
@@ -91,7 +94,7 @@ export function Page() {
     setSelectedFiles(files);
     setValue(
       'files',
-      files.map((file) => file.url)
+      data?.images.map((file) => file.url)
     );
   };
 
@@ -106,11 +109,6 @@ export function Page() {
       return;
     }
 
-    if (!selectedStatus) {
-      alert('Please select a status.');
-      return;
-    }
-    // Add this log
     console.log('Data to be sent:', { ...data, status: selectedStatus, equip_id });
 
     mutate({
@@ -155,16 +153,16 @@ export function Page() {
                 </Stack>
               </Box>
               <Stack direction="row" spacing={2}>
-                <Button
-                  component={RouterLink}
-                  to="/dashboard/equipments"
-                  variant="outlined"
-                  sx={{ textTransform: 'none', color: 'gray' }}
-                >
+                <Button onClick={() => navigate(-1)} variant="outlined" sx={{ textTransform: 'none', color: 'gray' }}>
                   Cancel
                 </Button>
-                <Button onClick={handleSubmit(onSubmit)} variant="contained" sx={{ textTransform: 'none' }}>
-                  Submit
+                <Button
+                  onClick={handleSubmit(onSubmit)}
+                  variant="contained"
+                  sx={{ textTransform: 'none' }}
+                  disabled={isLoading}
+                >
+                    {isLoading ? <CircularProgress size={24} /> : 'Submit'}
                 </Button>
               </Stack>
             </Stack>
@@ -177,21 +175,28 @@ export function Page() {
             <Stack direction="column" spacing={4}>
               <Typography variant="h6">Device Information</Typography>
               <Stack direction="row" spacing={3}>
-                <TextField label="Asset ID" {...register('assetId')} fullWidth value={data.asset_id} disabled />
-                <TextField label="Device ID" {...register('deviceId')} fullWidth value={data.device_id} disabled />
+                <TextField label="Asset ID" {...register('assetId' )} fullWidth value={data?.asset_id} disabled />
+                <TextField label="Device ID" {...register('deviceId')} fullWidth value={data?.device_id} disabled />
               </Stack>
               <Stack direction="row" spacing={3}>
-                <TextField label="Model" {...register('model')} fullWidth value={data.model} disabled />
+                <TextField label="Model" {...register('model')} fullWidth value={data?.model} disabled />
                 <TextField
                   label="Serial Number"
                   {...register('serial')}
                   fullWidth
-                  value={data.serial_number}
+                  value={data?.serial_number}
                   disabled
                 />
               </Stack>
               <Stack direction="row" spacing={3}>
-                <TextField label="Case ID" {...register('caseId', { required: true })} fullWidth select>
+                <TextField
+                  label="Case ID"
+                  fullWidth
+                  select
+                  {...register('caseId', { required: true })} // React Hook Form registration
+                  value={selectedCaseId} // Controlled input value
+                  onChange={handleCaseIdChange} // Update state on change
+                >
                   {equipmentsdata?.cases?.map((caseItem) => (
                     <MenuItem key={caseItem.id} value={caseItem.id}>
                       {`${caseItem.case_id} - ${caseItem.location}`}
@@ -245,11 +250,12 @@ export function Page() {
               <Stack direction="row" spacing={3}>
                 <TextField
                   label="Category"
-                  {...register('category', { required: true })}
+                  {...register('category')}
                   fullWidth
                   select
                   value={category} // Bind the value to state
                   onChange={handleCategorychange}
+                  disabled
                 >
                   {equipmentsdata?.categories.map((category) => (
                     <MenuItem key={category.id} value={category.id}>
@@ -259,9 +265,10 @@ export function Page() {
                 </TextField>
                 <TextField
                   label="Calibration Category"
-                  {...register('calibrationCategory', { required: true })}
+                  {...register('calibrationCategory')}
                   fullWidth
                   select
+                  disabled
                   value={calibrationCategory} // Bind the value to state
                   onChange={handleCalibrationCategory} // Update state on change
                 >
@@ -277,7 +284,7 @@ export function Page() {
 
           {/*Image uploader*/}
           <ImageUploader
-            selectedFiles={selectedFiles}
+            selectedFiles={data?.images || selectedFiles}
             setSelectedFiles={handleImageUpload}
             selectedImageIndex={selectedImageIndex}
             setSelectedImageIndex={setSelectedImageIndex}
