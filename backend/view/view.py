@@ -10,6 +10,7 @@ def make_equipment(
 ) -> dict:
     """Returns a view of the equipment, represents equipment in table format"""
     calibrations = equipment["calibrations"]
+    images = equipment["images"]
     if not calibrations:
         calibration_due_label = "NA"
         calibration_bg = "#F1F1F4"
@@ -28,6 +29,7 @@ def make_equipment(
                     "name"
                 ],
                 "pdf_file_url": calibration["pdf_file_url"],
+                "pdf_file_name": calibration["pdf_file_url"].split("/")[-1],
                 "expiry_date": calibration["expiry_date"],
                 "completion_date": calibration["completion_date"],
                 "notes": calibration["notes"],
@@ -44,6 +46,10 @@ def make_equipment(
         case = cases_lookup[case_id]
         case_readable_id = case["case_id"]
         location_name = case["location"]
+
+    if images:
+        for image in images:
+            image["file_name"] = image["url"].split("/")[-1]
 
     return {
         "id": equipment["id"],
