@@ -53,8 +53,8 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       setDateCompleted(calibrationData.completion_date ? dayjs(calibrationData.completion_date) : null);
       setExpiryDate(calibrationData.expiry_date ? dayjs(calibrationData.expiry_date) : null);
       setNotes(calibrationData.notes || '');
-      setFiles(calibrationData.pdf_file_url || '');
-      console.log(calibrationData.pdf_file_url)
+      setFiles(calibrationData.pdf_file_name || '');
+      console.log(calibrationData.pdf_file_name)
     } else {
       // Reset the form fields
       setProvider('');
@@ -234,7 +234,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                       >
                         <FileIcon extension={extension} />
                         <Box sx={{ flex: '1 1 auto' }}>
-                          <Typography variant="subtitle2">{calibrationData.pdf_file_url || file.name}</Typography>
+                          <Typography variant="subtitle2">{ file.name}</Typography>
                           <Typography color="text.secondary" variant="body2">
                             {bytesToSize(file.size)}
                           </Typography>
