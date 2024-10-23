@@ -14,7 +14,7 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
 
   useEffect(() => {
     if (selectedFiles.length === 0) {
-      return; // Exit early if there are no selected files
+      return; 
     }
 
     const updatedFiles = selectedFiles.map((file) => {
@@ -24,44 +24,36 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
 
         return {
           ...file,
-          name: fileName, // Add the extracted name to the file object
+          name: fileName, 
         };
       }
-      // If there's no url (for example, with new uploads), return the file as is
+     
       return file;
     });
 
-    setSelectedFiles(updatedFiles); // Update selectedFiles with the file names
+    setSelectedFiles(updatedFiles); 
   }, [selectedFiles]);
 
-  // Handle image drop and add to the selected files
-  const onDrop = (acceptedFiles) => {
-    const newFiles = acceptedFiles.map((file) => {
-      return {
-        ...file,
-        preview: URL.createObjectURL(file), // Create object URL for preview
-        name: file.name, // Ensure the dropped file has its original name
-      };
-    });
 
+  const onDrop = (acceptedFiles) => {
     setSelectedFiles((prevFiles) => {
-      const updatedFiles = [...prevFiles, ...newFiles];
-      setImageUrls((prevUrls) => [
-        ...prevUrls,
-        ...newFiles.map((file) => file.preview), // Update imageUrls state
-      ]);
-      return updatedFiles;
+      const newFiles = [...prevFiles, ...acceptedFiles];
+      const newImageUrls = acceptedFiles.map((file) => URL.createObjectURL(file));
+
+      // Update imageUrls state
+      setImageUrls((prevUrls) => [...prevUrls, ...newImageUrls]);
+      return newFiles;
     });
+  
   };
+  
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'image/*' });
 
-  // Handle image click to set it as selected
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
   };
 
-  // Handle image deletion from the array
   const handleDeleteImage = (index) => {
     setSelectedFiles((prevFiles) => {
       const updatedFiles = prevFiles.filter((_, i) => i !== index);

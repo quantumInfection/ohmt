@@ -26,15 +26,11 @@ import { FileIcon } from '@/components/core/file-icon';
 import { useFetchSpecificEquip } from '../MutateContext';
 
 function bytesToSize(bytes, decimals = 2) {
-  if (bytes === 0) {
-    return '0 Bytes';
-  }
-
+  if (bytes === 0) return '0 Bytes';
   const k = 1024;
   const dm = decimals < 0 ? 0 : decimals;
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
-
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
 }
 
@@ -53,8 +49,13 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       setDateCompleted(calibrationData.completion_date ? dayjs(calibrationData.completion_date) : null);
       setExpiryDate(calibrationData.expiry_date ? dayjs(calibrationData.expiry_date) : null);
       setNotes(calibrationData.notes || '');
-      setFiles(calibrationData.pdf_file_name || '');
-      console.log(calibrationData.pdf_file_name)
+      
+      // Initialize files array for editing
+      if (calibrationData.pdf_file_name) {
+        setFiles([{ name: calibrationData.pdf_file_name, size: 0, type: 'application/pdf' }]); // or set actual size if known
+      } else {
+        setFiles([]); // Clear files if no PDF filename
+      }
     } else {
       // Reset the form fields
       setProvider('');
@@ -62,17 +63,19 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       setDateCompleted(null);
       setExpiryDate(null);
       setNotes('');
-      setFiles(null)
+      setFiles([]); // Ensure files is an array
     }
   }, [mode, calibrationData]);
 
   useEffect(() => {
-    setFiles([]);
+    if (open) {
+      setFiles([]); // Reset files when modal opens
+    }
   }, [open]);
 
   const handleDrop = (acceptedFiles) => {
     if (acceptedFiles.length > 0) {
-      setFiles(acceptedFiles);
+      setFiles(acceptedFiles); // Set files to acceptedFiles array
     }
   };
 
@@ -81,7 +84,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
   }, []);
 
   const handleRemoveAll = useCallback(() => {
-    setFiles([]);
+    setFiles([]); // Clear all files
   }, []);
 
   const fetchEquipment = useFetchSpecificEquip();
@@ -101,7 +104,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
     }
   );
 
-  const onSubmit =  () => {
+  const onSubmit = () => {
     if (!files || files.length === 0) {
       alert("Kindly choose one PDF file.");
       return; 
@@ -113,6 +116,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       alert("Only PDF files are allowed.");
       return; 
     }
+    
     const formattedData = {
       provider,
       calibrationType,
@@ -120,11 +124,30 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       expiryDate: expiryDate.format('YYYY-MM-DD'),
       notes,
       equipmentId,
-      callibrationId: calibrationData?.id,
+      calibrationId: calibrationData?.id,
       pdfFile: files[0], 
     };
+
     mutate(formattedData);
   };
+
+
+
+  useEffect(() => {
+    if (calibrationData && calibrationData.pdf_file_name) {
+      // Create a file-like object
+      const file = {
+        name: calibrationData.pdf_file_name,
+        size: 0, // Set size to 0 or the actual size if known
+        type: 'application/pdf', // Set appropriate type
+      };
+      setFiles([file]);
+    } else {
+      setFiles([]); // Reset if no filename or calibrationData is not available
+    }
+  }, [calibrationData]);
+
+
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
@@ -222,7 +245,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                       <Stack
                         component="li"
                         direction="row"
-                        key={ file.name}
+                        key={file.name}
                         spacing={2}
                         sx={{
                           alignItems: 'center',
@@ -234,9 +257,9 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                       >
                         <FileIcon extension={extension} />
                         <Box sx={{ flex: '1 1 auto' }}>
-                          <Typography variant="subtitle2">{ file.name}</Typography>
+                          <Typography variant="subtitle2">{file.name}</Typography>
                           <Typography color="text.secondary" variant="body2">
-                            {bytesToSize(file.size)}
+                            {bytesToSize(file.size || "NA")}
                           </Typography>
                         </Box>
                         <Tooltip title="Remove" onClick={() => handleRemove(file)}>

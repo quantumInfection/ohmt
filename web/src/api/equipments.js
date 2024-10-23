@@ -41,18 +41,19 @@ async function uploadImagesToSignedUrls(signedUrls, images) {
     });
   });
 
-  // Check error in uploading images
   const responses = await Promise.all(uploadPromises);
   const allUploadsSuccessful = responses.every((response) => response.ok);
 
   if (!allUploadsSuccessful) {
     const errorResponses = await Promise.all(responses.map((response) => response.text()));
     throw new Error(`Failed to upload images: ${errorResponses.join(', ')}`);
+  } else {
+    console.log('All images uploaded successfully!');
   }
 }
 
-export async function addEquipment(equipmentData) {
 
+export async function addEquipment(equipmentData) {
   const filePaths = equipmentData.files.map((file) => file.name);
   const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
   try {
@@ -61,7 +62,13 @@ export async function addEquipment(equipmentData) {
     throw new Error('Failed to upload images');
   }
 
+<<<<<<< HEAD
   const response = await customFetch(equipmentsUrl, {
+=======
+
+
+  const response = await fetch(equipmentsUrl, {
+>>>>>>> 0077c1b (23 oct)
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -213,14 +220,15 @@ export async function addCalibrations(formattedData) {
 export async function editCalibration(formattedData) {
   const pdfFile = formattedData.pdfFile;
   const signedUrl = await fetchSignedUrlForPDF(pdfFile.name); // Use the plain text signed URL
-
+  console.log(signedUrl)
+console.log(pdfFile)
   try {
     await uploadPDFToSignedUrl(signedUrl, pdfFile);
   } catch (error) {
     throw new Error('Failed to upload PDF');
   }
   const response = await fetch(
-    `${equipmentsUrl}${formattedData.equipmentId}/calibration/${formattedData.callibrationId}`,
+    `${equipmentsUrl}${formattedData.equipmentId}/calibration/${formattedData.calibrationId}`,
     {
       method: 'PUT',
       headers: {

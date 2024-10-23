@@ -77,7 +77,7 @@ export function Page() {
     setSelectedFiles(files);
     setValue(
       'files',
-      files.map((file) => file.url)
+      selectedFiles.map((file) => file.url)
     );
   };
   
