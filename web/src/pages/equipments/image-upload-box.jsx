@@ -8,18 +8,49 @@ import { useDropzone } from 'react-dropzone';
 import { stormGrey } from '@/styles/theme/colors';
 
 export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIndex, setSelectedImageIndex }) {
-
   const [imageUrls, setImageUrls] = useState(selectedFiles || []);
+
+  //  images name
+
+  useEffect(() => {
+    if (selectedFiles.length === 0) {
+      return; // Exit early if there are no selected files
+    }
+
+    const updatedFiles = selectedFiles.map((file) => {
+      if (file.url) {
+        const urlParts = file.url.split('/');
+        const fileName = urlParts[urlParts.length - 1];
+
+        return {
+          ...file,
+          name: fileName, // Add the extracted name to the file object
+        };
+      }
+      // If there's no url (for example, with new uploads), return the file as is
+      return file;
+    });
+
+    setSelectedFiles(updatedFiles); // Update selectedFiles with the file names
+  }, [selectedFiles]);
 
   // Handle image drop and add to the selected files
   const onDrop = (acceptedFiles) => {
-    setSelectedFiles((prevFiles) => {
-      const newFiles = [...prevFiles, ...acceptedFiles];
-      const newImageUrls = acceptedFiles.map((file) => URL.createObjectURL(file));
+    const newFiles = acceptedFiles.map((file) => {
+      return {
+        ...file,
+        preview: URL.createObjectURL(file), // Create object URL for preview
+        name: file.name, // Ensure the dropped file has its original name
+      };
+    });
 
-      // Update imageUrls state
-      setImageUrls((prevUrls) => [...prevUrls, ...newImageUrls]);
-      return newFiles;
+    setSelectedFiles((prevFiles) => {
+      const updatedFiles = [...prevFiles, ...newFiles];
+      setImageUrls((prevUrls) => [
+        ...prevUrls,
+        ...newFiles.map((file) => file.preview), // Update imageUrls state
+      ]);
+      return updatedFiles;
     });
   };
 
@@ -51,7 +82,6 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
       setSelectedImageIndex(0); // Auto select the first image if none is selected
     }
   }, [selectedFiles, selectedImageIndex, setSelectedImageIndex]);
-
 
   return (
     <Box sx={{ padding: '40px 0px' }}>
@@ -97,7 +127,7 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
                 }}
               >
                 <Upload size={24} />
-                <input type="file" hidden onChange={(e) => onDrop([...e.target.files])} accept="image/*" multiple />
+                <input type="file" hidden onChange={(e) => onDrop([...e.target.files])} accept="image/*" />
               </Button>
               <Typography>Drag & drop some files here, or click to select files</Typography>
             </>
@@ -107,7 +137,7 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
           {imageUrls.map((url, index) => (
             <Box key={index} sx={{ position: 'relative', cursor: 'pointer' }} onClick={() => handleImageClick(index)}>
               <img
-                src={imageUrls[index]?.url  || url}
+                src={imageUrls[index]?.url || url}
                 alt={`Selected file ${index + 1}`}
                 style={{
                   width: '100px',
