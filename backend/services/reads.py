@@ -76,6 +76,7 @@ def get_company_cases(uow: suow.DbPoolUnitOfWork, company_id: str) -> dict[str, 
             c.id,
             c.case_id,
             c.name as case_name,
+            l.id as loc_id,
             l.name as loc_name
         from cases c
         join locations l on c.location_id = l.id
@@ -92,6 +93,7 @@ def get_company_cases(uow: suow.DbPoolUnitOfWork, company_id: str) -> dict[str, 
             "id": case["id"],
             "case_id": case["case_id"],
             "name": case["case_name"],
+            "location_id": case["loc_id"],
             "location": case["loc_name"],
         }
         for case in cases
