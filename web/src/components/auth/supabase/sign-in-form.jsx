@@ -26,7 +26,7 @@ import { DynamicLogo } from '@/components/core/logo';
 import { toast } from '@/components/core/toaster';
 
 const oAuthProviders = [
-  { id: 'github', name: 'Github', logo: '/assets/logo-github.svg' },
+  { id: 'azure', name: 'Microsoft', logo: '/assets/logo-microsoft.svg' },
   { id: 'discord', name: 'Discord', logo: '/assets/logo-discord.svg' },
 ];
 
@@ -62,11 +62,12 @@ export function SignInForm() {
 
       const { data, error } = await supabaseClient.auth.signInWithOAuth({
         provider: providerId,
-        options: { redirectTo: redirectToUrl.href },
+        options: { redirectTo: redirectToUrl.href, scopes: 'email' },
       });
 
       if (error) {
         setIsPending(false);
+        console.log(error);
         toast.error(error.message);
         return;
       }
