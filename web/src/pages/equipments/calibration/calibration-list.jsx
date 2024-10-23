@@ -84,7 +84,7 @@ const CalibrationList = ({ calibrations, providerList, equipmentId, calibrationT
                       <IconButton size="small" sx={{ color: '#E84924' }}>
                         <FilePdf fontSize="large" />
                       </IconButton>
-                      <Link href={row.pdf_file_url} sx={{ color: '#E84924', textDecoration: 'none', ml: 1 }}>
+                      <Link target='_blank' href={row.pdf_file_url} sx={{ color: '#E84924', textDecoration: 'none', ml: 1 }}>
                         View PDF
                       </Link>
                     </TableCell>
