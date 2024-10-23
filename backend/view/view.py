@@ -1,5 +1,6 @@
 """This module contains functions that are used to create views of the data for the frontend"""
 
+
 def make_equipment(
     equipment: dict,
     locations_lookup: dict,
