@@ -36,16 +36,22 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
 
 
   const onDrop = (acceptedFiles) => {
-    setSelectedFiles((prevFiles) => {
-      const newFiles = [...prevFiles, ...acceptedFiles];
-      const newImageUrls = acceptedFiles.map((file) => URL.createObjectURL(file));
-
-      // Update imageUrls state
-      setImageUrls((prevUrls) => [...prevUrls, ...newImageUrls]);
-      return newFiles;
-    });
+    // Filter out duplicate files based on file name
+    const newFiles = acceptedFiles.filter(
+      (file) => !selectedFiles.some((prevFile) => prevFile.name === file.name)
+    );
   
+    if (newFiles.length === 0) {
+      return; // No new files to add
+    }
+  
+    const newImageUrls = newFiles.map((file) => URL.createObjectURL(file));
+  
+    // Update the states
+    setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    setImageUrls((prevUrls) => [...prevUrls, ...newImageUrls]);
   };
+  
   
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'image/*' });
@@ -66,7 +72,12 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
     });
 
     // Remove the image URL from the imageUrls state
-    setImageUrls((prevUrls) => prevUrls.filter((_, i) => i !== index));
+    setImageUrls((prevUrls) => {
+      const newUrls = prevUrls.filter((_, i) => i !== index);
+      URL.revokeObjectURL(prevUrls[index]); // Free up memory
+      return newUrls;
+    });
+  
   };
 
   useEffect(() => {
@@ -119,7 +130,7 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
                 }}
               >
                 <Upload size={24} />
-                <input type="file" hidden onChange={(e) => onDrop([...e.target.files])} accept="image/*" />
+                <input type="file" hidden onChange={(e) => onDrop([...e.target.files])} accept="image/*" multiple />
               </Button>
               <Typography>Drag & drop some files here, or click to select files</Typography>
             </>

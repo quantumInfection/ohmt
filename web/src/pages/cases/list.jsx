@@ -18,7 +18,6 @@ const metadata = { title: `Cases | ${config.site.name}` };
 
 export function Page() {
   const [data, setData] = useState({});
-  console.log(data)
   const navigate = useNavigate();
 
   const { mutate, isLoading } = useMutation(fetchCases, {

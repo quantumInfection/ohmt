@@ -62,13 +62,7 @@ export async function addEquipment(equipmentData) {
     throw new Error('Failed to upload images');
   }
 
-<<<<<<< HEAD
   const response = await customFetch(equipmentsUrl, {
-=======
-
-
-  const response = await fetch(equipmentsUrl, {
->>>>>>> 0077c1b (23 oct)
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -97,10 +91,9 @@ export async function addEquipment(equipmentData) {
 }
 
 export async function editEquipment(equipmentData) {
-  // console.log(equipmentData)
   const filePaths = equipmentData.files.map((file) => file.name);
   const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
-  console.log(signedUrlsResponse)
+
   try {
     await uploadImagesToSignedUrls(signedUrlsResponse, equipmentData.files);
   } catch (error) {
@@ -138,17 +131,7 @@ export async function fetchEquipment(id) {
 }
 
 
-
-
-
-
-
-
-
-
 async function fetchSignedUrlForPDF(fileName) {
-  console.log(fileName);
-  
   const response = await fetch(`${equipmentsUrl}/pdf-signed-url?file_name=${encodeURIComponent(fileName)}`);
   if (response.status !== 200) {
     throw new Error(`Failed to fetch signed URL, status: ${response.status}`);
@@ -220,8 +203,6 @@ export async function addCalibrations(formattedData) {
 export async function editCalibration(formattedData) {
   const pdfFile = formattedData.pdfFile;
   const signedUrl = await fetchSignedUrlForPDF(pdfFile.name); // Use the plain text signed URL
-  console.log(signedUrl)
-console.log(pdfFile)
   try {
     await uploadPDFToSignedUrl(signedUrl, pdfFile);
   } catch (error) {

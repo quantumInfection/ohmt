@@ -12,6 +12,14 @@ export async function fetchCases() {
   return response.json();
 }
 
+export async function fetchCase(id) {
+  const response = await fetch(`${casesUrl}${id}`);
+  if (!response.ok) {
+    throw new Error('Failed to fetch cases');
+  }
+  return response.json();
+}
+
 export async function addCase(caseData) {
   const response = await customFetch(casesUrl, {
     method: 'POST',
@@ -33,9 +41,7 @@ export async function addCase(caseData) {
 }
 
 
-
-
-export async function updateCase({ caseId, selectedLocationId }) { 
+export async function updateCase({ caseId, selectedLocationId }) {
   const response = await fetch(`${casesUrl}${caseId}`, {
     method: 'PUT',
     headers: {

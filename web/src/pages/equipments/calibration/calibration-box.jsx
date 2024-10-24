@@ -7,6 +7,7 @@ import { california, kepple, namedColors, redOrange } from '@/styles/theme/color
 
 import CalibrationList from './calibration-list';
 
+
 const StatusCard = ({ icon, title, value, iconBgColor }) => (
   <Card
     sx={{
@@ -92,7 +93,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
           alignItems: 'center',
         }}
       >
-        <StatusCard icon={<MapPin size={32} />} title="Location" value={equipment.location} iconBgColor="#FFB3B3" />
+        <StatusCard icon={<MapPin size={32} />} title="Location" value={equipment.location} iconBgColor="#FFB3B3"   />
         <StatusCard
           icon={getStatusIcon(equipment.status_label)}
           size={32}
