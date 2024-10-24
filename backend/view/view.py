@@ -57,6 +57,7 @@ def make_equipment(
         "status_label": equipment["status"],
         "location": location_name,
         "device_id": equipment["device_id"],
+        "location_id": equipment["location_id"],
         "model": equipment["model"],
         "asset_id": equipment["asset_id"],
         "serial_number": equipment["serial_number"],
