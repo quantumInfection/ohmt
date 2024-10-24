@@ -81,7 +81,7 @@ def get_company_cases(uow: suow.DbPoolUnitOfWork, company_id: str) -> dict[str, 
         from cases c
         join locations l on c.location_id = l.id
         where c.company_id = %s
-        order by created_at
+        order by created_at desc;
     """
 
     with uow, uow.db_pool.dict_cursor() as curs:
@@ -91,7 +91,7 @@ def get_company_cases(uow: suow.DbPoolUnitOfWork, company_id: str) -> dict[str, 
     return {
         case["id"]: {
             "id": case["id"],
-            "case_id": case["case_id"],
+            "case_readable_id": case["case_id"],
             "name": case["case_name"],
             "location_id": case["loc_id"],
             "location": case["loc_name"],

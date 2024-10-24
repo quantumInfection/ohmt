@@ -4,8 +4,8 @@ from enum import Enum
 from datetime import date, datetime
 
 
-IMAGE_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/images/equipment/"
-PDF_URL_CDN_PREFIX = "https://ohmt.syd1.digitaloceanspaces.com/pdfs/calibration/"
+IMAGE_URL_CDN_PREFIX = "https://ohmt.syd1.cdn.digitaloceanspaces.com/images/equipment/"
+PDF_URL_CDN_PREFIX = "https://ohmt.syd1.cdn.digitaloceanspaces.com/pdfs/calibration/"
 
 
 @dataclass

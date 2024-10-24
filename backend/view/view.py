@@ -44,7 +44,7 @@ def make_equipment(
     else:
         case_id = equipment["case_id"]
         case = cases_lookup[case_id]
-        case_readable_id = case["case_id"]
+        case_readable_id = case["case_readable_id"]
         location_name = case["location"]
 
     if images:
