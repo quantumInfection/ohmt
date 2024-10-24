@@ -53,7 +53,7 @@ export function Page() {
       return;
     }
 
-    const next = searchParams.get('next') || paths.dashboard.overview;
+    const next = searchParams.get('next') || paths.dashboard.cases.list;
 
     navigate(next);
   }, [supabaseClient, navigate]);
