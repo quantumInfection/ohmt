@@ -134,6 +134,10 @@ class Equipment:
         calibration_category: str,
         notes: str,
     ):
+        # If case id is present then set location_id to None
+        if case_id:
+            location_id = None
+
         return cls(
             id=str(uuid4()),
             company_id=company_id,
@@ -173,6 +177,10 @@ class Equipment:
     ):
         self.status = Status(status)
         self.case_id = case_id
+
+        if case_id:
+            self.location_id = None
+
         self.location_id = location_id
         self.images = [
             Image(
