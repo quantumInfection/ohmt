@@ -9,7 +9,7 @@ import { california, kepple, namedColors, redOrange, stormGrey } from '@/styles/
 
 import Updatecase from '../cases/update-case';
 
-export function DataTable({ data }) {
+export function DataTable({ data, fetchEquipments }) {
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
@@ -32,14 +32,14 @@ export function DataTable({ data }) {
 
   // Function to open the modal
   const handleOpenModal = (row) => {
-    setSelectedRow(row);
+    setSelectedRow(row); // Set the selected row
     setOpen(true);
   };
 
   // Function to close the modal
   const handleCloseModal = () => {
     setOpen(false);
-    setSelectedRow(null);
+    setSelectedRow(null); // Clear the selected row when closing
   };
 
   return (
@@ -105,9 +105,17 @@ export function DataTable({ data }) {
         </TableBody>
       </Table>
 
-      {/* Modal for showing details */}
       <Modal open={open} onClose={handleCloseModal}>
-        <Updatecase onClose={handleCloseModal} />
+        <Box>
+          {selectedRow && (
+            <Updatecase
+              onClose={handleCloseModal}
+              id={selectedRow?.case_id}
+              selectedRow={selectedRow}
+              fetchEquipments={fetchEquipments}
+            />
+          )}
+        </Box>
       </Modal>
     </Box>
   );

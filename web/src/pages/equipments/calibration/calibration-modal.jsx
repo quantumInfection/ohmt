@@ -21,8 +21,10 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
 import dayjs from 'dayjs';
 import { useMutation } from 'react-query';
+
 import { FileDropzone } from '@/components/core/file-dropzone';
 import { FileIcon } from '@/components/core/file-icon';
+
 import { useFetchSpecificEquip } from '../MutateContext';
 
 function bytesToSize(bytes, decimals = 2) {
@@ -49,7 +51,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       setDateCompleted(calibrationData.completion_date ? dayjs(calibrationData.completion_date) : null);
       setExpiryDate(calibrationData.expiry_date ? dayjs(calibrationData.expiry_date) : null);
       setNotes(calibrationData.notes || '');
-      
+
       // Initialize files array for editing
       if (calibrationData.pdf_file_name) {
         setFiles([{ name: calibrationData.pdf_file_name, size: 0, type: 'application/pdf' }]); // or set actual size if known
@@ -105,18 +107,26 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
   );
 
   const onSubmit = () => {
+    if (!expiryDate) {
+      alert('Kindly choose Date Completed.');
+      return;
+    }
+    if (!dateCompleted) {
+      alert('Kindly choose Date Completed.');
+      return;
+    }
     if (!files || files.length === 0) {
-      alert("Kindly choose one PDF file.");
-      return; 
+      alert('Kindly choose one PDF file.');
+      return;
+    } 
+
+
+    const selectedFile = files[0]; 
+    if (selectedFile.type !== 'application/pdf') {
+      alert('Only PDF files are allowed.');
+      return;
     }
-  
-    // Check if the selected file is a PDF
-    const selectedFile = files[0]; // Only handling the first file
-    if (selectedFile.type !== "application/pdf") {
-      alert("Only PDF files are allowed.");
-      return; 
-    }
-    
+
     const formattedData = {
       provider,
       calibrationType,
@@ -125,13 +135,11 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       notes,
       equipmentId,
       calibrationId: calibrationData?.id,
-      pdfFile: files[0], 
+      pdfFile: files[0],
     };
 
     mutate(formattedData);
   };
-
-
 
   useEffect(() => {
     if (calibrationData && calibrationData.pdf_file_name) {
@@ -147,11 +155,9 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
     }
   }, [calibrationData]);
 
-
-
   return (
     <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
-      <DialogTitle>{mode === 'edit' ? 'Edit Calibration Details' : 'Add Calibration Details'}</DialogTitle>
+      <DialogTitle>{calibrationData ? 'Edit Calibration Details' : 'Add Calibration Details'}</DialogTitle>
       <form
         onSubmit={(e) => {
           e.preventDefault();
@@ -161,7 +167,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel>Provider</InputLabel>
                 <Select value={provider} onChange={(e) => setProvider(e.target.value)}>
                   <MenuItem value="" disabled>
@@ -175,8 +181,9 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                 </Select>
               </FormControl>
             </Grid>
+
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <InputLabel>Calibration Type</InputLabel>
                 <Select value={calibrationType} onChange={(e) => setCalibrationType(e.target.value)}>
                   <MenuItem value="" disabled>
@@ -192,30 +199,31 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
             </Grid>
 
             <Grid item xs={6}>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <DesktopDatePicker
                   label="Date Completed"
                   inputFormat="MMMM dd, yyyy"
                   value={dateCompleted}
                   onChange={(newValue) => setDateCompleted(newValue)}
-                  renderInput={(params) => <TextField {...params} fullWidth />}
+                  renderInput={(params) => <TextField {...params} fullWidth required />}
                 />
               </FormControl>
             </Grid>
+
             <Grid item xs={6}>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <DesktopDatePicker
                   label="Expiry Date"
                   inputFormat="MMMM dd, yyyy"
                   value={expiryDate}
                   onChange={(newValue) => setExpiryDate(newValue)}
-                  renderInput={(params) => <TextField {...params} fullWidth />}
+                  renderInput={(params) => <TextField {...params} fullWidth required />}
                 />
               </FormControl>
             </Grid>
 
             <Grid item xs={12}>
-              <FormControl fullWidth>
+              <FormControl fullWidth required>
                 <TextField
                   label="Notes / Comments"
                   fullWidth
@@ -224,6 +232,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                   placeholder="Enter your notes or comments here"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
+                  required
                 />
               </FormControl>
             </Grid>
@@ -235,6 +244,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
               caption="Max file size is 3 MB"
               files={files}
               onDrop={handleDrop}
+              required
             />
             {files.length ? (
               <Stack spacing={2}>
@@ -259,7 +269,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                         <Box sx={{ flex: '1 1 auto' }}>
                           <Typography variant="subtitle2">{file.name}</Typography>
                           <Typography color="text.secondary" variant="body2">
-                            {bytesToSize(file.size || "NA")}
+                            {bytesToSize(file.size || 'NA')}
                           </Typography>
                         </Box>
                         <Tooltip title="Remove" onClick={() => handleRemove(file)}>
@@ -280,6 +290,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
             ) : null}
           </Stack>
         </DialogContent>
+
         <DialogActions>
           <Button onClick={onClose} variant="outlined">
             Cancel

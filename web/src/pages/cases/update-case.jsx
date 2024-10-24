@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useEffect, useState } from 'react';
-import { fetchCases, updateCase } from '@/api/cases';
+import { fetchCase, fetchCases, updateCase } from '@/api/cases';
 import {
   Box,
   Button,
@@ -18,14 +18,32 @@ import {
   TextField,
   Typography,
 } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { CheckCircle, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
 import { useMutation } from 'react-query';
 
 import { california, kepple, redOrange, stormGrey } from '@/styles/theme/colors';
 
-const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
+const Updatecase = ({ onClose, id, fetchCasesAgain, fetchEquipments, selectedRow }) => {
+  const [data, setData] = useState({});
+
+  const { mutate, isLoading } = useMutation(fetchCase, {
+    onSuccess: (data) => {
+      setData(data);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  useEffect(() => {
+    mutate(id);
+  }, [mutate]);
+
   const [locations, setLocations] = useState([]);
   const [selectedLocationId, setSelectedLocationId] = useState(selectedRow?.location_id || '');
+
+
 
   const { mutate: fetchCasesMutate, isLoading: isFetching } = useMutation(fetchCases, {
     onSuccess: (data) => {
@@ -35,28 +53,34 @@ const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
       console.error('Failed to fetch cases:', error);
     },
   });
+  // Fetch cases on component mount
+  useEffect(() => {
+    fetchCasesMutate();
+  }, [fetchCasesMutate]);
 
   // Mutation for updating a case
   const { mutate: updateCaseMutate, isLoading: isUpdating } = useMutation(updateCase, {
     onSuccess: () => {
-      fetchCasesAgain();
-      onClose();
+      if (typeof fetchCasesAgain === 'function') {
+        fetchCasesAgain();
+        onClose();
+      }
+
+      if (typeof fetchEquipments === 'function') {
+        fetchEquipments();
+        onClose();
+      }
     },
     onError: (error) => {
       console.error('Failed to update case:', error); // Log the error message
     },
   });
 
-  // Fetch cases on component mount
-  useEffect(() => {
-    fetchCasesMutate();
-  }, [fetchCasesMutate]);
-
   const handleUpdateCase = () => {
-    if ( selectedRow?.id &&  selectedLocationId) {
-      updateCaseMutate( { caseId: selectedRow.id, selectedLocationId } );
+    if (data?.id && selectedLocationId) {
+      updateCaseMutate({ caseId: data.id, selectedLocationId });
     } else {
-      console.error('Location ID or Case ID is not set.');
+      alert('Location ID or Case ID is not set.');
     }
   };
 
@@ -89,12 +113,12 @@ const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
           <OutlinedInput
             name="case_id"
             type="text"
-            value={selectedRow?.case_id !== undefined ? selectedRow.case_id : ''}
+            value={data?.case_readable_id !== undefined ? data.case_readable_id : ''}
           />
         </FormControl>
         <FormControl fullWidth disabled>
           <InputLabel>Name</InputLabel>
-          <OutlinedInput name="name" type="text" value={selectedRow?.name !== undefined ? selectedRow.name : ''} />
+          <OutlinedInput name="name" type="text" value={data?.name !== undefined ? data.name : ''} />
         </FormControl>
       </Stack>
       <TextField
@@ -124,8 +148,14 @@ const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {selectedRow?.equipments && selectedRow.equipments.length > 0 ? (
-              selectedRow.equipments.map(({ id, name, status_label, case_readable_id, serial_number, location }) => (
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  <CircularProgress /> {/* Show spinner while loading */}
+                </TableCell>
+              </TableRow>
+            ) : data?.equipments && data.equipments.length > 0 ? (
+              data.equipments.map(({ id, name, status_label, case_readable_id, serial_number, location }) => (
                 <TableRow key={id}>
                   <TableCell>{name}</TableCell>
                   <TableCell>
@@ -151,7 +181,7 @@ const Updatecase = ({ onClose, selectedRow ,fetchCasesAgain}) => {
             ) : (
               <TableRow>
                 <TableCell colSpan={5} align="center">
-                  No equipments available.
+                  <Typography variant="body2">No equipment yet</Typography> {/* Show message when no data */}
                 </TableCell>
               </TableRow>
             )}

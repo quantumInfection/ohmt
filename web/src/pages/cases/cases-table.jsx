@@ -19,7 +19,7 @@ import { MapPin, Pencil } from '@phosphor-icons/react';
 import Updatecase from './update-case';
 
 export function DataTable({ data ,fetchCasesMutate }) {
-  console.log(data);
+
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
 
@@ -47,7 +47,7 @@ export function DataTable({ data ,fetchCasesMutate }) {
         <TableBody>
           {data.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.case_id}</TableCell>
+              <TableCell>{row.case_readable_id}</TableCell>
               <TableCell>{row.name}</TableCell>
               <TableCell>
                 <Chip
@@ -68,7 +68,7 @@ export function DataTable({ data ,fetchCasesMutate }) {
       </Table>
 
       <Modal open={open} onClose={handleClose}>
-        <Updatecase onClose={handleClose} selectedRow={selectedRow} fetchCasesAgain={fetchCasesMutate}/>
+        <Updatecase onClose={handleClose} id={selectedRow?.id} selectedRow={selectedRow} fetchCasesAgain={fetchCasesMutate}/>
       </Modal>
     </Box>
   );

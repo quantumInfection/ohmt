@@ -64,7 +64,6 @@ export function Page() {
     if (caseId) {
       const selectedCase = cases.find((caseItem) => caseItem.id === caseId);
       setIsLocationDisabled(true);
-      console.log(selectedCase)
       if (selectedCase) {
         resetField('location', { defaultValue: selectedCase.location });
       }
@@ -181,7 +180,7 @@ export function Page() {
                     </MenuItem>
                     {cases.map((caseItem) => (
                       <MenuItem key={caseItem.id} value={caseItem.id}>
-                        {caseItem.case_id + ' - ' + caseItem.location}
+                        {caseItem.case_readable_id + ' - ' + caseItem.location}
                       </MenuItem>
                     ))}
                   </TextField>

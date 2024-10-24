@@ -108,9 +108,6 @@ export function Page() {
       alert('Please upload at least one image.');
       return;
     }
-
-    console.log('Data to be sent:', { ...data, status: selectedStatus, equip_id });
-
     mutate({
       ...data,
       equip_id,
@@ -199,7 +196,7 @@ export function Page() {
                 >
                   {equipmentsdata?.cases?.map((caseItem) => (
                     <MenuItem key={caseItem.id} value={caseItem.id}>
-                      {`${caseItem.case_id} - ${caseItem.location}`}
+                      {`${caseItem.case_readable_id} - ${caseItem.location}`}
                     </MenuItem>
                   ))}
                 </TextField>
