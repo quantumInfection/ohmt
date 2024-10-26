@@ -1,9 +1,8 @@
-;
 // Make something to add a case
 
 import React from 'react';
 import { addCase } from '@/api/cases';
-import { TextField } from '@mui/material';
+import { Select, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -16,14 +15,8 @@ import { useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-
-
 import { config } from '@/config';
 import { RouterLink } from '@/components/core/link';
-
-
-
-
 
 export function Page() {
   const metadata = { title: `Add case | ${config.site.name}` };
@@ -44,7 +37,6 @@ export function Page() {
       navigate('/dashboard/cases');
     },
   });
-
 
   const onSubmit = (data) => {
     if (existingCases.some((caseItem) => caseItem.case_id === data.caseId)) {
@@ -96,35 +88,61 @@ export function Page() {
                     component={RouterLink}
                     to="/dashboard/cases"
                     variant="outlined"
-                    sx={{ textTransform: 'none', color: 'gray' }}
+                    size="medium"
+                    color='secondary'
+
                   >
                     Cancel
                   </Button>
-                  <Button onClick={handleSubmit(onSubmit)} variant="contained" sx={{ textTransform: 'none' }}>
+
+                  <Button
+                    size="medium"
+                    onClick={handleSubmit(onSubmit)}
+                    variant="contained"
+                    sx={{ textTransform: 'none' }}
+                  >
                     Submit
                   </Button>
                 </Stack>
               </Stack>
             </Box>
           </Stack>
-          <Box>
+          <Box sx={{ padding: '24px 8px', width: '65%' }}>
             <Stack spacing={4}>
               <Stack direction="row" spacing={3}>
                 <TextField
                   label="Case ID"
+                  placeholder="e.g C0125"
                   {...register('caseId', { required: 'Case ID is required' })}
                   error={!!errors.caseId}
                   helperText={errors.caseId ? errors.caseId.message : ''}
                   fullWidth
                 />
-                <TextField label="Name" {...register('name', { required: 'Name is required' })} fullWidth />
+                <TextField
+                  label="Name"
+                  placeholder="e.g Equipment Case"
+                  {...register('name', { required: 'Name is required' })}
+                  fullWidth
+                  error={!!errors.name}
+                  helperText={errors.name ? errors.name.message : ''}
+                />
               </Stack>
+
               <TextField
                 label="Location"
-                {...register('location', { required: 'Select location from the dropdown' })}
+                {...register('location', { required: 'Select location' })}
                 select
+                defaultValue=""
                 fullWidth
+                sx={{ color: 'gray' }}
+                error={!!errors.location}
+                helperText={errors.location?.message}
               >
+                <MenuItem value="" disabled style={{ color: 'gray' }}>
+                  Select location
+                </MenuItem>
+
+                {/* Location options */}
                 {locations.map((location) => (
                   <MenuItem key={location.id} value={location.id}>
                     {location.name}

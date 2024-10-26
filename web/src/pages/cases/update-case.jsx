@@ -43,8 +43,6 @@ const Updatecase = ({ onClose, id, fetchCasesAgain, fetchEquipments, selectedRow
   const [locations, setLocations] = useState([]);
   const [selectedLocationId, setSelectedLocationId] = useState(selectedRow?.location_id || '');
 
-
-
   const { mutate: fetchCasesMutate, isLoading: isFetching } = useMutation(fetchCases, {
     onSuccess: (data) => {
       setLocations(data.locations);
@@ -138,7 +136,23 @@ const Updatecase = ({ onClose, id, fetchCasesAgain, fetchEquipments, selectedRow
       <Typography variant="h6" sx={{ mt: 2 }}>
         Equipment in this case
       </Typography>
-      <Box sx={{ width: '100%', overflow: 'auto', mt: 2 }}>
+      <Box
+        sx={{
+          maxHeight: 200, // Height to fit 3 rows before scrolling
+          overflowY: 'auto',
+          '&::-webkit-scrollbar': { width: '8px' },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#c1c1c1', // Color of the scrollbar thumb
+            borderRadius: '4px',
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#a0a0a0', // Color on hover
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: '#f1f1f1', // Scrollbar track color
+          },
+        }}
+      >
         <Table>
           <TableHead>
             <TableRow>
@@ -189,24 +203,16 @@ const Updatecase = ({ onClose, id, fetchCasesAgain, fetchEquipments, selectedRow
         </Table>
       </Box>
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', gap: 2, mt: 3 }}>
-        <Button
-          onClick={onClose}
-          sx={{
-            color: 'black',
-            px: 5,
-            border: '1px solid black',
-            backgroundColor: 'transparent',
-            '&:hover': { backgroundColor: '#f0f0f0' },
-          }}
-        >
+        <Button size="medium" onClick={onClose} variant="outlined" color="secondary">
           Close
         </Button>
         <Button
           onClick={handleUpdateCase} // Call the update function
-          sx={{ color: 'white', px: 5, backgroundColor: 'black', '&:hover': { backgroundColor: '#333' } }}
-          disabled={isUpdating} // Disable the button while updating
+          variant="contained"
+          color="secondary"
+          size="medium"
         >
-          Update
+          {isUpdating ? <CircularProgress size={24} /> : 'Update'}
         </Button>
       </Box>
     </Box>

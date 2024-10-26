@@ -62,9 +62,6 @@ export function Page() {
     },
   });
 
-  useEffect(() => {
-    console.log('Form errors:', errors);
-  }, [errors]);
 
   const [selectedStatus, setSelectedStatus] = useState(data?.status_label || '');
 
@@ -150,7 +147,7 @@ export function Page() {
                 </Stack>
               </Box>
               <Stack direction="row" spacing={2}>
-                <Button onClick={() => navigate(-1)} variant="outlined" sx={{ textTransform: 'none', color: 'gray' }}>
+                <Button onClick={() => navigate(-1)} variant="outlined" color='secondary'>
                   Cancel
                 </Button>
                 <Button
@@ -159,7 +156,7 @@ export function Page() {
                   sx={{ textTransform: 'none' }}
                   disabled={isLoading}
                 >
-                    {isLoading ? <CircularProgress size={24} /> : 'Submit'}
+                  {isLoading ? <CircularProgress size={24} /> : 'Update'}
                 </Button>
               </Stack>
             </Stack>
@@ -172,15 +169,41 @@ export function Page() {
             <Stack direction="column" spacing={4}>
               <Typography variant="h6">Device Information</Typography>
               <Stack direction="row" spacing={3}>
-                <TextField label="Asset ID" {...register('assetId' )} fullWidth value={data?.asset_id} disabled />
-                <TextField label="Device ID" {...register('deviceId')} fullWidth value={data?.device_id} disabled />
+                <TextField
+                  label="Asset ID"
+                  {...register('assetId', { required: 'Asset ID is required' })}
+                  fullWidth
+                  error={!!errors.assetId}
+                  helperText={errors.assetId?.message}
+                  value={data?.asset_id}
+                  disabled
+                />
+                <TextField
+                  label="Device ID"
+                  {...register('deviceId', { required: 'Device ID is required' })}
+                  fullWidth
+                  error={!!errors.deviceId}
+                  helperText={errors.deviceId?.message}
+                  value={data?.device_id}
+                  disabled
+                />
               </Stack>
               <Stack direction="row" spacing={3}>
-                <TextField label="Model" {...register('model')} fullWidth value={data?.model} disabled />
+                <TextField
+                  label="Model"
+                  {...register('model', { required: 'Model is required' })}
+                  fullWidth
+                  error={!!errors.model}
+                  helperText={errors.model?.message}
+                  value={data?.model}
+                  disabled
+                />
                 <TextField
                   label="Serial Number"
-                  {...register('serial')}
+                  {...register('serial', { required: 'Serial Number is required' })}
                   fullWidth
+                  error={!!errors.serial}
+                  helperText={errors.serial?.message}
                   value={data?.serial_number}
                   disabled
                 />
@@ -188,9 +211,12 @@ export function Page() {
               <Stack direction="row" spacing={3}>
                 <TextField
                   label="Case ID"
+                  {...register('caseId', { required: 'Case ID is required' })}
                   fullWidth
                   select
-                  {...register('caseId', { required: true })} // React Hook Form registration
+                  defaultValue=""
+                  error={!!errors.caseId}
+                  helperText={errors.caseId?.message} // React Hook Form registration
                   value={selectedCaseId} // Controlled input value
                   onChange={handleCaseIdChange} // Update state on change
                 >
@@ -222,11 +248,14 @@ export function Page() {
 
           <Box sx={{ padding: '40px 0px' }}>
             <TextField
-              label="Notes"
-              {...register('notes', { required: true })}
-              multiline
-              rows={4}
-              fullWidth
+             placeholder="Please write comments or notes"
+             label="Notes / Comments"
+             {...register('notes', { required: 'Notes or comments are required' })}
+             multiline
+             rows={4}
+             fullWidth
+             error={!!errors.notes}
+             helperText={errors.notes?.message}
               value={notes} // Bind the value of the TextField to the notes state
               onChange={handleNotesChange} // Update the state on change
             />

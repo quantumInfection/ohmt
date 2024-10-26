@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { Box, Modal, Table, TableBody, TableCell, TableHead, TableRow } from '@mui/material';
+import { Box, Modal, Table, TableBody, TableCell, TableHead, TableRow, Typography } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import { CheckCircle, Eye, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 
-import { california, kepple, namedColors, redOrange, stormGrey } from '@/styles/theme/colors';
+import { california, kepple, namedColors, redOrange, stormGrey ,tomatoOrange } from '@/styles/theme/colors';
 
 import Updatecase from '../cases/update-case';
 
@@ -58,7 +58,11 @@ export function DataTable({ data, fetchEquipments }) {
         <TableBody>
           {data.equipments.map((row) => (
             <TableRow key={row.id}>
-              <TableCell>{row.name}</TableCell>
+              <TableCell>
+                <Typography variant='body2'>
+                {row.name}
+                </Typography>
+                </TableCell>
               <TableCell>
                 <Chip
                   icon={getStatusIcon(row.status_label)}
@@ -76,7 +80,9 @@ export function DataTable({ data, fetchEquipments }) {
                 />
               </TableCell>
               <TableCell onClick={() => handleOpenModal(row)} style={{ cursor: 'pointer' }}>
-                {row.case_readable_id}
+              <Typography variant='body1' color='primary'  sx={{textTransform:"uppercase" ,textDecoration:"underline", textDecorationColor : tomatoOrange[300]}}>
+                 {row.case_readable_id}
+                </Typography> 
               </TableCell>
               <TableCell>
                 <Chip

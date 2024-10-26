@@ -79,7 +79,6 @@ export function Page() {
 
                   <Box>
                     <Button
-                      startIcon={<Plus />}
                       variant="contained"
                       onClick={() =>
                         navigate('/dashboard/equipments/edit', {
