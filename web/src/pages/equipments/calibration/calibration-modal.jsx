@@ -18,7 +18,7 @@ import {
   Typography,
 } from '@mui/material';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
-import { X as XIcon } from '@phosphor-icons/react/dist/ssr/X';
+import { CalendarBlank, X } from '@phosphor-icons/react';
 import dayjs from 'dayjs';
 import { useMutation } from 'react-query';
 
@@ -118,10 +118,9 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
     if (!files || files.length === 0) {
       alert('Kindly choose one PDF file.');
       return;
-    } 
+    }
 
-
-    const selectedFile = files[0]; 
+    const selectedFile = files[0];
     if (selectedFile.type !== 'application/pdf') {
       alert('Only PDF files are allowed.');
       return;
@@ -156,7 +155,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
   }, [calibrationData]);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth sx={{padding:"16px"}}>
       <DialogTitle>{calibrationData ? 'Edit Calibration Details' : 'Add Calibration Details'}</DialogTitle>
       <form
         onSubmit={(e) => {
@@ -217,7 +216,21 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                   inputFormat="MMMM dd, yyyy"
                   value={expiryDate}
                   onChange={(newValue) => setExpiryDate(newValue)}
-                  renderInput={(params) => <TextField {...params} fullWidth required />}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      required
+                      InputProps={{
+                        ...params.InputProps,
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <CalendarBlank onClick={() => params.inputProps.onClick()} style={{ cursor: 'pointer' }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  )}
                 />
               </FormControl>
             </Grid>
@@ -268,23 +281,15 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                         <FileIcon extension={extension} />
                         <Box sx={{ flex: '1 1 auto' }}>
                           <Typography variant="subtitle2">{file.name}</Typography>
-                          <Typography color="text.secondary" variant="body2">
-                            {bytesToSize(file.size || 'NA')}
-                          </Typography>
                         </Box>
                         <Tooltip title="Remove" onClick={() => handleRemove(file)}>
                           <Button>
-                            <XIcon />
+                            <X color="secondary" size={20} />
                           </Button>
                         </Tooltip>
                       </Stack>
                     );
                   })}
-                </Stack>
-                <Stack direction="row" spacing={2} sx={{ alignItems: 'center', justifyContent: 'flex-end' }}>
-                  <Button color="secondary" onClick={handleRemoveAll} size="small">
-                    Remove all
-                  </Button>
                 </Stack>
               </Stack>
             ) : null}
@@ -292,10 +297,10 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
         </DialogContent>
 
         <DialogActions>
-          <Button onClick={onClose} variant="outlined">
+          <Button onClick={onClose} variant="outlined" color="secondary">
             Cancel
           </Button>
-          <Button type="submit" variant="contained" disabled={isLoading}>
+          <Button type="submit" variant="contained" color='secondary' disabled={isLoading}>
             {calibrationData ? 'Update' : 'Add'}
           </Button>
         </DialogActions>

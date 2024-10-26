@@ -15,9 +15,7 @@ import {
   Typography,
 } from '@mui/material';
 import { FilePdf, Pencil } from '@phosphor-icons/react';
-
 import { stormGrey } from '@/styles/theme/colors';
-
 import EditCalibrationModal from './calibration-modal';
 
 const CalibrationList = ({ calibrations, providerList, equipmentId, calibrationTypes }) => {
@@ -52,7 +50,7 @@ const CalibrationList = ({ calibrations, providerList, equipmentId, calibrationT
           display: 'flex',
           justifyContent: 'space-between',
           alignItems: 'center',
-          padding: '16px',
+          padding: '16px 0',
         }}
       >
         <Typography variant="h6">Calibrations</Typography>

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { california, kepple, namedColors, redOrange } from '@/styles/theme/colors';
 
 import CalibrationList from './calibration-list';
+import { padding } from '@mui/system';
 
 
 const StatusCard = ({ icon, title, value, iconBgColor }) => (
@@ -126,7 +127,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
             <Tab label="Timeline" {...a11yProps(1)} sx={{ color: value === 1 ? '#E84924' : 'inherit' }} />
           </Tabs>
         </Box>
-        <CustomTabPanel value={value} index={0}>
+        <CustomTabPanel value={value} index={0} >
           <CalibrationList
             calibrations={equipment.calibrations}
             providerList={providerList}
