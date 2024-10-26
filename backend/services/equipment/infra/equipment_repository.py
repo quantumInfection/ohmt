@@ -62,6 +62,7 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                 status,
                 category_id,
                 calibration_category,
+                archived,
                 notes,
                 created_at,
                 updated_at
@@ -125,6 +126,7 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                 equipment["calibration_category"]
             ),
             notes=equipment["notes"],
+            archived=equipment["archived"],
             created_at=equipment["created_at"],
             images=[
                 eq_model.Image(
@@ -255,6 +257,7 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                 category_id = %(category_id)s,
                 calibration_category = %(calibration_category)s,
                 notes = %(notes)s,
+                archived = %(archived)s,
                 updated_at = %(updated_at)s
             where id = %(id)s;
         """
@@ -275,6 +278,7 @@ class EquipmentsRepository(AbstractEquipmentsRepository):
                     "category_id": equipment.category_id,
                     "calibration_category": equipment.calibration_category.value,
                     "notes": equipment.notes,
+                    "archived": equipment.archived,
                     "updated_at": equipment.updated_at,
                 },
             )

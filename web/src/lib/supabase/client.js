@@ -15,7 +15,7 @@ export function createClient() {
   if (client) {
     return client;
   }
-
+  
   client = createBrowserClient(config.supabase.url, config.supabase.anonKey);
 
   return client;

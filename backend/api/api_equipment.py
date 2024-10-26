@@ -80,6 +80,15 @@ def update_equipment(equipment_id):
         "name": e.model,
     }
 
+@app.route("/<equipment_id>", methods=["DELETE"])
+def archive_equipment(equipment_id):
+    """
+    Archive equipment
+    """
+    eq_commands.archive_equipment(suow.DbPoolUnitOfWork(), equipment_id)
+
+    return "Equipment archived"
+
 
 @app.route("/<equipment_id>/calibration", methods=["POST"])
 def add_calibration_to_equipment(equipment_id):

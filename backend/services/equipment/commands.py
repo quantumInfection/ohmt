@@ -89,6 +89,18 @@ def update_equipment(
     return equipment
 
 
+def archive_equipment(uow: suow.AbstractUnitOfWork, equipment_id: str) -> None:
+    with uow:
+        equipment = uow.equipments_repo.equipment_by_id(equipment_id)
+
+        if not equipment:
+            raise ValueError(f"Equipment with ID: {equipment_id} not found")
+
+        equipment.archive()
+
+        uow.equipments_repo.save(equipment)
+
+
 def add_calibration_to_equipment(
     uow: suow.AbstractUnitOfWork,
     equipment_id: str,
