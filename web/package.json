@@ -41,6 +41,7 @@
     "@mui/x-date-pickers": "7.13.0",
     "@phosphor-icons/react": "2.1.7",
     "@react-pdf/renderer": "3.4.4",
+    "@supabase/supabase-js": "^2.45.4",
     "@testing-library/dom": "10.4.0",
     "@tiptap/extension-link": "2.6.4",
     "@tiptap/extension-placeholder": "2.6.4",

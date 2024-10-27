@@ -4,4 +4,6 @@ import { Page as NotFoundPage } from '@/pages/not-found';
 
 import { route as dashboardRoute } from './dashboard';
 
-export const routes = [dashboardRoute, { path: '*', element: <NotFoundPage /> }];
+import { route as authRoute } from './auth';
+
+export const routes = [dashboardRoute, authRoute, { path: '*', element: <NotFoundPage /> }];

@@ -114,6 +114,7 @@ class Equipment:
     calibration_category: CalibrationCategory
     notes: str
     calibrations: dict[str, Calibration] | None
+    archived: bool
     created_at: datetime
     updated_at: datetime | None
 
@@ -134,6 +135,10 @@ class Equipment:
         calibration_category: str,
         notes: str,
     ):
+        # If case id is present then set location_id to None
+        if case_id:
+            location_id = None
+
         return cls(
             id=str(uuid4()),
             company_id=company_id,
@@ -158,6 +163,7 @@ class Equipment:
             calibration_category=CalibrationCategory(calibration_category),
             notes=notes,
             calibrations=None,
+            archived=False,
             created_at=datetime.now(),
             updated_at=None,
         )
@@ -173,6 +179,10 @@ class Equipment:
     ):
         self.status = Status(status)
         self.case_id = case_id
+
+        if case_id:
+            self.location_id = None
+
         self.location_id = location_id
         self.images = [
             Image(
@@ -186,6 +196,9 @@ class Equipment:
         ]
         self.notes = notes
         self.updated_at = datetime.now()
+
+    def archive(self):
+        self.archived = True
 
     def add_calibration(
         self,

@@ -1,6 +1,6 @@
-import { route as customRoute } from './custom';
+import { route as supabaseRoute } from './supabase';
 
 export const route = {
   path: 'auth',
-  children: [customRoute],
+  children: [supabaseRoute],
 };

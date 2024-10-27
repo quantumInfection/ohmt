@@ -9,6 +9,8 @@ RUN npm ci
 
 COPY . .
 
+COPY .env .
+
 # Use the build script to create the production build
 RUN npm run build
 
