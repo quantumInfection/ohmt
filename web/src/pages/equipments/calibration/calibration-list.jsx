@@ -54,7 +54,7 @@ const CalibrationList = ({ calibrations, providerList, equipmentId, calibrationT
         }}
       >
         <Typography variant="h6">Calibrations</Typography>
-        <Button style={{ backgroundColor: stormGrey[900], color: '#fff' }} onClick={() => handleModalOpen()}>
+        <Button variant='contained' color='secondary' onClick={() => handleModalOpen()}>
           Add Calibrations
         </Button>
       </Box>
