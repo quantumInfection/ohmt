@@ -232,3 +232,18 @@ export async function editCalibration(formattedData) {
 
   return response.json();
 }
+
+export async function archiveEquipmnt(equipmentId) {
+  console.log(equipmentId)
+  const response = await fetch(`${equipmentsUrl}${equipmentId}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    // body: pdfFile,
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to upload PDF');
+  }
+}

@@ -37,7 +37,7 @@ export function Page() {
     setValue,
     formState: { errors },
   } = useForm();
-  const [selectedStatus, setSelectedStatus] = useState(null);
+  const [selectedStatus, setSelectedStatus] = useState('Active');
 
   const { mutate, isLoading } = useMutation(addEquipment, {
     onSuccess: () => {

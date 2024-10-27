@@ -72,17 +72,30 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
   function getStatusIcon(status) {
     switch (status) {
       case 'Active':
-        return <CheckCircle weight={'fill'} color={kepple[500]} />;
+          return <CheckCircle size={32}    weight={'regular'} color={kepple[500]} />;
       case 'Repair':
-        return <Wrench weight={'fill'} color={namedColors['info-dark']} />;
+        return <Wrench size={32} weight={'regular'} color={namedColors['info-dark']} />;
       case 'Calibration':
-        return <FadersHorizontal weight={'fill'} color={california[500]} />;
+        return <FadersHorizontal size={32} weight={'regular'} color={california[500]} />;
       default:
       case 'Retired':
-        return <XCircle weight={'fill'} color={redOrange[500]} />;
+        return <XCircle size={32} weight={'regular'} color={redOrange[500]} />;
     }
   }
-
+  function getStatusBgColor(status) {
+    switch (status) {
+      case 'Active':
+        return '#B3FFD9'; // Green background
+      case 'Repair':
+        return '#FFEB99'; // Yellow background
+      case 'Calibration':
+        return '#CCE5FF'; // Blue background
+      case 'Retired':
+        return '#FFCCCC'; // Red background
+      default:
+        return '#FFFFFF'; // Default white background
+    }
+  }
   return (
     <div>
       <Box
@@ -97,10 +110,9 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
         <StatusCard icon={<MapPin size={32} />} title="Location" value={equipment.location} iconBgColor="#FFB3B3"   />
         <StatusCard
           icon={getStatusIcon(equipment.status_label)}
-          size={32}
           title="Status"
           value={equipment?.status_label}
-          iconBgColor="#B3FFD9"
+          iconBgColor={getStatusBgColor(equipment.status_label)}
         />
         <StatusCard
           icon={<FadersHorizontal size={32} />}
