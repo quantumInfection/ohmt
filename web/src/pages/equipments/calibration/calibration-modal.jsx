@@ -3,6 +3,7 @@ import { addCalibrations, editCalibration } from '@/api/equipments';
 import {
   Box,
   Button,
+  CircularProgress,
   Dialog,
   DialogActions,
   DialogContent,
@@ -17,10 +18,10 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { CalendarBlank, X } from '@phosphor-icons/react';
 import dayjs from 'dayjs';
+import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 
 import { FileDropzone } from '@/components/core/file-dropzone';
@@ -29,122 +30,65 @@ import { FileIcon } from '@/components/core/file-icon';
 import { useFetchSpecificEquip } from '../MutateContext';
 
 function EditCalibrationModal({ mode, open, onClose, providerList, calibrationData, calibrationTypes, equipmentId }) {
-  const [provider, setProvider] = useState('');
-  const [calibrationType, setCalibrationType] = useState('');
-  const [dateCompleted, setDateCompleted] = useState(null);
-  const [expiryDate, setExpiryDate] = useState(null);
-  const [notes, setNotes] = useState('');
   const [files, setFiles] = useState([]);
-
-  useEffect(() => {
-    if (mode === 'edit' && calibrationData) {
-      setProvider(calibrationData.provider_id || '');
-      setCalibrationType(calibrationData.type || '');
-      setDateCompleted(calibrationData.completion_date ? dayjs(calibrationData.completion_date) : null);
-      setExpiryDate(calibrationData.expiry_date ? dayjs(calibrationData.expiry_date) : null);
-      setNotes(calibrationData.notes || '');
-
-      // Initialize files array for editing
-      if (calibrationData.pdf_file_name) {
-        setFiles([{ name: calibrationData.pdf_file_name, size: 0, type: 'application/pdf' }]); // or set actual size if known
-      } else {
-        setFiles([]); // Clear files if no PDF filename
-      }
-    } else {
-      // Reset the form fields
-      setProvider('');
-      setCalibrationType('');
-      setDateCompleted(null);
-      setExpiryDate(null);
-      setNotes('');
-      setFiles([]); // Ensure files is an array
-    }
-  }, [mode, calibrationData]);
-
-  useEffect(() => {
-    if (open) {
-      setFiles([]); // Reset files when modal opens
-    }
-  }, [open]);
-
-  const handleDrop = (acceptedFiles) => {
-    if (acceptedFiles.length > 0) {
-      setFiles(acceptedFiles); // Set files to acceptedFiles array
-    }
-  };
-
-  const handleRemove = useCallback((file) => {
-    setFiles((prevFiles) => prevFiles.filter((_file) => _file.name !== file.name));
-  }, []);
-
-  const handleRemoveAll = useCallback(() => {
-    setFiles([]); // Clear all files
-  }, []);
-
   const fetchEquipment = useFetchSpecificEquip();
 
   const { mutate, isLoading } = useMutation(
-    async (data) => {
-      const response = calibrationData ? await editCalibration(data) : await addCalibrations(data);
-      return response;
-    },
-    {
-      onSuccess: () => {
-        fetchEquipment(equipmentId);
-      },
-      onError: (error) => {
-        console.error(error);
-      },
-    }
+    async (data) => (calibrationData ? await editCalibration(data) : await addCalibrations(data)),
+    { onSuccess: () => fetchEquipment(equipmentId), onError: console.error }
   );
 
-  const onSubmit = () => {
-    if (!expiryDate) {
-      alert('Kindly choose Date Completed.');
-      return;
-    }
-    if (!dateCompleted) {
-      alert('Kindly choose Date Completed.');
-      return;
-    }
-    if (!files || files.length === 0) {
-      alert('Kindly choose one PDF file.');
-      return;
-    }
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm({
+    defaultValues: {
+      provider: '',
+      calibrationType: '',
+      dateCompleted: null,
+      expiryDate: null,
+      notes: '',
+    },
+  });
 
-    const selectedFile = files[0];
-    if (selectedFile.type !== 'application/pdf') {
-      alert('Only PDF files are allowed.');
+  useEffect(() => {
+    if (mode === 'edit' && calibrationData) {
+      reset({
+        provider: calibrationData.provider_id || '',
+        calibrationType: calibrationData.type || '',
+        dateCompleted: calibrationData.completion_date ? dayjs(calibrationData.completion_date) : null,
+        expiryDate: calibrationData.expiry_date ? dayjs(calibrationData.expiry_date) : null,
+        notes: calibrationData.notes || '',
+      });
+      setFiles(
+        calibrationData.pdf_file_name ? [{ name: calibrationData.pdf_file_name, size: 0, type: 'application/pdf' }] : []
+      );
+    } else {
+      reset();
+      setFiles([]);
+    }
+  }, [mode, calibrationData, reset]);
+
+  const handleDrop = (acceptedFiles) => setFiles(acceptedFiles.length ? acceptedFiles : files);
+  const handleRemove = useCallback((file) => setFiles((prev) => prev.filter((f) => f.name !== file.name)), []);
+
+  const onSubmit = (data) => {
+    if (!files.length || files[0].type !== 'application/pdf') {
+      alert('Please add PDF file.');
       return;
     }
-
-    const formattedData = {
-      provider,
-      calibrationType,
-      dateCompleted: dateCompleted.format('YYYY-MM-DD'),
-      expiryDate: expiryDate.format('YYYY-MM-DD'),
-      notes,
+    mutate({
+      ...data,
+      dateCompleted: data.dateCompleted.format('YYYY-MM-DD'),
+      expiryDate: data.expiryDate.format('YYYY-MM-DD'),
       equipmentId,
       calibrationId: calibrationData?.id,
       pdfFile: files[0],
-    };
-
-    mutate(formattedData);
+    });
   };
-
-  useEffect(() => {
-    if (calibrationData && calibrationData.pdf_file_name) {
-      // Create a file-like object
-      const file = {
-        name: calibrationData.pdf_file_name,
-        size: 0, // Set size to 0 or the actual size if known
-        type: 'application/pdf', // Set appropriate type
-      };
-      setFiles([file]);
-    } else {
-      setFiles([]); // Reset if no filename or calibrationData is not available
-    }
-  }, [calibrationData]);
 
   return (
     <Dialog
@@ -171,95 +115,109 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
       }}
     >
       <DialogTitle>{calibrationData ? 'Edit Calibration Details' : 'Add Calibration Details'}</DialogTitle>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          onSubmit();
-        }}
-      >
+      <form onSubmit={handleSubmit(onSubmit)}>
         <DialogContent>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth required>
+              <FormControl fullWidth error={!!errors.provider}>
                 <InputLabel>Provider</InputLabel>
-                <Select value={provider} onChange={(e) => setProvider(e.target.value)}>
-                  <MenuItem value="" disabled>
-                    Select Provider
-                  </MenuItem>
-                  {providerList.map((providerItem) => (
-                    <MenuItem key={providerItem.id} value={providerItem.id}>
-                      {providerItem.name}
-                    </MenuItem>
-                  ))}
-                </Select>
+                <Controller
+                  name="provider"
+                  control={control}
+                  rules={{ required: 'Provider is required' }}
+                  render={({ field }) => (
+                    <Select {...field}>
+                      <MenuItem value="" disabled>
+                        Select Provider
+                      </MenuItem>
+                      {providerList.map(({ id, name }) => (
+                        <MenuItem key={id} value={id}>
+                          {name}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
+                />
+                {errors.provider && <Typography color="error">{errors.provider.message}</Typography>}
               </FormControl>
             </Grid>
 
             <Grid item xs={12} sm={6}>
-              <FormControl fullWidth required>
+              <FormControl fullWidth error={!!errors.calibrationType}>
                 <InputLabel>Calibration Type</InputLabel>
-                <Select value={calibrationType} onChange={(e) => setCalibrationType(e.target.value)}>
-                  <MenuItem value="" disabled>
-                    e.g Conformance, initial...
-                  </MenuItem>
-                  {calibrationTypes.map((category, index) => (
-                    <MenuItem key={index} value={category}>
-                      {category}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-            </Grid>
-
-            <Grid item xs={6}>
-              <FormControl fullWidth required>
-                <DesktopDatePicker
-                  label="Date Completed"
-                  inputFormat="MMMM dd, yyyy"
-                  value={dateCompleted}
-                  onChange={(newValue) => setDateCompleted(newValue)}
-                  renderInput={(params) => <TextField {...params} fullWidth required />}
+                <Controller
+                  name="calibrationType"
+                  control={control}
+                  rules={{ required: 'Calibration Type is required' }}
+                  render={({ field }) => (
+                    <Select {...field}>
+                      <MenuItem value="" disabled>
+                        e.g Conformance, initial...
+                      </MenuItem>
+                      {calibrationTypes.map((type, i) => (
+                        <MenuItem key={i} value={type}>
+                          {type}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  )}
                 />
+                {errors.calibrationType && <Typography color="error">{errors.calibrationType.message}</Typography>}
               </FormControl>
             </Grid>
+              
+            {['dateCompleted', 'expiryDate'].map((name, i) => (
+              <Grid item xs={6} key={name}>
+            <FormControl fullWidth error={!!errors[name]}>
 
-            <Grid item xs={6}>
-              <FormControl fullWidth required>
-                <DesktopDatePicker
-                  label="Expiry Date"
-                  inputFormat="MMMM dd, yyyy"
-                  value={expiryDate}
-                  onChange={(newValue) => setExpiryDate(newValue)}
-                  renderInput={(params) => (
-                    <TextField
-                      {...params}
-                      fullWidth
-                      required
-                      InputProps={{
-                        ...params.InputProps,
-                        startAdornment: (
-                          <InputAdornment position="start">
-                            <CalendarBlank onClick={() => params.inputProps.onClick()} style={{ cursor: 'pointer' }} />
-                          </InputAdornment>
-                        ),
-                      }}
+                <Controller
+                  name={name}
+                  control={control}
+                  rules={{ required: `${i === 0 ? 'Date Completed' : 'Expiry Date'} is required` }}
+                  render={({ field }) => (
+                    <DesktopDatePicker
+                      label={i === 0 ? 'Date Completed' : 'Expiry Date'}
+                      inputFormat="MMMM dd, yyyy"
+                      value={field.value}
+                      onChange={field.onChange}
+                      renderInput={(params) => (
+                        <TextField
+                          {...params}
+                          fullWidth 
+                          error={!!errors[name]} // Show error if it exists
+                          helperText={errors[name]?.message} // Display error message
+                        />
+                      )}
                     />
                   )}
                 />
-              </FormControl>
-            </Grid>
+                {/* Display error message directly below the DatePicker */}
+                {errors[name] && (
+                  <Typography color="error" variant="body2" sx={{ mt: 0.5 }}>
+                    {errors[name].message}
+                  </Typography>
+                )}
+            </FormControl>
+
+              </Grid>
+            ))}
 
             <Grid item xs={12}>
-              <FormControl fullWidth required>
-                <TextField
-                  label="Notes / Comments"
-                  fullWidth
-                  multiline
-                  rows={4}
-                  placeholder="Enter your notes or comments here"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  required
+              <FormControl fullWidth error={!!errors.notes}>
+                <Controller
+                  name="notes"
+                  control={control}
+                  rules={{ required: 'Notes are required' }}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Notes / Comments"
+                      multiline
+                      rows={4}
+                      error={!!errors.notes}
+                      helperText={errors.notes ? errors.notes.message : ''}
+                    />
+                  )}
                 />
               </FormControl>
             </Grid>
@@ -271,51 +229,38 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
               caption="Max file size is 3 MB"
               files={files}
               onDrop={handleDrop}
-              required
             />
-            {files.length ? (
-              <Stack spacing={2}>
-                <Stack component="ul" spacing={1} sx={{ listStyle: 'none', m: 0, p: 0 }}>
-                  {files.map((file) => {
-                    const extension = file.name.split('.').pop();
-                    return (
-                      <Stack
-                        component="li"
-                        direction="row"
-                        key={file.name}
-                        spacing={2}
-                        sx={{
-                          alignItems: 'center',
-                          border: '1px solid var(--mui-palette-divider)',
-                          borderRadius: 1,
-                          flex: '1 1 auto',
-                          p: 1,
-                        }}
-                      >
-                        <FileIcon extension={extension} />
-                        <Box sx={{ flex: '1 1 auto' }}>
-                          <Typography variant="subtitle2">{file.name}</Typography>
-                        </Box>
-                        <Tooltip title="Remove" onClick={() => handleRemove(file)}>
-                          <Button>
-                            <X color="secondary" size={20} />
-                          </Button>
-                        </Tooltip>
-                      </Stack>
-                    );
-                  })}
-                </Stack>
+            {files.length > 0 && (
+              <Stack component="ul" spacing={1} sx={{ listStyle: 'none', m: 0, p: 0 }}>
+                {files.map((file) => (
+                  <Stack
+                    component="li"
+                    direction="row"
+                    key={file.name}
+                    spacing={2}
+                    sx={{ alignItems: 'center', p: 1, border: '1px solid #ddd', borderRadius: 1 }}
+                  >
+                    <FileIcon extension={file.name.split('.').pop()} />
+                    <Box sx={{ flex: '1 1 auto' }}>
+                      <Typography variant="subtitle2">{file.name}</Typography>
+                    </Box>
+                    <Tooltip title="Remove" onClick={() => handleRemove(file)}>
+                      <Button>
+                        <X color="secondary" size={24} />
+                      </Button>
+                    </Tooltip>
+                  </Stack>
+                ))}
               </Stack>
-            ) : null}
+            )}
           </Stack>
         </DialogContent>
-
         <DialogActions>
           <Button onClick={onClose} variant="outlined" color="secondary">
             Cancel
           </Button>
           <Button type="submit" variant="contained" color="secondary">
-            {isLoading ? <CircularProgress size={24} /> : calibrationData ? 'Update' : 'Add'}
+            {isLoading ? <CircularProgress size={24} /> : calibrationData ? 'Update' : 'Save'}
           </Button>
         </DialogActions>
       </form>

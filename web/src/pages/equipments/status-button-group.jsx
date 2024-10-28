@@ -4,6 +4,20 @@ import { CheckCircle, FadersHorizontal, Wrench, XCircle } from '@phosphor-icons/
 
 import { kepple, stormGrey, redOrange, california, namedColors } from '@/styles/theme/colors';
 
+const activeBgColors = {
+  Active: '#f0fdfa',
+  Repair: '#ecfdff',
+  Calibration: '#fffaea',
+  Retired: '#fef3f2',
+};
+
+const borderColors = {
+  Active: kepple[600],
+  Repair: namedColors['info-dark'],
+  Calibration: california[600],
+  Retired: redOrange[600],
+};
+
 const StatusButton = ({ icon, status, selectedStatus, onClick }) => (
   <Button
     startIcon={React.cloneElement(icon, {
@@ -15,9 +29,9 @@ const StatusButton = ({ icon, status, selectedStatus, onClick }) => (
     sx={{
       margin: '0 8px 8px 0',
       opacity: selectedStatus === status ? 1 : 0.5,
-      backgroundColor: selectedStatus === status ? kepple[50] : stormGrey[100],
+      backgroundColor: selectedStatus === status ? activeBgColors[status] : stormGrey[100],
       color: selectedStatus === status ? stormGrey[900] : stormGrey[400],
-      borderColor: selectedStatus === status ? kepple[600] : stormGrey[400],
+      borderColor: selectedStatus === status ? borderColors[status] : stormGrey[400],
       pointerEvents: 'auto',
     }}
   >
