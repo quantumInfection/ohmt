@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import { CheckCircle, Eye, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 
-import { california, kepple, namedColors, redOrange, stormGrey ,tomatoOrange } from '@/styles/theme/colors';
+import { california, kepple, namedColors, redOrange, stormGrey, tomatoOrange } from '@/styles/theme/colors';
 
 import Updatecase from '../cases/update-case';
 
@@ -59,16 +59,35 @@ export function DataTable({ data, fetchEquipments }) {
           {data.equipments.map((row) => (
             <TableRow key={row.id}>
               <TableCell>
-                <Typography variant='body2'>
-                {row.name}
+                <Typography
+                  variant="body2"
+                  sx={{ cursor: 'pointer' }}
+                  onClick={() =>
+                    navigate('view', {
+                      state: {
+                        equipmentId: row.id,
+                        allEquipments: data,
+                      },
+                    })
+                  }
+                >
+                  {row.name}
                 </Typography>
-                </TableCell>
+              </TableCell>
               <TableCell>
                 <Chip
                   icon={getStatusIcon(row.status_label)}
                   label={row.status_label}
                   variant="outlined"
-                  sx={{ backgroundColor: 'transparent', color: stormGrey[900] }}
+                  sx={{ backgroundColor: 'transparent', color: stormGrey[900], cursor: 'pointer' }}
+                  onClick={() =>
+                    navigate('view', {
+                      state: {
+                        equipmentId: row.id,
+                        allEquipments: data,
+                      },
+                    })
+                  }
                 />
               </TableCell>
               <TableCell>
@@ -76,19 +95,43 @@ export function DataTable({ data, fetchEquipments }) {
                   icon={<MapPin weight={'fill'} />}
                   label={row.location}
                   variant="outlined"
-                  sx={{ backgroundColor: 'transparent', color: stormGrey[500] }}
+                  sx={{ backgroundColor: 'transparent', color: stormGrey[500], cursor: 'pointer' }}
+                  onClick={() =>
+                    navigate('view', {
+                      state: {
+                        equipmentId: row.id,
+                        allEquipments: data,
+                      },
+                    })
+                  }
                 />
               </TableCell>
               <TableCell onClick={() => handleOpenModal(row)} style={{ cursor: 'pointer' }}>
-              <Typography variant='body1' color='primary'  sx={{textTransform:"uppercase" ,textDecoration:"underline", textDecorationColor : tomatoOrange[300]}}>
-                 {row.case_readable_id}
-                </Typography> 
+                <Typography
+                  variant="body1"
+                  color="primary"
+                  sx={{
+                    textTransform: 'uppercase',
+                    textDecoration: 'underline',
+                    textDecorationColor: tomatoOrange[300],
+                  }}
+                >
+                  {row.case_readable_id}
+                </Typography>
               </TableCell>
-              <TableCell>
+              <TableCell  onClick={() =>
+                    navigate('view', {
+                      state: {
+                        equipmentId: row.id,
+                        allEquipments: data,
+                      },
+                    })
+                  }>
                 <Chip
                   label={row.calibration_due_label || 'NA'}
                   variant="filled"
-                  sx={{ backgroundColor: row.calibration_bg, color: row.calibration_fg }}
+                  sx={{ backgroundColor: row.calibration_bg, color: row.calibration_fg , cursor:"pointer"}}
+                 
                 />
               </TableCell>
               <TableCell align="right">

@@ -130,7 +130,7 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
                 }}
               >
                 <Upload size={24} />
-                <input type="file" hidden onChange={(e) => onDrop([...e.target.files])} accept="image/*" multiple />
+                {/* <input type="file" hidden onChange={(e) => onDrop([...e.target.files])} accept="image/*" multiple /> */}
               </Button>
               <Typography>Drag & drop some files here, or click to select files</Typography>
             </>

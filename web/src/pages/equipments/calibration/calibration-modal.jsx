@@ -17,16 +17,16 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { CalendarBlank, X } from '@phosphor-icons/react';
 import dayjs from 'dayjs';
 import { useMutation } from 'react-query';
-import CircularProgress from '@mui/material/CircularProgress';
+
 import { FileDropzone } from '@/components/core/file-dropzone';
 import { FileIcon } from '@/components/core/file-icon';
+
 import { useFetchSpecificEquip } from '../MutateContext';
-
-
 
 function EditCalibrationModal({ mode, open, onClose, providerList, calibrationData, calibrationTypes, equipmentId }) {
   const [provider, setProvider] = useState('');
@@ -147,7 +147,29 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
   }, [calibrationData]);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth sx={{padding:"16px"}}>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="md"
+      fullWidth
+      sx={{
+        padding: '16px',
+        overflowY: 'auto',
+        '& ::-webkit-scrollbar': {
+          width: '8px',
+        },
+        '& ::-webkit-scrollbar-thumb': {
+          backgroundColor: '#c1c1c1',
+          borderRadius: '4px',
+        },
+        '& ::-webkit-scrollbar-thumb:hover': {
+          backgroundColor: '#a0a0a0',
+        },
+        '& ::-webkit-scrollbar-track': {
+          backgroundColor: '#f1f1f1',
+        },
+      }}
+    >
       <DialogTitle>{calibrationData ? 'Edit Calibration Details' : 'Add Calibration Details'}</DialogTitle>
       <form
         onSubmit={(e) => {
@@ -292,8 +314,8 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
           <Button onClick={onClose} variant="outlined" color="secondary">
             Cancel
           </Button>
-          <Button type="submit" variant="contained" color='secondary' >
-            {isLoading ? <CircularProgress size={24} /> : (calibrationData ? 'Update' : 'Add')}
+          <Button type="submit" variant="contained" color="secondary">
+            {isLoading ? <CircularProgress size={24} /> : calibrationData ? 'Update' : 'Add'}
           </Button>
         </DialogActions>
       </form>

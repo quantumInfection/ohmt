@@ -147,7 +147,7 @@ const Deviceinformation = ({ data }) => {
                 Archived items can be found in the listing under archived tabs.
               </Typography>
               <Button onClick={handleSubmit(onSubmit)} color="error" variant="contained" style={{ marginTop: '10px' }}>
-              {isLoading ? <CircularProgress size={24} /> : 'Update'}
+              {isLoading ? <CircularProgress size={24} /> : 'Archive'}
               </Button>
             </div>
           </Stack>
