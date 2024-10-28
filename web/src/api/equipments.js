@@ -55,6 +55,7 @@ async function uploadImagesToSignedUrls(signedUrls, images) {
 export async function addEquipment(equipmentData) {
   const filePaths = equipmentData.files.map((file) => file.name);
   const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
+  console.log(signedUrlsResponse)
   try {
     await uploadImagesToSignedUrls(signedUrlsResponse, equipmentData.files);
   } catch (error) {
@@ -110,7 +111,7 @@ export async function editEquipment(equipmentData) {
       status: equipmentData.status,
       case_id: equipmentData.caseId,
       location_id: equipmentData.location,
-      image_urls:filePaths,
+      image_urls: filePaths,
       primary_image_index: equipmentData.selectedImageIndex.idx,
       notes: equipmentData.notes,
     }),
@@ -133,20 +134,20 @@ export async function fetchEquipment(id) {
 
 
 async function fetchSignedUrlForPDF(fileName) {
-  const response = await fetch(`${equipmentsUrl}/pdf-signed-url?file_name=${encodeURIComponent(fileName)}`);
+  const response = await fetch(`${equipmentsUrl}pdf-signed-url?file_name=${encodeURIComponent(fileName)}`);
   if (response.status !== 200) {
     throw new Error(`Failed to fetch signed URL, status: ${response.status}`);
   }
-  
   let signedUrl;
   try {
-    signedUrl = await response.text(); 
+    signedUrl = await response.text();
   } catch (error) {
     throw new Error('Failed to read the signed URL from the response');
   }
 
   return signedUrl;
 }
+
 
 
 
@@ -170,7 +171,6 @@ async function uploadPDFToSignedUrl(signedUrl, pdfFile) {
 export async function addCalibrations(formattedData) {
   const pdfFile = formattedData.pdfFile;
   const signedUrl = await fetchSignedUrlForPDF(pdfFile.name); // Use the plain text signed URL
-
   try {
     await uploadPDFToSignedUrl(signedUrl, pdfFile);
   } catch (error) {
@@ -188,7 +188,7 @@ export async function addCalibrations(formattedData) {
       calibration_type: formattedData.calibrationType,
       completion_date_iso: formattedData.dateCompleted,
       expiry_date_iso: formattedData.expiryDate,
-      pdf_file_url: pdfFile.name, 
+      pdf_file_url: pdfFile.name,
       notes: formattedData.notes,
     }),
   });

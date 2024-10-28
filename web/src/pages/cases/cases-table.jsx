@@ -68,7 +68,7 @@ export function DataTable({ data ,fetchCasesMutate }) {
         </TableBody>
       </Table>
 
-      <Modal open={open} onClose={handleClose}>
+      <Modal open={open} onClose={handleClose} size="medium">
         <Updatecase onClose={handleClose} id={selectedRow?.id} selectedRow={selectedRow} fetchCasesAgain={fetchCasesMutate}/>
       </Modal>
     </Box>

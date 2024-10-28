@@ -1,13 +1,12 @@
 import React from 'react';
 import { Box, Card, Tab, Tabs, Typography } from '@mui/material';
-import { CheckCircle, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
+import { padding } from '@mui/system';
+import { CheckCircle, FadersHorizontal, MapPinLine, Wrench, XCircle } from '@phosphor-icons/react';
 import PropTypes from 'prop-types';
 
 import { california, kepple, namedColors, redOrange } from '@/styles/theme/colors';
 
 import CalibrationList from './calibration-list';
-import { padding } from '@mui/system';
-
 
 const StatusCard = ({ icon, title, value, iconBgColor }) => (
   <Card
@@ -72,7 +71,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
   function getStatusIcon(status) {
     switch (status) {
       case 'Active':
-          return <CheckCircle size={32}    weight={'regular'} color={kepple[500]} />;
+        return <CheckCircle size={32} weight={'regular'} color={kepple[500]} />;
       case 'Repair':
         return <Wrench size={32} weight={'regular'} color={namedColors['info-dark']} />;
       case 'Calibration':
@@ -85,15 +84,15 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
   function getStatusBgColor(status) {
     switch (status) {
       case 'Active':
-        return '#B3FFD9'; // Green background
+        return '#f0fdfa'; // Green background
       case 'Repair':
-        return '#FFEB99'; // Yellow background
+        return '#ecfdff'; // Yellow background
       case 'Calibration':
-        return '#CCE5FF'; // Blue background
+        return '#fffaea'; // Blue background
       case 'Retired':
-        return '#FFCCCC'; // Red background
+        return '#fef3f2'; // Red background
       default:
-        return '#FFFFFF'; // Default white background
+        return '#fef3f2'; // Default white background
     }
   }
   return (
@@ -107,7 +106,13 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
           alignItems: 'center',
         }}
       >
-        <StatusCard icon={<MapPin size={32} />} title="Location" value={equipment.location} iconBgColor="#FFB3B3"   />
+        <StatusCard
+          icon={<MapPinLine size={32} color="#FF552D" />}
+          title="Location"
+          value={equipment.location}
+          iconBgColor="#FFCCBE;
+"
+        />
         <StatusCard
           icon={getStatusIcon(equipment.status_label)}
           title="Status"
@@ -115,7 +120,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
           iconBgColor={getStatusBgColor(equipment.status_label)}
         />
         <StatusCard
-          icon={<FadersHorizontal size={32} />}
+          icon={<FadersHorizontal size={32} color="#471701" />}
           title="Calibration due"
           value={equipment.calibration_due_label}
           iconBgColor="#FFE0B3"
@@ -139,7 +144,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
             <Tab label="Timeline" {...a11yProps(1)} sx={{ color: value === 1 ? '#E84924' : 'inherit' }} />
           </Tabs>
         </Box>
-        <CustomTabPanel value={value} index={0} >
+        <CustomTabPanel value={value} index={0}>
           <CalibrationList
             calibrations={equipment.calibrations}
             providerList={providerList}

@@ -97,7 +97,7 @@ const Updatecase = ({ onClose, id, fetchCasesAgain, fetchEquipments, selectedRow
         top: '50%',
         left: '50%',
         transform: 'translate(-50%, -50%)',
-        width: 'auto',
+        width: '900px',
         borderRadius: 2,
         bgcolor: 'background.paper',
         boxShadow: 24,
@@ -133,7 +133,7 @@ const Updatecase = ({ onClose, id, fetchCasesAgain, fetchEquipments, selectedRow
           </MenuItem>
         ))}
       </TextField>
-      <Typography variant="h6" sx={{ mt: 2 }}>
+      <Typography variant="h6" sx={{ my: 2 }}>
         Equipment in this case
       </Typography>
       <Box
