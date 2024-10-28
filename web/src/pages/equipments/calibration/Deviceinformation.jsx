@@ -3,13 +3,12 @@ import { archiveEquipmnt } from '@/api/equipments';
 import { Box, Card, CardContent, Divider, Grid, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import CardHeader from '@mui/material/CardHeader';
+import CircularProgress from '@mui/material/CircularProgress';
 import Stack from '@mui/material/Stack';
 import { Archive, Info } from '@phosphor-icons/react';
 import { Controller, useForm } from 'react-hook-form';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-import CircularProgress from '@mui/material/CircularProgress';
-
 
 const Deviceinformation = ({ data }) => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -116,7 +115,12 @@ const Deviceinformation = ({ data }) => {
           <Divider sx={{ marginY: 2 }} />
 
           <Box display="flex" flexWrap="wrap" gap={2}>
-            {isLoaded && data.images?.length > 0 ? (
+            {!isLoaded ? (
+              <>
+                <CircularProgress sx={{ width: '100%', marginBottom: '1rem' , height:"157px" ,margin:"auto"}} />
+                
+              </>
+            ) : data.images?.length > 0 ? (
               data.images.map((image, index) => (
                 <img
                   key={index}
@@ -147,7 +151,7 @@ const Deviceinformation = ({ data }) => {
                 Archived items can be found in the listing under archived tabs.
               </Typography>
               <Button onClick={handleSubmit(onSubmit)} color="error" variant="contained" style={{ marginTop: '10px' }}>
-              {isLoading ? <CircularProgress size={24} /> : 'Archive'}
+                {isLoading ? <CircularProgress size={24} /> : 'Archive'}
               </Button>
             </div>
           </Stack>

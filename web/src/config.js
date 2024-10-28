@@ -9,7 +9,7 @@ export const config = {
     language: 'en',
     colorScheme: 'light',
     themeColor: '#090a0b',
-    primaryColor: 'neonBlue',
+    primaryColor: 'tomatoOrange',
     url: getSiteURL(),
     version: import.meta.env.VITE_SITE_VERSION || '0.0.0',
   },

@@ -73,7 +73,7 @@ const CalibrationList = ({ calibrations, providerList, equipmentId, calibrationT
                 </TableRow>
               </TableHead>
               <TableBody>
-                {calibrations.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, index) => (
+                {calibrations.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).reverse().map((row, index) => (
                   <TableRow key={index}>
                     <TableCell>{row.type}</TableCell>
                     <TableCell>{row.expiry_date}</TableCell>
