@@ -4,7 +4,7 @@ import { padding } from '@mui/system';
 import { CheckCircle, FadersHorizontal, MapPinLine, Wrench, XCircle } from '@phosphor-icons/react';
 import PropTypes from 'prop-types';
 
-import { california, kepple, namedColors, redOrange } from '@/styles/theme/colors';
+import { california, kepple, namedColors, redOrange ,shakespeare} from '@/styles/theme/colors';
 
 import CalibrationList from './calibration-list';
 // import Timelinebox from './timeline-box';
@@ -87,13 +87,13 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
   function getStatusBgColor(status) {
     switch (status) {
       case 'Active':
-        return '#f0fdfa'; 
+        return kepple[50]; 
       case 'Repair':
-        return '#ecfdff'; 
+        return shakespeare[50]; 
       case 'Calibration':
-        return '#fffaea'; 
+        return california[50]; 
       case 'Retired':
-        return '#fef3f2'; 
+        return redOrange[50]; 
       default:
         return '#fef3f2'; 
     }
@@ -113,8 +113,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
           icon={<MapPinLine size={32} color="#FF552D" />}
           title="Location"
           value={equipment.location}
-          iconBgColor="#FFCCBE;
-"
+          iconBgColor= {namedColors['location_view']}
         />
         <StatusCard
           icon={getStatusIcon(equipment.status_label)}
@@ -126,7 +125,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
           icon={<FadersHorizontal size={32} color="#471701" />}
           title="Calibration due"
           value={equipment.calibration_due_label}
-          iconBgColor="#FFE0B3"
+          iconBgColor={namedColors['calibration_view']}
         />
       </Box>
 
@@ -139,12 +138,12 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
             textColor="inherit"
             TabIndicatorProps={{
               style: {
-                backgroundColor: '#E84924', // Color for the indicator of the selected tab
+                backgroundColor: 'primary', // Color for the indicator of the selected tab
               },
             }}
           >
-            <Tab label="Calibration Details" {...a11yProps(0)} sx={{ color: value === 0 ? '#E84924' : 'inherit' }} />
-            <Tab label="Timeline" {...a11yProps(1)} sx={{ color: value === 1 ? '#E84924' : 'inherit' }} />
+            <Tab label="Calibration Details" {...a11yProps(0)} sx={{ color: value === 0 ? 'primary' : 'inherit' }} />
+            <Tab label="Timeline" {...a11yProps(1)} sx={{ color: value === 1 ? 'primary' : 'inherit' }} />
           </Tabs>
         </Box>
         <CustomTabPanel value={value} index={0}>

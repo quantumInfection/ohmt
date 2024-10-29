@@ -1,10 +1,5 @@
-;
-// MutateContext.js
+
 import React, { createContext, useContext } from 'react';
-
-
-
-
 
 const MutateContext = createContext();
 

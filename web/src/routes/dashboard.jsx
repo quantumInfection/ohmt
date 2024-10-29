@@ -15,7 +15,7 @@ const AddEquipment = React.lazy(() =>
 );
 
 const ViewEquipment = React.lazy(() =>
-  import('@/pages/equipments/ViewEquipment').then((module) => ({ default: module.Page }))
+  import('@/pages/equipments/view_equipment').then((module) => ({ default: module.Page }))
 );
 
 const EditEquipment = React.lazy(() =>

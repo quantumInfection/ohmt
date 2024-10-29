@@ -47,16 +47,13 @@ async function uploadImagesToSignedUrls(signedUrls, images) {
   if (!allUploadsSuccessful) {
     const errorResponses = await Promise.all(responses.map((response) => response.text()));
     throw new Error(`Failed to upload images: ${errorResponses.join(', ')}`);
-  } else {
-    console.log('All images uploaded successfully!');
   }
 }
-
 
 export async function addEquipment(equipmentData) {
   const filePaths = equipmentData.files.map((file) => file.name);
   const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
-  console.log(signedUrlsResponse)
+
   try {
     await uploadImagesToSignedUrls(signedUrlsResponse, equipmentData.files);
   } catch (error) {
@@ -119,7 +116,6 @@ export async function editEquipment(equipmentData) {
   if (!response.ok) {
     throw new Error('Failed to add equipment');
   }
-
   return response.json();
 }
 
@@ -147,9 +143,6 @@ async function fetchSignedUrlForPDF(fileName) {
   return signedUrl;
 }
 
-
-
-
 async function uploadPDFToSignedUrl(signedUrl, pdfFile) {
   const response = await fetch(signedUrl, {
     method: 'PUT',
@@ -165,8 +158,6 @@ async function uploadPDFToSignedUrl(signedUrl, pdfFile) {
   }
 }
 
-
-
 export async function addCalibrations(formattedData) {
   const pdfFile = formattedData.pdfFile;
   const signedUrl = await fetchSignedUrlForPDF(pdfFile.name); // Use the plain text signed URL
@@ -175,7 +166,6 @@ export async function addCalibrations(formattedData) {
   } catch (error) {
     throw new Error('Failed to upload PDF');
   }
-
 
   const response = await fetch(`${equipmentsUrl}${formattedData.equipmentId}/calibration`, {
     method: 'POST',
@@ -233,14 +223,13 @@ export async function editCalibration(formattedData) {
   return response.json();
 }
 
-export async function archiveEquipmnt(equipmentId) {
-  console.log(equipmentId)
-  const response = await fetch(`${equipmentsUrl}${equipmentId}`, {
+export async function archiveEquipment(equipmentId) {
+
+  const response = await customFetch(`${equipmentsUrl}${equipmentId}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json',
     },
-    // body: pdfFile,
   });
 
   if (!response.ok) {

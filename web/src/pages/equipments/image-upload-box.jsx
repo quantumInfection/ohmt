@@ -89,7 +89,7 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
   return (
     <Box sx={{ padding: '40px 0px' }}>
       <Stack direction="column" spacing={3}>
-        <Typography variant="h6">Images </Typography>
+        <Typography variant="h6">Images</Typography>
         <Box
           {...getRootProps()}
           sx={{
@@ -130,7 +130,6 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
                 }}
               >
                 <Upload size={24} />
-                {/* <input type="file" hidden onChange={(e) => onDrop([...e.target.files])} accept="image/*" multiple /> */}
               </Button>
               <Typography>Drag & drop some files here, or click to select files</Typography>
             </>

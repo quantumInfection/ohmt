@@ -1,26 +1,20 @@
 import * as React from 'react';
 import {
   Box,
-  Button,
-  MenuItem,
   Modal,
   Table,
   TableBody,
   TableCell,
   TableHead,
   TableRow,
-  TextField,
-  Typography,
 } from '@mui/material';
 import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import { MapPin, NotePencil  } from '@phosphor-icons/react';
 import {  stormGrey } from '@/styles/theme/colors';
-
 import Updatecase from './update-case';
 
 export function DataTable({ data ,fetchCasesMutate }) {
-
   const [open, setOpen] = React.useState(false);
   const [selectedRow, setSelectedRow] = React.useState(null);
 

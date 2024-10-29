@@ -12,7 +12,7 @@ import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { config } from '@/config';
 import Calibrationbox from './calibration/calibration-box';
-import Deviceinformation from './calibration/Deviceinformation';
+import Deviceinformation from './calibration/device_information';
 import { MutateProvider } from './MutateContext';
 
 const metadata = { title: `Equipments | ${config.site.name}` };

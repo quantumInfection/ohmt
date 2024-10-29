@@ -5,10 +5,10 @@ import { CheckCircle, FadersHorizontal, Wrench, XCircle } from '@phosphor-icons/
 import { kepple, stormGrey, redOrange, california, namedColors } from '@/styles/theme/colors';
 
 const activeBgColors = {
-  Active: '#f0fdfa',
-  Repair: '#ecfdff',
-  Calibration: '#fffaea',
-  Retired: '#fef3f2',
+  Active: kepple[50],
+  Repair: shakespeare[50], 
+  Calibration: california[50],
+  Retired: redOrange[50],
 };
 
 const borderColors = {

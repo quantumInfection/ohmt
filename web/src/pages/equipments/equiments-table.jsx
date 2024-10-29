@@ -80,8 +80,8 @@ export function DataTable({ data, fetchEquipments }) {
   
       case dueLabel >= 14 && dueLabel < 28:
         return {
-          backgroundColor: '#FEE4E2',
-          color: '#80231C',
+          backgroundColor: redOrange[100],
+          color: redOrange[900],
         }; 
            case dueLabel >= 29 && dueLabel < 40:
         return {
@@ -91,20 +91,20 @@ export function DataTable({ data, fetchEquipments }) {
   
       case dueLabel >= 41 && dueLabel < 60:
         return {
-          backgroundColor: '#FFF3C6',
-          color: '#471701',
+          backgroundColor: california[100],
+          color: california[950],
         };
         
         case dueLabel >= 61 && dueLabel < 80:
         return {
-          backgroundColor: '#F0FDFA',
-          color: '#134E48', 
+          backgroundColor: kepple[50],
+          color: kepple[900], 
         };
         
         case dueLabel >= 81 && dueLabel < 101:
         return {
-          backgroundColor: '#FEE4E2',
-          color: '#80231C',
+          backgroundColor: redOrange[100],
+          color: redOrange[900],
         };
   
       default:
