@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 import { california, kepple, namedColors, redOrange } from '@/styles/theme/colors';
 
 import CalibrationList from './calibration-list';
-// import Timelinebox from './timeline-box';
+import Timelinebox from './timeline-box';
 
 
 const StatusCard = ({ icon, title, value, iconBgColor }) => (
@@ -156,8 +156,8 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-        {/* <Timelinebox/> */}
-        sss
+        <Timelinebox/>
+
         </CustomTabPanel>
       </Box>
     </div>
