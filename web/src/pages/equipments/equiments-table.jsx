@@ -42,6 +42,81 @@ export function DataTable({ data, fetchEquipments }) {
     setSelectedRow(null); // Clear the selected row when closing
   };
 
+
+
+
+  const getChipStyles = (row) => {
+
+    if (row.calibration_due_label === 'NA') {
+      return {
+        backgroundColor: row.calibration_bg, 
+        color: row.calibration_fg,
+      };
+    }
+
+    const match = row.calibration_due_label.match(/(\d+)/); 
+    const dueLabel = match ? Number(match[0]) : NaN; 
+  
+    if (row.calibration_due_label.toLowerCase() === 'overdue') {
+      return {
+        backgroundColor: 'red',
+        color: 'white',
+      };
+    }
+  
+    if (isNaN(dueLabel)) {
+      return {
+        backgroundColor: 'gray', 
+        color: 'black',
+      };
+    }
+  
+    switch (true) {
+      case dueLabel < 14:
+        return {
+          backgroundColor: 'orange',
+          color: 'black',
+        };
+  
+      case dueLabel >= 14 && dueLabel < 28:
+        return {
+          backgroundColor: '#FEE4E2',
+          color: '#80231C',
+        }; 
+           case dueLabel >= 29 && dueLabel < 40:
+        return {
+          backgroundColor: 'yellow',
+          color: 'black',
+        };
+  
+      case dueLabel >= 41 && dueLabel < 60:
+        return {
+          backgroundColor: '#FFF3C6',
+          color: '#471701',
+        };
+        
+        case dueLabel >= 61 && dueLabel < 80:
+        return {
+          backgroundColor: '#F0FDFA',
+          color: '#134E48', 
+        };
+        
+        case dueLabel >= 81 && dueLabel < 101:
+        return {
+          backgroundColor: '#FEE4E2',
+          color: '#80231C',
+        };
+  
+      default:
+        return {
+          backgroundColor: row.calibration_bg ,
+          color: row.calibration_fg,
+        };
+    }
+  };
+
+
+
   return (
     <Box sx={{ width: '100%', overflow: 'auto' }}>
       <Table>
@@ -119,19 +194,23 @@ export function DataTable({ data, fetchEquipments }) {
                   {row.case_readable_id}
                 </Typography>
               </TableCell>
-              <TableCell  onClick={() =>
-                    navigate('view', {
-                      state: {
-                        equipmentId: row.id,
-                        allEquipments: data,
-                      },
-                    })
-                  }>
+              <TableCell
+                onClick={() =>
+                  navigate('view', {
+                    state: {
+                      equipmentId: row.id,
+                      allEquipments: data,
+                    },
+                  })
+                }
+              >
                 <Chip
                   label={row.calibration_due_label || 'NA'}
                   variant="filled"
-                  sx={{ backgroundColor: row.calibration_bg, color: row.calibration_fg , cursor:"pointer"}}
-                 
+                  sx={{
+                    ...getChipStyles(row), // Spread the styles here
+                    cursor: 'pointer',
+                  }}
                 />
               </TableCell>
               <TableCell align="right">

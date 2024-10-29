@@ -62,7 +62,6 @@ export function Page() {
     },
   });
 
-
   const [selectedStatus, setSelectedStatus] = useState(data?.status_label || '');
 
   const equip_id = data?.id;
@@ -147,7 +146,7 @@ export function Page() {
                 </Stack>
               </Box>
               <Stack direction="row" spacing={2}>
-                <Button onClick={() => navigate(-1)} variant="outlined" color='secondary'>
+                <Button onClick={() => navigate(-1)} variant="outlined" color="secondary">
                   Cancel
                 </Button>
                 <Button
@@ -248,14 +247,14 @@ export function Page() {
 
           <Box sx={{ padding: '40px 0px' }}>
             <TextField
-             placeholder="Please write comments or notes"
-             label="Notes / Comments"
-             {...register('notes', { required: 'Notes or comments are required' })}
-             multiline
-             rows={4}
-             fullWidth
-             error={!!errors.notes}
-             helperText={errors.notes?.message}
+              placeholder="Please write comments or notes"
+              label="Notes / Comments"
+              {...register('notes', { required: 'Notes or comments are required' })}
+              multiline
+              rows={4}
+              fullWidth
+              error={!!errors.notes}
+              helperText={errors.notes?.message}
               value={notes} // Bind the value of the TextField to the notes state
               onChange={handleNotesChange} // Update the state on change
             />
