@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 import { california, kepple, namedColors, redOrange } from '@/styles/theme/colors';
 
 import CalibrationList from './calibration-list';
+// import Timelinebox from './timeline-box';
+
 
 const StatusCard = ({ icon, title, value, iconBgColor }) => (
   <Card
@@ -21,6 +23,7 @@ const StatusCard = ({ icon, title, value, iconBgColor }) => (
   >
     <Box
       sx={{
+        display:"flex",
         backgroundColor: iconBgColor,
         borderRadius: '10%',
         padding: '10px',
@@ -30,10 +33,10 @@ const StatusCard = ({ icon, title, value, iconBgColor }) => (
       {icon}
     </Box>
     <Box>
-      <Typography variant="subtitle2" color="textSecondary">
+      <Typography variant="Caption" color="textSecondary" sx={{fontSize:"12px"}}>
         {title}
       </Typography>
-      <Typography variant="h6" fontWeight="bold">
+      <Typography variant="body1" >
         {value}
       </Typography>
     </Box>
@@ -84,15 +87,15 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
   function getStatusBgColor(status) {
     switch (status) {
       case 'Active':
-        return '#f0fdfa'; // Green background
+        return '#f0fdfa'; 
       case 'Repair':
-        return '#ecfdff'; // Yellow background
+        return '#ecfdff'; 
       case 'Calibration':
-        return '#fffaea'; // Blue background
+        return '#fffaea'; 
       case 'Retired':
-        return '#fef3f2'; // Red background
+        return '#fef3f2'; 
       default:
-        return '#fef3f2'; // Default white background
+        return '#fef3f2'; 
     }
   }
   return (
@@ -153,7 +156,8 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-          Item Two
+        {/* <Timelinebox/> */}
+        sss
         </CustomTabPanel>
       </Box>
     </div>
