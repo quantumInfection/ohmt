@@ -11,6 +11,7 @@ export const config = {
     themeColor: '#090a0b',
     primaryColor: 'neonBlue',
     url: getSiteURL(),
+    backendHostUrl: import.meta.env.VITE_BACKEND_HOST_URL || 'https://clownfish-app-vi4my.ondigitalocean.app',
     version: import.meta.env.VITE_SITE_VERSION || '0.0.0',
   },
   logLevel: import.meta.env.VITE_LOG_LEVEL || LogLevel.ALL,
