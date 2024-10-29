@@ -10,3 +10,6 @@ README.md
 LICENSE
 .idea/
 .vscode/
+
+# Ignore all .env files except .env.stage
+!.env.stage

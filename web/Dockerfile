@@ -9,7 +9,8 @@ RUN npm ci
 
 COPY . .
 
-COPY .env .
+# Copy the staging .env file
+COPY .env.stage .env
 
 # Use the build script to create the production build
 RUN npm run build
