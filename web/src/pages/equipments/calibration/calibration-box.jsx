@@ -4,7 +4,7 @@ import { CheckCircle, FadersHorizontal, MapPinLine, Wrench, XCircle } from '@pho
 import PropTypes from 'prop-types';
 import { california, kepple, namedColors, redOrange ,shakespeare} from '@/styles/theme/colors';
 import CalibrationList from './calibration-list';
-
+import Timelinebox from './timeline-box';
 
 
 const StatusCard = ({ icon, title, value, iconBgColor }) => (
@@ -152,7 +152,7 @@ const CalibrationBox = ({ equipment, providerList, allEquipments }) => {
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-        sss
+        <Timelinebox/>
         </CustomTabPanel>
       </Box>
     </div>
