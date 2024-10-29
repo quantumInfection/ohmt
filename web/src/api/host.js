@@ -1,1 +1,3 @@
-export const baseUrl = 'https://clownfish-app-vi4my.ondigitalocean.app';
+import { config } from '@/config'
+
+export const baseUrl = config.site.backendHostUrl
