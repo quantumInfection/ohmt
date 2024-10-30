@@ -26,11 +26,11 @@ export function UserProvider({ children }) {
         ...prev,
         user: user
           ? {
-              id: user.id ?? undefined,
-              email: user.email ?? undefined,
-              name: user.user_metadata?.full_name ?? undefined,
-              avatar: user.user_metadata?.avatar_url ?? undefined,
-            }
+            id: user.id ?? undefined,
+            email: user.email ?? undefined,
+            name: user.user_metadata?.full_name ?? undefined,
+            avatar: user.user_metadata?.avatar_url ?? undefined,
+          }
           : null,
         accessToken: accessToken ?? null,
         error: null,
@@ -49,11 +49,11 @@ export function UserProvider({ children }) {
         ...prev,
         user: user
           ? {
-              id: user.id ?? undefined,
-              email: user.email ?? undefined,
-              name: user.user_metadata?.full_name ?? undefined,
-              avatar: user.user_metadata?.avatar_url ?? undefined,
-            }
+            id: user.id ?? undefined,
+            email: user.email ?? undefined,
+            name: user.user_metadata?.full_name ?? undefined,
+            avatar: user.user_metadata?.avatar_url ?? undefined,
+          }
           : null,
         accessToken: accessToken ?? null,
         error: null,
