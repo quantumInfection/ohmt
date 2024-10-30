@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Stack, Typography } from '@mui/material';
 import Button from '@mui/material/Button';
 import IconButton from '@mui/material/IconButton';
@@ -8,9 +8,26 @@ import { useDropzone } from 'react-dropzone';
 import { stormGrey } from '@/styles/theme/colors';
 
 export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIndex, setSelectedImageIndex }) {
+  const [imageUrls, setImageUrls] = useState(selectedFiles || []);
+
   const onDrop = (acceptedFiles) => {
-    setSelectedFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
+    // Filter out duplicate files based on file name
+    const newFiles = acceptedFiles.filter(
+      (file) => !selectedFiles.some((prevFile) => prevFile.name === file.name)
+    );
+  
+    if (newFiles.length === 0) {
+      return; // No new files to add
+    }
+  
+    const newImageUrls = newFiles.map((file) => URL.createObjectURL(file));
+  
+    // Update the states
+    setSelectedFiles((prevFiles) => [...prevFiles, ...newFiles]);
+    setImageUrls((prevUrls) => [...prevUrls, ...newImageUrls]);
   };
+  
+  
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, accept: 'image/*' });
 
@@ -22,17 +39,25 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
     setSelectedFiles((prevFiles) => {
       const updatedFiles = prevFiles.filter((_, i) => i !== index);
       if (selectedImageIndex === index) {
-        setSelectedImageIndex(null);
+        setSelectedImageIndex(null); // Clear selected image if it's deleted
       } else if (selectedImageIndex > index) {
-        setSelectedImageIndex((prevIndex) => prevIndex - 1);
+        setSelectedImageIndex((prevIndex) => prevIndex - 1); // Adjust index if necessary
       }
       return updatedFiles;
     });
+
+    // Remove the image URL from the imageUrls state
+    setImageUrls((prevUrls) => {
+      const newUrls = prevUrls.filter((_, i) => i !== index);
+      URL.revokeObjectURL(prevUrls[index]); // Free up memory
+      return newUrls;
+    });
+  
   };
 
   useEffect(() => {
     if (selectedFiles.length > 0 && selectedImageIndex === null) {
-      setSelectedImageIndex(0);
+      setSelectedImageIndex(0); // Auto select the first image if none is selected
     }
   }, [selectedFiles, selectedImageIndex, setSelectedImageIndex]);
 
@@ -80,17 +105,16 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
                 }}
               >
                 <Upload size={24} />
-                <input type="file" hidden onChange={(e) => onDrop(e.target.files)} accept="image/*" multiple />
               </Button>
               <Typography>Drag & drop some files here, or click to select files</Typography>
             </>
           )}
         </Box>
         <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
-          {selectedFiles.map((file, index) => (
+          {imageUrls.map((url, index) => (
             <Box key={index} sx={{ position: 'relative', cursor: 'pointer' }} onClick={() => handleImageClick(index)}>
               <img
-                src={file.url || URL.createObjectURL(file)}
+                src={imageUrls[index]?.url || url}
                 alt={`Selected file ${index + 1}`}
                 style={{
                   width: '100px',

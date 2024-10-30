@@ -143,3 +143,7 @@ body {
 #root {
   height: 100%;
 }
+/* adding padding for callibration list */
+.css-19kzrtu{
+  padding: 14px 0 !important;
+}
