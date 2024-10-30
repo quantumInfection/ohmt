@@ -9,12 +9,11 @@ import services.unit_of_work as suow
 import view.view as view
 
 app = blueprints.Blueprint("api_equipment", __name__, url_prefix="/v1/equipments")
-
-# Configure Spaces access
-
+import auth
 
 # TODO: Add auth
 @app.route("/", methods=["POST"])
+@auth.supabase
 def create_equipment():
     """
     Create equipment
@@ -58,6 +57,7 @@ def create_equipment():
 
 
 @app.route("/<equipment_id>", methods=["PUT"])
+@auth.supabase
 def update_equipment(equipment_id):
     """Updates equipment"""
 
@@ -81,6 +81,7 @@ def update_equipment(equipment_id):
     }
 
 @app.route("/<equipment_id>", methods=["DELETE"])
+@auth.supabase
 def archive_equipment(equipment_id):
     """
     Archive equipment
@@ -91,6 +92,7 @@ def archive_equipment(equipment_id):
 
 
 @app.route("/<equipment_id>/calibration", methods=["POST"])
+@auth.supabase
 def add_calibration_to_equipment(equipment_id):
     """
     Add calibration to equipment
@@ -124,6 +126,7 @@ def add_calibration_to_equipment(equipment_id):
 
 
 @app.route("/<equipment_id>/calibration/<calibration_id>", methods=["PUT"])
+@auth.supabase
 def update_calibration(equipment_id, calibration_id):
     """
     Update calibration
@@ -158,6 +161,7 @@ def update_calibration(equipment_id, calibration_id):
 
 
 @app.route("/", methods=["GET"])
+@auth.supabase
 def list_equipments():
     """
     List equipments
@@ -192,6 +196,7 @@ def list_equipments():
 
 
 @app.route("/<equipment_id>", methods=["GET"])
+@auth.supabase
 def get_equipment(equipment_id):
     """
     Get equipment
@@ -218,6 +223,7 @@ def get_equipment(equipment_id):
 
 
 @app.route("/images-signed-url", methods=["GET"])
+@auth.supabase
 def get_images_signed_url():
     """
     Get signed urls for images
@@ -230,6 +236,7 @@ def get_images_signed_url():
 
 
 @app.route("/pdf-signed-url", methods=["GET"])
+@auth.supabase
 def get_pdf_signed_url():
     """
     Get signed url for PDF

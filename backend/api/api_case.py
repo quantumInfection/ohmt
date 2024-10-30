@@ -5,6 +5,8 @@ import services.reads as reads
 import services.unit_of_work as suow
 import view.view as view
 
+import auth
+
 app = blueprints.Blueprint("api_case", __name__, url_prefix="/v1/cases")
 
 
@@ -35,6 +37,7 @@ def create_case():
 
 
 @app.route("/", methods=["GET"])
+@auth.supabase
 def get_all_cases():
     """
     Get all cases
@@ -72,6 +75,7 @@ def get_all_cases():
 
 
 @app.route("/<case_id>", methods=["GET"])
+@auth.supabase
 def get_case(case_id):
     """
     Get case
@@ -103,6 +107,7 @@ def get_case(case_id):
 
 
 @app.route("/<case_id>", methods=["PUT"])
+@auth.supabase
 def update_case_location(case_id):
     """
     Update case location

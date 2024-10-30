@@ -1,9 +1,9 @@
 'use client';
 
 import * as React from 'react';
-
 import { logger } from '@/lib/default-logger';
 import { createClient as createSupabaseClient } from '@/lib/supabase/client';
+import TokenManager from './tokenManager';
 
 export const UserContext = React.createContext(undefined);
 
@@ -14,11 +14,13 @@ export function UserProvider({ children }) {
     user: null,
     error: null,
     isLoading: true,
+    accessToken: null,
   });
 
   React.useEffect(() => {
     function handleInitialSession(session) {
       const user = session?.user;
+      const accessToken = session?.access_token;
 
       setState((prev) => ({
         ...prev,
@@ -30,13 +32,18 @@ export function UserProvider({ children }) {
               avatar: user.user_metadata?.avatar_url ?? undefined,
             }
           : null,
+        accessToken: accessToken ?? null,
         error: null,
         isLoading: false,
       }));
+
+      // Store the token in the module
+      TokenManager.setToken(accessToken);
     }
 
     function handleSignedIn(session) {
       const user = session?.user;
+      const accessToken = session?.access_token;
 
       setState((prev) => ({
         ...prev,
@@ -48,13 +55,20 @@ export function UserProvider({ children }) {
               avatar: user.user_metadata?.avatar_url ?? undefined,
             }
           : null,
+        accessToken: accessToken ?? null,
         error: null,
         isLoading: false,
       }));
+
+      // Store the token in the module
+      TokenManager.setToken(accessToken);
     }
 
     function handleSignedOut() {
-      setState((prev) => ({ ...prev, user: null, error: null, isLoading: false }));
+      setState((prev) => ({ ...prev, user: null, accessToken: null, error: null, isLoading: false }));
+
+      // Clear the token in the module
+      TokenManager.setToken(null);
     }
 
     const {
@@ -72,6 +86,10 @@ export function UserProvider({ children }) {
 
       if (event === 'SIGNED_OUT') {
         handleSignedOut();
+      }
+
+      if (event === 'TOKEN_REFRESHED') {
+        handleSignedIn(session);
       }
     });
 

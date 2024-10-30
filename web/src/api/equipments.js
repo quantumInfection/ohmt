@@ -1,9 +1,10 @@
 import { baseUrl } from '@/api/host';
+import { customFetch } from './customFetch';
 
 const equipmentsUrl = `${baseUrl}/v1/equipments/`;
 
 export async function fetchEquipments() {
-  const response = await fetch(equipmentsUrl);
+  const response = await customFetch(equipmentsUrl);
   if (!response.ok) {
     throw new Error('Failed to fetch equipments');
   }
@@ -11,7 +12,7 @@ export async function fetchEquipments() {
 }
 
 async function fetchImagesSignedUrls(filepaths) {
-  const response = await fetch(
+  const response = await customFetch(
     `${equipmentsUrl}images-signed-url?file_names=${encodeURIComponent(JSON.stringify(filepaths))}`,
     {
       method: 'GET',
@@ -30,7 +31,7 @@ async function fetchImagesSignedUrls(filepaths) {
 
 async function uploadImagesToSignedUrls(signedUrls, images) {
   const uploadPromises = images.map((image) => {
-    return fetch(signedUrls[image.name], {
+    return customFetch(signedUrls[image.name], {
       method: 'PUT',
       headers: {
         'Content-Type': image.type,
@@ -59,7 +60,7 @@ export async function addEquipment(equipmentData) {
     throw new Error('Failed to upload images');
   }
 
-  const response = await fetch(equipmentsUrl, {
+  const response = await customFetch(equipmentsUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
