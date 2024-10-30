@@ -46,7 +46,7 @@ def supabase(func):
             try:
                 user = supabase.auth.get_user(token)
                 # If authentication is successful, add the user to the kwargs
-                kwargs["user"] = user
+                kwargs["user"] = user.user
             except Exception as e:
                 response = make_response(
                     jsonify({"error": "Invalid authorization token"}), 401
