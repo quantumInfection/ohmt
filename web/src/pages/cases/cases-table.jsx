@@ -49,7 +49,7 @@ export function DataTable({ data ,fetchCasesMutate }) {
                   icon={<MapPin weight={'fill'}/>}
                   label={row.location}
                   variant="outlined"
-                  sx={{ backgroundColor: 'transparent' ,color: stormGrey[500] }}
+                  sx={{ backgroundColor: 'transparent', color: stormGrey[500] }}
                 />
               </TableCell>
               <TableCell align="right">

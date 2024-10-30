@@ -42,11 +42,7 @@ export function DataTable({ data, fetchEquipments }) {
     setSelectedRow(null); // Clear the selected row when closing
   };
 
-
-
-
   const getChipStyles = (row) => {
-
     if (row.calibration_due_label === 'NA') {
       return {
         backgroundColor: row.calibration_bg, 
@@ -114,8 +110,6 @@ export function DataTable({ data, fetchEquipments }) {
         };
     }
   };
-
-
 
   return (
     <Box sx={{ width: '100%', overflow: 'auto' }}>

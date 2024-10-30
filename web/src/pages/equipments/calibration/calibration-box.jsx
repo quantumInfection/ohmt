@@ -1,13 +1,10 @@
 import React from 'react';
 import { Box, Card, Tab, Tabs, Typography } from '@mui/material';
-import { padding } from '@mui/system';
 import { CheckCircle, FadersHorizontal, MapPinLine, Wrench, XCircle } from '@phosphor-icons/react';
 import PropTypes from 'prop-types';
-
 import { california, kepple, namedColors, redOrange ,shakespeare} from '@/styles/theme/colors';
-
 import CalibrationList from './calibration-list';
-// import Timelinebox from './timeline-box';
+
 
 
 const StatusCard = ({ icon, title, value, iconBgColor }) => (
@@ -64,7 +61,7 @@ CustomTabPanel.propTypes = {
   index: PropTypes.number.isRequired,
 };
 
-const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
+const CalibrationBox = ({ equipment, providerList, allEquipments }) => {
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event, newValue) => {
@@ -95,7 +92,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
       case 'Retired':
         return redOrange[50]; 
       default:
-        return '#fef3f2'; 
+        return kepple[50]; 
     }
   }
   return (
@@ -110,7 +107,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
         }}
       >
         <StatusCard
-          icon={<MapPinLine size={32} color="#FF552D" />}
+          icon={<MapPinLine size={32} color={namedColors['location_icon']} />}
           title="Location"
           value={equipment.location}
           iconBgColor= {namedColors['location_view']}
@@ -122,7 +119,7 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
           iconBgColor={getStatusBgColor(equipment.status_label)}
         />
         <StatusCard
-          icon={<FadersHorizontal size={32} color="#471701" />}
+          icon={<FadersHorizontal size={32}  color={namedColors['calibration_icon']} />}
           title="Calibration due"
           value={equipment.calibration_due_label}
           iconBgColor={namedColors['calibration_view']}
@@ -155,7 +152,6 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
           />
         </CustomTabPanel>
         <CustomTabPanel value={value} index={1}>
-        {/* <Timelinebox/> */}
         sss
         </CustomTabPanel>
       </Box>
@@ -163,4 +159,4 @@ const Calibrationbox = ({ equipment, providerList, allEquipments }) => {
   );
 };
 
-export default Calibrationbox;
+export default CalibrationBox;

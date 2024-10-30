@@ -10,8 +10,6 @@ import { stormGrey } from '@/styles/theme/colors';
 export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIndex, setSelectedImageIndex }) {
   const [imageUrls, setImageUrls] = useState(selectedFiles || []);
 
-  //  images name
-
   useEffect(() => {
     if (selectedFiles.length === 0) {
       return; 

@@ -11,8 +11,8 @@ import { Helmet } from 'react-helmet-async';
 import { useMutation } from 'react-query';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { config } from '@/config';
-import Calibrationbox from './calibration/calibration-box';
-import Deviceinformation from './calibration/device_information';
+import CalibrationBox from './calibration/calibration-box';
+import DeviceInformation from './calibration/device_information';
 import { MutateProvider } from './MutateContext';
 
 const metadata = { title: `Equipments | ${config.site.name}` };
@@ -97,14 +97,14 @@ export function Page() {
                 <Box sx={{ flexGrow: 1 }}>
                   <Grid container>
                     <Grid md={8}>
-                      <Calibrationbox
+                      <CalibrationBox
                         equipment={equipment}
                         providerList={allEquipments?.calibration_providers}
                         allEquipments={allEquipments}
                       />
                     </Grid>
                     <Grid md={4} padding={2} paddingTop={0}>
-                      <Deviceinformation data={equipment} />
+                      <DeviceInformation data={equipment} />
                     </Grid>
                   </Grid>
                 </Box>
