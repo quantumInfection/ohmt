@@ -31,7 +31,7 @@ async function fetchImagesSignedUrls(filepaths) {
 
 async function uploadImagesToSignedUrls(signedUrls, images) {
   const uploadPromises = images.map((image) => {
-    return customFetch(signedUrls[image.name], {
+    return fetch(signedUrls[image.name], {
       method: 'PUT',
       headers: {
         'Content-Type': image.type,
@@ -98,7 +98,7 @@ export async function editEquipment(equipmentData) {
     throw new Error('Failed to upload images');
   }
 
-  const response = await fetch(`${equipmentsUrl}${equipmentData?.equip_id}`, {
+  const response = await customFetch(`${equipmentsUrl}${equipmentData?.equip_id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -120,7 +120,7 @@ export async function editEquipment(equipmentData) {
 }
 
 export async function fetchEquipment(id) {
-  const response = await fetch(`${equipmentsUrl}${id}`);
+  const response = await customFetch(`${equipmentsUrl}${id}`);
   if (!response.ok) {
     throw new Error('Failed to fetch equipment');
   }
@@ -129,7 +129,7 @@ export async function fetchEquipment(id) {
 
 
 async function fetchSignedUrlForPDF(fileName) {
-  const response = await fetch(`${equipmentsUrl}pdf-signed-url?file_name=${encodeURIComponent(fileName)}`);
+  const response = await customFetch(`${equipmentsUrl}pdf-signed-url?file_name=${encodeURIComponent(fileName)}`);
   if (response.status !== 200) {
     throw new Error(`Failed to fetch signed URL, status: ${response.status}`);
   }
@@ -167,7 +167,7 @@ export async function addCalibrations(formattedData) {
     throw new Error('Failed to upload PDF');
   }
 
-  const response = await fetch(`${equipmentsUrl}${formattedData.equipmentId}/calibration`, {
+  const response = await customFetch(`${equipmentsUrl}${formattedData.equipmentId}/calibration`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -198,7 +198,7 @@ export async function editCalibration(formattedData) {
   } catch (error) {
     throw new Error('Failed to upload PDF');
   }
-  const response = await fetch(
+  const response = await customFetch(
     `${equipmentsUrl}${formattedData.equipmentId}/calibration/${formattedData.calibrationId}`,
     {
       method: 'PUT',
@@ -217,7 +217,7 @@ export async function editCalibration(formattedData) {
   );
 
   if (!response.ok) {
-    throw new Error('Failed to add equipment');
+    throw new Error('Failed to edit calibration');
   }
 
   return response.json();

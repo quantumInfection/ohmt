@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { archiveEquipmnt } from '@/api/equipments';
+import { archiveEquipment } from '@/api/equipments';
 import { Box, Card, CardContent, Divider, Grid, Typography, Button, CardHeader, CircularProgress, Stack } from '@mui/material';
 import { Archive, Info } from '@phosphor-icons/react';
 import { useMutation } from 'react-query';
@@ -9,7 +9,7 @@ const DeviceInformation = ({ data }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
   
-  const { mutate, isLoading } = useMutation(archiveEquipmnt, {
+  const { mutate, isLoading } = useMutation(archiveEquipment, {
     onSuccess: () => navigate(-1),
   });
 

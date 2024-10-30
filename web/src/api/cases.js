@@ -13,7 +13,7 @@ export async function fetchCases() {
 }
 
 export async function fetchCase(id) {
-  const response = await fetch(`${casesUrl}${id}`);
+  const response = await customFetch(`${casesUrl}${id}`);
   if (!response.ok) {
     throw new Error('Failed to fetch cases');
   }
@@ -42,7 +42,7 @@ export async function addCase(caseData) {
 
 
 export async function updateCase({ caseId, selectedLocationId }) {
-  const response = await fetch(`${casesUrl}${caseId}`, {
+  const response = await customFetch(`${casesUrl}${caseId}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
