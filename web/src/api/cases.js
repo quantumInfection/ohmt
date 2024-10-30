@@ -1,17 +1,19 @@
 import { baseUrl } from '@/api/host';
+import { customFetch } from './customFetch';
 
 const casesUrl = `${baseUrl}/v1/cases/`;
 
 export async function fetchCases() {
-  const response = await fetch(casesUrl);
+  const response = await customFetch(casesUrl);
   if (!response.ok) {
-    throw new Error('Failed to fetch cases');
+    console.error('Failed to fetch cases', response);
+    throw new Error('Failed to fetch cases' + response);
   }
   return response.json();
 }
 
 export async function addCase(caseData) {
-  const response = await fetch(casesUrl, {
+  const response = await customFetch(casesUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

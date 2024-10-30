@@ -4,11 +4,13 @@ from db.cloud_db import CloudDB
 from api import *
 
 app = Flask(__name__)
-CORS(app)  # Enable CORS
+CORS(
+    app, resources={r"/*": {"origins": "*"}}, supports_credentials=True
+)  # Enable CORS with configuration
 app.register_blueprint(api_equipment)  # Register the equipment API blueprint
 app.register_blueprint(api_case)  # Register the case API blueprint
 app.register_blueprint(api_mock)  # Register the mock API blueprint
-from auth import supabase_auth
+import auth
 
 
 @app.route("/")
@@ -17,13 +19,13 @@ def public():
 
 
 @app.route("/auth")
-@supabase_auth  # Apply the decorator here
-def test_auth(user=None):  # Add the user argument
+@auth.supabase  # Apply the decorator here
+def test_auth(user):  # Add the user argument
     # Access the authenticated user's information
     user_id = user.id
     user_email = user.email
     # ... your code ...
-    return f"Auth is working! User ID: {user_id}, Email: {user_email}" 
+    return f"Auth is working! User ID: {user_id}, Email: {user_email}"
 
 
 @app.route("/cloud-db")
