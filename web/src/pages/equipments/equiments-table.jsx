@@ -10,6 +10,7 @@ import { california, kepple, namedColors, redOrange, stormGrey, tomatoOrange } f
 import Updatecase from '../cases/update-case';
 
 export function DataTable({ data, fetchEquipments }) {
+  console.log(fetchEquipments)
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
@@ -125,7 +126,7 @@ export function DataTable({ data, fetchEquipments }) {
           </TableRow>
         </TableHead>
         <TableBody>
-          {data.equipments.map((row) => (
+          {data.map((row) => (
             <TableRow key={row.id}>
               <TableCell>
                 <Typography
