@@ -10,29 +10,6 @@ import { stormGrey } from '@/styles/theme/colors';
 export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIndex, setSelectedImageIndex }) {
   const [imageUrls, setImageUrls] = useState(selectedFiles || []);
 
-  useEffect(() => {
-    if (selectedFiles.length === 0) {
-      return; 
-    }
-
-    const updatedFiles = selectedFiles.map((file) => {
-      if (file.url) {
-        const urlParts = file.url.split('/');
-        const fileName = urlParts[urlParts.length - 1];
-
-        return {
-          ...file,
-          name: fileName, 
-        };
-      }
-     
-      return file;
-    });
-
-    setSelectedFiles(updatedFiles); 
-  }, [selectedFiles]);
-
-
   const onDrop = (acceptedFiles) => {
     // Filter out duplicate files based on file name
     const newFiles = acceptedFiles.filter(

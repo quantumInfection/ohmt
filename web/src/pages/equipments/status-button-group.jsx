@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@mui/material';
 import { CheckCircle, FadersHorizontal, Wrench, XCircle } from '@phosphor-icons/react';
 
-import { kepple, stormGrey, redOrange, california, namedColors } from '@/styles/theme/colors';
+import { kepple, stormGrey, redOrange, california, namedColors , shakespeare } from '@/styles/theme/colors';
 
 const activeBgColors = {
   Active: kepple[50],
