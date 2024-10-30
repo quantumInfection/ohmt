@@ -70,7 +70,7 @@ export function Page() {
                 </Button>
               </div>
             </Stack>
-            {data && Object.keys(data).length > 0 && <DataTable data={data.cases} />}
+            {data && Object.keys(data).length > 0 && <DataTable data={data.cases} fetchCasesMutate={mutate} />}
           </Stack>
         </Box>
       )}

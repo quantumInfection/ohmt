@@ -9,7 +9,7 @@ export const config = {
     language: 'en',
     colorScheme: 'light',
     themeColor: '#090a0b',
-    primaryColor: 'neonBlue',
+    primaryColor: 'tomatoOrange',
     url: getSiteURL(),
     backendHostUrl: import.meta.env.VITE_BACKEND_HOST_URL || 'https://clownfish-app-vi4my.ondigitalocean.app',
     version: import.meta.env.VITE_SITE_VERSION || '0.0.0',

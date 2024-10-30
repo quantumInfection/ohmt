@@ -2,20 +2,36 @@ import React, { useState } from 'react';
 import { Button } from '@mui/material';
 import { CheckCircle, FadersHorizontal, Wrench, XCircle } from '@phosphor-icons/react';
 
-import { kepple, stormGrey } from '@/styles/theme/colors';
+import { kepple, stormGrey, redOrange, california, namedColors , shakespeare } from '@/styles/theme/colors';
+
+const activeBgColors = {
+  Active: kepple[50],
+  Repair: shakespeare[50], 
+  Calibration: california[50],
+  Retired: redOrange[50],
+};
+
+const borderColors = {
+  Active: kepple[600],
+  Repair: namedColors['info-dark'],
+  Calibration: california[600],
+  Retired: redOrange[600],
+};
 
 const StatusButton = ({ icon, status, selectedStatus, onClick }) => (
   <Button
-    startIcon={icon}
+    startIcon={React.cloneElement(icon, {
+      color: selectedStatus === status ? icon.props.activeColor : icon.props.inactiveColor,
+    })}
     onClick={onClick}
     variant="outlined"
     disableElevation
     sx={{
       margin: '0 8px 8px 0',
       opacity: selectedStatus === status ? 1 : 0.5,
-      backgroundColor: selectedStatus === status ? kepple[50] : stormGrey[100],
+      backgroundColor: selectedStatus === status ? activeBgColors[status] : stormGrey[100],
       color: selectedStatus === status ? stormGrey[900] : stormGrey[400],
-      borderColor: selectedStatus === status ? kepple[600] : stormGrey[400],
+      borderColor: selectedStatus === status ? borderColors[status] : stormGrey[400],
       pointerEvents: 'auto',
     }}
   >
@@ -23,8 +39,8 @@ const StatusButton = ({ icon, status, selectedStatus, onClick }) => (
   </Button>
 );
 
-export function StatusButtonGroup({ onStatusChange }) {
-  const [selectedStatus, setSelectedStatus] = useState(null);
+export function StatusButtonGroup({ onStatusChange, initialstatus }) {
+  const [selectedStatus, setSelectedStatus] = useState(initialstatus || null);
 
   const handleButtonClick = (status) => {
     setSelectedStatus(status);
@@ -36,25 +52,25 @@ export function StatusButtonGroup({ onStatusChange }) {
   return (
     <div>
       <StatusButton
-        icon={<CheckCircle />}
+        icon={<CheckCircle weight="fill" activeColor={kepple[500]} inactiveColor={stormGrey[400]} />}
         status="Active"
         selectedStatus={selectedStatus}
         onClick={() => handleButtonClick('Active')}
       />
       <StatusButton
-        icon={<Wrench />}
+        icon={<Wrench weight="fill" activeColor={namedColors['info-dark']} inactiveColor={stormGrey[400]} />}
         status="Repair"
         selectedStatus={selectedStatus}
         onClick={() => handleButtonClick('Repair')}
       />
       <StatusButton
-        icon={<FadersHorizontal />}
+        icon={<FadersHorizontal weight="fill" activeColor={california[500]} inactiveColor={stormGrey[400]} />}
         status="Calibration"
         selectedStatus={selectedStatus}
         onClick={() => handleButtonClick('Calibration')}
       />
       <StatusButton
-        icon={<XCircle />}
+        icon={<XCircle weight="fill" activeColor={redOrange[500]} inactiveColor={stormGrey[400]} />}
         status="Retired"
         selectedStatus={selectedStatus}
         onClick={() => handleButtonClick('Retired')}

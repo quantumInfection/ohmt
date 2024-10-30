@@ -28,8 +28,16 @@ export function Page() {
 
   const metadata = { title: `Add equipment | ${config.site.name}` };
   const navigate = useNavigate();
-  const { control, register, handleSubmit, watch, resetField, setValue } = useForm();
-  const [selectedStatus, setSelectedStatus] = useState(null);
+  const {
+    control,
+    register,
+    handleSubmit,
+    watch,
+    resetField,
+    setValue,
+    formState: { errors },
+  } = useForm();
+  const [selectedStatus, setSelectedStatus] = useState('Active');
 
   const { mutate, isLoading } = useMutation(addEquipment, {
     onSuccess: () => {
@@ -42,6 +50,12 @@ export function Page() {
       alert('Please select a status.');
       return;
     }
+
+    if (selectedFiles.length === 0) {
+      alert('Please upload at least one image.');
+      return;
+    }
+
     mutate({
       ...data,
       status: selectedStatus,
@@ -70,7 +84,7 @@ export function Page() {
     setSelectedFiles(files);
     setValue(
       'files',
-      files.map((file) => file.url)
+      selectedFiles.map((file) => file.url)
     );
   };
 
@@ -115,11 +129,18 @@ export function Page() {
                     component={RouterLink}
                     to="/dashboard/equipments"
                     variant="outlined"
-                    sx={{ textTransform: 'none', color: 'gray' }}
+                    size="medium"
+                    color="secondary"
                   >
                     Cancel
                   </Button>
-                  <Button onClick={handleSubmit(onSubmit)} variant="contained" sx={{ textTransform: 'none' }}>
+
+                  <Button
+                    onClick={handleSubmit(onSubmit)}
+                    variant="contained"
+                    sx={{ textTransform: 'none' }}
+                    size="medium"
+                  >
                     Submit
                   </Button>
                 </Stack>
@@ -133,18 +154,57 @@ export function Page() {
               <Stack direction="column" spacing={4}>
                 <Typography variant="h6">Device Information</Typography>
                 <Stack direction="row" spacing={3}>
-                  <TextField label="Asset ID" {...register('assetId', { required: true })} fullWidth />
-                  <TextField label="Device ID" {...register('deviceId', { required: true })} fullWidth />
+                  <TextField
+                    placeholder="e.g AD125205"
+                    label="Asset ID"
+                    {...register('assetId', { required: 'Asset ID is required' })}
+                    fullWidth
+                    error={!!errors.assetId}
+                    helperText={errors.assetId?.message}
+                  />
+                  <TextField
+                    placeholder="e.g 01"
+                    label="Device ID"
+                    {...register('deviceId', { required: 'Device ID is required' })}
+                    fullWidth
+                    error={!!errors.deviceId}
+                    helperText={errors.deviceId?.message}
+                  />
                 </Stack>
                 <Stack direction="row" spacing={3}>
-                  <TextField label="Model" {...register('model', { required: true })} fullWidth />
-                  <TextField label="Serial Number" {...register('serial', { required: true })} fullWidth />
+                  <TextField
+                    placeholder="e.g SV 104IS"
+                    label="Model"
+                    {...register('model', { required: 'Model is required' })}
+                    fullWidth
+                    error={!!errors.model}
+                    helperText={errors.model?.message}
+                  />
+                  <TextField
+                    placeholder="e.g 23123123213"
+                    label="Serial Number"
+                    {...register('serial', { required: 'Serial Number is required' })}
+                    fullWidth
+                    error={!!errors.serial}
+                    helperText={errors.serial?.message}
+                  />
                 </Stack>
                 <Stack direction="row" spacing={3}>
-                  <TextField label="Case ID" {...register('caseId', { required: true })} fullWidth select>
+                  <TextField
+                    label="Case ID"
+                    {...register('caseId', { required: 'Case ID is required' })}
+                    fullWidth
+                    select
+                    defaultValue=""
+                    error={!!errors.caseId}
+                    helperText={errors.caseId?.message}
+                  >
+                    <MenuItem value="" disabled>
+                      e.g 01
+                    </MenuItem>
                     {cases.map((caseItem) => (
                       <MenuItem key={caseItem.id} value={caseItem.id}>
-                        {caseItem.case_id + ' - ' + caseItem.location}
+                        {caseItem.case_readable_id + ' - ' + caseItem.location}
                       </MenuItem>
                     ))}
                   </TextField>
@@ -154,6 +214,9 @@ export function Page() {
                     defaultValue=""
                     render={({ field }) => (
                       <TextField {...field} label="Location" select fullWidth disabled={isLocationDisabled}>
+                        <MenuItem value="" disabled>
+                          e.g Cromwell
+                        </MenuItem>
                         {locations.map((location) => (
                           <MenuItem key={location.id} value={location.id}>
                             {location.name}
@@ -169,14 +232,23 @@ export function Page() {
             {/*Notes*/}
 
             <Box sx={{ padding: '40px 0px' }}>
-              <TextField label="Notes" {...register('notes', { required: true })} multiline rows={4} fullWidth />
+              <TextField
+                placeholder="Please write comments or notes"
+                label="Notes / Comments"
+                {...register('notes', { required: 'Notes or comments are required' })}
+                multiline
+                rows={4}
+                fullWidth
+                error={!!errors.notes}
+                helperText={errors.notes?.message}
+              />
             </Box>
 
             {/*status*/}
             <Box sx={{ padding: '20px 0px' }}>
               <Stack direction="column" spacing={3}>
                 <Typography variant="h6">Status</Typography>
-                <StatusButtonGroup onStatusChange={setSelectedStatus} />
+                <StatusButtonGroup onStatusChange={setSelectedStatus} initialstatus="Active" />
               </Stack>
             </Box>
 
@@ -185,7 +257,14 @@ export function Page() {
               <Stack direction="column" spacing={3}>
                 <Typography variant="h6">Specifications</Typography>
                 <Stack direction="row" spacing={3}>
-                  <TextField label="Category" {...register('category', { required: true })} fullWidth select>
+                  <TextField
+                    label="Category"
+                    {...register('category', { required: 'Category is required' })}
+                    fullWidth
+                    select
+                    error={!!errors.category}
+                    helperText={errors.category?.message}
+                  >
                     {categories.map((category) => (
                       <MenuItem key={category.id} value={category.id}>
                         {category.name}
@@ -194,9 +273,11 @@ export function Page() {
                   </TextField>
                   <TextField
                     label="Calibration Category"
-                    {...register('calibrationCategory', { required: true })}
+                    {...register('calibrationCategory', { required: 'Calibration Category is required' })}
                     fullWidth
                     select
+                    error={!!errors.calibrationCategory}
+                    helperText={errors.calibrationCategory?.message}
                   >
                     {calibrationCategories.map((category) => (
                       <MenuItem key={category} value={category}>

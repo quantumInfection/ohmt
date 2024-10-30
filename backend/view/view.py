@@ -25,9 +25,7 @@ def make_equipment(
                 "id": calibration["id"],
                 "type": calibration["calibration_type"],
                 "provider_id": calibration["provider_id"],
-                "provider": calibration_providers_lookup[calibration["provider_id"]][
-                    "name"
-                ],
+                "provider": calibration_providers_lookup[calibration["provider_id"]]["name"],
                 "pdf_file_url": calibration["pdf_file_url"],
                 "pdf_file_name": calibration["pdf_file_url"].split("/")[-1],
                 "expiry_date": calibration["expiry_date"],
