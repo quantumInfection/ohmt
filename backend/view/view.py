@@ -1,5 +1,7 @@
 """This module contains functions that are used to create views of the data for the frontend"""
 
+from datetime import datetime
+
 
 def make_equipment(
     equipment: dict,
@@ -17,7 +19,17 @@ def make_equipment(
         calibration_fg = "#212636"
         calibration_views = None
     else:
-        calibration_due_label = "100 Days"
+
+        latest_calibration_by_completion_date = sorted(
+            calibrations, key=lambda x: datetime.fromisoformat(x["completion_date"]), reverse=True
+        )[0]
+
+        number_of_days_until_expiry = (
+            datetime.fromisoformat(latest_calibration_by_completion_date["expiry_date"]) - datetime.now()
+        ).days
+
+        number_of_days_until_expiry = max(0, number_of_days_until_expiry)
+        calibration_due_label = f"{number_of_days_until_expiry} Days"
         calibration_bg = "#F1F1F4"
         calibration_fg = "#212636"
         calibration_views = [
@@ -25,7 +37,9 @@ def make_equipment(
                 "id": calibration["id"],
                 "type": calibration["calibration_type"],
                 "provider_id": calibration["provider_id"],
-                "provider": calibration_providers_lookup[calibration["provider_id"]]["name"],
+                "provider": calibration_providers_lookup[calibration["provider_id"]][
+                    "name"
+                ],
                 "pdf_file_url": calibration["pdf_file_url"],
                 "pdf_file_name": calibration["pdf_file_url"].split("/")[-1],
                 "expiry_date": calibration["expiry_date"],
