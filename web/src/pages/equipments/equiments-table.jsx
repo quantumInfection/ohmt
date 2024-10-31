@@ -4,12 +4,10 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import { CheckCircle, Eye, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
-
 import { california, kepple, namedColors, redOrange, stormGrey, tomatoOrange } from '@/styles/theme/colors';
-
 import Updatecase from '../cases/update-case';
 
-export function DataTable({ data, fetchEquipments }) {
+export function DataTable({ data, fetchEquipments , totaldata}) {
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
@@ -45,7 +43,7 @@ export function DataTable({ data, fetchEquipments }) {
   const getChipStyles = (row) => {
     if (row.calibration_due_label === 'NA') {
       return {
-        backgroundColor: row.calibration_bg, 
+        backgroundColor: stormGrey[100], 
         color: row.calibration_fg,
       };
     }
@@ -70,43 +68,31 @@ export function DataTable({ data, fetchEquipments }) {
     switch (true) {
       case dueLabel < 14:
         return {
-          backgroundColor: 'orange',
-          color: 'black',
-        };
-  
-      case dueLabel >= 14 && dueLabel < 28:
-        return {
           backgroundColor: redOrange[100],
           color: redOrange[900],
-        }; 
-           case dueLabel >= 29 && dueLabel < 40:
-        return {
-          backgroundColor: 'yellow',
-          color: 'black',
         };
   
-      case dueLabel >= 41 && dueLabel < 60:
+      case dueLabel >= 15 && dueLabel < 30:
+        return {
+          backgroundColor: namedColors['info-light'],
+          color: namedColors['info-dark'],
+        }; 
+           case dueLabel >= 31 && dueLabel < 60:
         return {
           backgroundColor: california[100],
           color: california[950],
         };
-        
-        case dueLabel >= 61 && dueLabel < 80:
+  
+      case dueLabel >= 60 :
         return {
           backgroundColor: kepple[50],
-          color: kepple[900], 
+          color: kepple[900],
         };
         
-        case dueLabel >= 81 && dueLabel < 101:
-        return {
-          backgroundColor: redOrange[100],
-          color: redOrange[900],
-        };
-  
       default:
         return {
-          backgroundColor: row.calibration_bg ,
-          color: row.calibration_fg,
+          backgroundColor: stormGrey[100] ,
+          color: stormGrey[900],
         };
     }
   };
@@ -135,7 +121,7 @@ export function DataTable({ data, fetchEquipments }) {
                     navigate('view', {
                       state: {
                         equipmentId: row.id,
-                        allEquipments: data,
+                        allEquipments: totaldata,
                       },
                     })
                   }
@@ -153,7 +139,7 @@ export function DataTable({ data, fetchEquipments }) {
                     navigate('view', {
                       state: {
                         equipmentId: row.id,
-                        allEquipments: data,
+                        allEquipments: totaldata,
                       },
                     })
                   }
@@ -169,7 +155,7 @@ export function DataTable({ data, fetchEquipments }) {
                     navigate('view', {
                       state: {
                         equipmentId: row.id,
-                        allEquipments: data,
+                        allEquipments: totaldata,
                       },
                     })
                   }
@@ -193,7 +179,7 @@ export function DataTable({ data, fetchEquipments }) {
                   navigate('view', {
                     state: {
                       equipmentId: row.id,
-                      allEquipments: data,
+                      allEquipments: totaldata,
                     },
                   })
                 }
@@ -214,7 +200,7 @@ export function DataTable({ data, fetchEquipments }) {
                     navigate('view', {
                       state: {
                         equipmentId: row.id,
-                        allEquipments: data,
+                        allEquipments: totaldata,
                       },
                     })
                   }

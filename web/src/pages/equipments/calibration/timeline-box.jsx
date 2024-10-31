@@ -61,32 +61,32 @@ const MessageInput = ({ user, onSend }) => {
 // Sample event data
 const initialEvents = [
   {
-    id: 'EV-004',
-    createdAt: dayjs().subtract(7, 'minute').subtract(5, 'hour').subtract(1, 'day').toDate(),
-    type: 'new_job',
-    author: { name: 'Jie Yan', avatar: '/assets/avatar-8.png' },
-    job: { title: 'Remote React / React Native Developer' },
+    id: 'EV-005',
+    createdAt: 'Oct 31, 05:47 PMsss',
+    type: 'new_message',
+    author: { name: 'Demo User', avatar: 'https://picsum.photos/500/300?random=1' },
+    message: { content: 'This is a demo message.' },
   },
   {
     id: 'EV-003',
     createdAt: dayjs().subtract(18, 'minute').subtract(3, 'hour').subtract(5, 'day').toDate(),
-    type: 'new_job',
+    type: 'status',
     author: { name: 'Fran Perez', avatar: '/assets/avatar-5.png' },
-    job: { title: 'Senior Golang Backend Engineer' },
+    status: { name: 'Active' },
   },
   {
     id: 'EV-002',
     createdAt: dayjs().subtract(41, 'minute').subtract(5, 'hour').subtract(7, 'day').toDate(),
-    type: 'new_member',
-    author: { name: 'Jie Yan', avatar: '/assets/avatar-8.png' },
-    member: { name: 'Omar Darboe' },
+    type: 'location',
+    author: { name: 'zeeshan Yan', avatar: '/assets/avatar-8.png' },
+    location: { name: 'Cromwell, NZ' },
   },
   {
-    id: 'EV-001',
-    createdAt: dayjs().subtract(7, 'minute').subtract(8, 'hour').subtract(7, 'day').toDate(),
-    type: 'new_company',
+    id: 'EV-004',
+    createdAt: dayjs().subtract(7, 'minute').subtract(5, 'hour').subtract(1, 'day').toDate(),
+    type: 'new_job',
     author: { name: 'Jie Yan', avatar: '/assets/avatar-8.png' },
-    company: { name: 'Stripe' },
+    job: { title: 'ILJFJK-400' },
   },
 ];
 
@@ -159,41 +159,32 @@ function ActivityContent({ event }) {
   if (!event || !event.type) return null;
 
   switch (event.type) {
-    case 'new_company':
-      return (
-        <Typography variant="body2">
-          <Typography component="span" variant="subtitle2">
-            {event.author ? event.author.name : 'Unknown Author'}
-          </Typography>{' '}
-          created{' '}
-          <Typography component="span" variant="subtitle2">
-            {event.company?.name || 'unknown company'}
-          </Typography>{' '}
-          company
-        </Typography>
-      );
-
-    case 'new_member':
-      return (
-        <Typography variant="body2">
-          <Typography component="span" variant="subtitle2">
-            {event.author ? event.author.name : 'Unknown Author'}
-          </Typography>{' '}
-          added{' '}
-          <Typography component="span" variant="subtitle2">
-            {event.member?.name || 'unknown member'}
-          </Typography>{' '}
-          as a team member
-        </Typography>
-      );
-
     case 'new_job':
       return (
         <Typography variant="body2">
           <Typography component="span" variant="subtitle2">
             {event.author ? event.author.name : 'Unknown Author'}
           </Typography>{' '}
-          added a new job <Link variant="subtitle2">{event.job?.title || 'unknown job'}</Link>
+          linked a new job <Link variant="subtitle2">{event.job?.title || 'unknown job'}</Link>
+        </Typography>
+      );
+      case 'status':
+      return (
+        <Typography variant="body2">
+          <Typography component="span" variant="subtitle2">
+            {event.author ? event.author.name : 'Unknown Author'}
+          </Typography>{' '}
+          changed the status to <Link variant="subtitle2">{event.status?.name || 'unknown job'}</Link>
+        </Typography>
+      ); 
+      
+      case 'location':
+      return (
+        <Typography variant="body2">
+          <Typography component="span" variant="subtitle2">
+            {event.author ? event.author.name : 'Unknown Author'}
+          </Typography>{' '}
+          changed the location to <Link variant="subtitle2">{event.location?.name || 'unknown job'}</Link>
         </Typography>
       );
 

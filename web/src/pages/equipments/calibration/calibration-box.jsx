@@ -12,15 +12,15 @@ const StatusCard = ({ icon, title, value, iconBgColor }) => (
     sx={{
       display: 'flex',
       alignItems: 'center',
-      padding: '30px 16px',
-      borderRadius: '12px',
-      boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+      padding: '18px',
+      borderRadius: '8px',
       flexGrow: 1,
     }}
   >
     <Box
       sx={{
         display:"flex",
+        width:"54px",
         backgroundColor: iconBgColor,
         borderRadius: '10%',
         padding: '10px',

@@ -1,31 +1,34 @@
 import * as React from 'react';
+import { InputAdornment, TextField } from '@mui/material';
 import Button from '@mui/material/Button';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import Stack from '@mui/material/Stack';
+import { MagnifyingGlass } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
+
 import { paths } from '@/paths';
 import { FilterButton, FilterPopover, useFilterContext } from '@/components/core/filter-button';
 import { Option } from '@/components/core/option';
 
-export function CaseFilters({ filters = {}, sortDir = 'desc' ,data }) {
-  const { location, case_readable_id } = filters; 
+export function CaseFilters({ filters = {}, data }) {
+  const { location, case_readable_id, searchQuery } = filters;
   const navigate = useNavigate();
 
   const updateSearchParams = React.useCallback(
-    (newFilters, newSortDir) => {
+    (newFilters) => {
       const searchParams = new URLSearchParams();
-
-      if (newSortDir === 'asc') {
-        searchParams.set('sortDir', newSortDir);
-      }
 
       if (newFilters.location) {
         searchParams.set('location', newFilters.location);
       }
 
       if (newFilters.case_readable_id) {
-        searchParams.set('case_readable_id', newFilters.case_readable_id); 
+        searchParams.set('case_readable_id', newFilters.case_readable_id);
+      }
+
+      if (newFilters.searchQuery) {
+        searchParams.set('searchQuery', newFilters.searchQuery);
       }
 
       navigate(`${paths.dashboard.cases.list}?${searchParams.toString()}`);
@@ -34,60 +37,71 @@ export function CaseFilters({ filters = {}, sortDir = 'desc' ,data }) {
   );
 
   const handleClearFilters = React.useCallback(() => {
-    updateSearchParams({}, sortDir);
-  }, [updateSearchParams, sortDir]);
+    updateSearchParams({});
+  }, [updateSearchParams]);
 
   const handleLocationChange = React.useCallback(
     (value) => {
-      updateSearchParams({ ...filters, location: value }, sortDir);
+      updateSearchParams({ ...filters, location: value });
     },
-    [updateSearchParams, filters, sortDir]
+    [updateSearchParams, filters]
   );
 
   const handleCaseIdChange = React.useCallback(
     (value) => {
-      updateSearchParams({ ...filters, case_readable_id: value }, sortDir); 
+      updateSearchParams({ ...filters, case_readable_id: value });
     },
-    [updateSearchParams, filters, sortDir]
+    [updateSearchParams, filters]
   );
 
-  const hasFilters = !!location || !!case_readable_id; 
+  const handleSearchQueryChange = React.useCallback(
+    (event) => {
+      updateSearchParams({ ...filters, searchQuery: event.target.value });
+    },
+    [updateSearchParams, filters]
+  );
+
+  const hasFilters = !!location || !!case_readable_id || !!searchQuery;
 
   return (
     <div>
-      <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flexWrap: 'wrap', p: 2 }}>
+      <Stack direction="row" sx={{ alignItems: 'center', flexWrap: 'wrap' }}>
         <Stack direction="row" spacing={2} sx={{ alignItems: 'center', flex: '1 1 auto', flexWrap: 'wrap' }}>
           <FilterButton
-            displayValue={location || 'All Locations'} 
+            displayValue={location || undefined}
             label="Location"
             onFilterApply={handleLocationChange}
             onFilterDelete={() => handleLocationChange('')}
             popover={<LocationFilterPopover locations={data.locations} />}
-            value={location || ''}
+            value={location || undefined}
           />
-          
-          {/* Filter Button for Case ID */}
+
           <FilterButton
-            displayValue={case_readable_id || 'Select Case ID'} 
+            displayValue={case_readable_id || undefined}
             label="Case ID"
             onFilterApply={handleCaseIdChange}
             onFilterDelete={() => handleCaseIdChange('')}
             popover={<CaseIdFilterPopover cases={data.cases} />}
-            value={case_readable_id || ''}
+            value={case_readable_id || undefined}
           />
-
           {hasFilters && <Button onClick={handleClearFilters}>Clear filters</Button>}
         </Stack>
-
-        <Select
-          name="sort"
-          onChange={(event) => updateSearchParams(filters, event.target.value)}
-          sx={{ maxWidth: '100%', width: '120px' }}
-          value={sortDir}
-        >
-          <Option value="desc">Newest</Option>
-          <Option value="asc">Oldest</Option>
-        </Select>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <TextField
+            variant="outlined"
+            placeholder="Search"
+            value={searchQuery || ''}
+            onChange={handleSearchQueryChange}
+            sx={{ minWidth: '200px' }}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <MagnifyingGlass size={24} />
+                </InputAdornment>
+              ),
+            }}
+          />
+        </div>
       </Stack>
     </div>
   );
@@ -98,20 +112,17 @@ function CaseIdFilterPopover({ cases = [] }) {
   const [value, setValue] = React.useState('');
 
   React.useEffect(() => {
-    setValue(initialValue || ''); 
+    setValue(initialValue || '');
   }, [initialValue]);
 
   return (
     <FilterPopover anchorEl={anchorEl} onClose={onClose} open={open} title="Filter by Case ID">
       <FormControl>
-        <Select
-          onChange={(event) => setValue(event.target.value)}
-          value={value}
-        >
+        <Select onChange={(event) => setValue(event.target.value)} value={value}>
           <Option value="">Select a Case ID</Option>
           {cases.map((caseItem) => (
             <Option key={caseItem.id} value={caseItem.case_readable_id}>
-              {caseItem.case_readable_id} 
+              {caseItem.case_readable_id}
             </Option>
           ))}
         </Select>
@@ -133,16 +144,13 @@ function LocationFilterPopover({ locations = [] }) {
   const [value, setValue] = React.useState('');
 
   React.useEffect(() => {
-    setValue(initialValue || ''); 
+    setValue(initialValue || '');
   }, [initialValue]);
 
   return (
     <FilterPopover anchorEl={anchorEl} onClose={onClose} open={open} title="Filter by Location">
       <FormControl>
-        <Select
-          onChange={(event) => setValue(event.target.value)}
-          value={value}
-        >
+        <Select onChange={(event) => setValue(event.target.value)} value={value}>
           <Option value="">Select a location</Option>
           {locations.map((location) => (
             <Option key={location.id} value={location.name}>

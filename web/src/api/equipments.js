@@ -59,26 +59,30 @@ export async function addEquipment(equipmentData) {
   } catch (error) {
     throw new Error('Failed to upload images');
   }
+  const requestBody = {
+    asset_id: equipmentData.assetId,
+    device_id: equipmentData.deviceId,
+    model: equipmentData.model,
+    serial_number: equipmentData.serial,
+    location_id: equipmentData.location,
+    image_urls: filePaths,
+    primary_image_index: equipmentData.selectedImageIndex.idx,
+    status: equipmentData.status,
+    category_id: equipmentData.category,
+    calibration_category: equipmentData.calibrationCategory,
+    notes: equipmentData.notes,
+  };
+
+  if (equipmentData.caseId) {
+    requestBody.case_id = equipmentData.caseId;
+  }
 
   const response = await customFetch(equipmentsUrl, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      asset_id: equipmentData.assetId,
-      device_id: equipmentData.deviceId,
-      model: equipmentData.model,
-      serial_number: equipmentData.serial,
-      case_id: equipmentData.caseId,
-      location_id: equipmentData.location,
-      image_urls: filePaths,
-      primary_image_index: equipmentData.selectedImageIndex.idx,
-      status: equipmentData.status,
-      category_id: equipmentData.category,
-      calibration_category: equipmentData.calibrationCategory,
-      notes: equipmentData.notes,
-    }),
+    body: JSON.stringify(requestBody),
   });
 
   if (!response.ok) {
@@ -97,20 +101,25 @@ export async function editEquipment(equipmentData) {
   } catch (error) {
     throw new Error('Failed to upload images');
   }
+  // Construct the body of the request dynamically
+  const bodyData = {
+    status: equipmentData.status,
+    location_id: equipmentData.location,
+    image_urls: filePaths,
+    primary_image_index: equipmentData.selectedImageIndex.idx,
+    notes: equipmentData.notes,
+  };
+  // Conditionally add case_id if it exists
+  if (equipmentData.caseId) {
+    bodyData.case_id = equipmentData.caseId;
+  }
 
   const response = await customFetch(`${equipmentsUrl}${equipmentData?.equip_id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      status: equipmentData.status,
-      case_id: equipmentData.caseId,
-      location_id: equipmentData.location,
-      image_urls: filePaths,
-      primary_image_index: equipmentData.selectedImageIndex.idx,
-      notes: equipmentData.notes,
-    }),
+    body: JSON.stringify(bodyData),
   });
 
   if (!response.ok) {
@@ -118,6 +127,7 @@ export async function editEquipment(equipmentData) {
   }
   return response.json();
 }
+
 
 export async function fetchEquipment(id) {
   const response = await customFetch(`${equipmentsUrl}${id}`);

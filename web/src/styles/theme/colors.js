@@ -140,6 +140,7 @@ export const tomatoOrange = {
 
 export const namedColors = {
   'info-dark': '#06AED4',
+  'info-light': '#CFF8FE',
   'location_icon': '#FF552D',
   'location_view': '#FFCCBE',
   'calibration_view': '#FFE0B3',
