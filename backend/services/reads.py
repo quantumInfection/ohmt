@@ -172,7 +172,7 @@ def get_company_equipments(uow: suow.DbPoolUnitOfWork, company_id: str) -> list[
                 where c.equipment_id = e.id
             ) as calibrations
         from equipments e
-        where e.company_id = %s and not e.archived
+        where e.company_id = %s
         order by e.created_at desc;
     """
 

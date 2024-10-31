@@ -20,6 +20,7 @@ class Status(Enum):
     REPAIR = "Repair"
     CALIBRATION = "Calibration"
     RETIRED = "Retired"
+    ARCHIVED = "Archived"
 
 
 @dataclass
@@ -114,7 +115,6 @@ class Equipment:
     calibration_category: CalibrationCategory
     notes: str
     calibrations: dict[str, Calibration] | None
-    archived: bool
     created_at: datetime
     updated_at: datetime | None
 
@@ -163,7 +163,6 @@ class Equipment:
             calibration_category=CalibrationCategory(calibration_category),
             notes=notes,
             calibrations=None,
-            archived=False,
             created_at=datetime.now(),
             updated_at=None,
         )
@@ -198,7 +197,8 @@ class Equipment:
         self.updated_at = datetime.now()
 
     def archive(self):
-        self.archived = True
+        self.status = Status.ARCHIVED
+        self.updated_at = datetime.now()
 
     def add_calibration(
         self,
