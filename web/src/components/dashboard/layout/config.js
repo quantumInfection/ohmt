@@ -12,6 +12,12 @@ export const layoutConfig = {
           href: paths.dashboard.equipments.list,
           icon: 'chart-pie',
         },
+        {
+          key: 'consumables',
+          title: 'Consumable',
+          href: paths.dashboard.consumables.list,
+          icon: 'list-dashes',
+        },
       ],
     },
   ],

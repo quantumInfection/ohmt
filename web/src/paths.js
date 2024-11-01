@@ -62,6 +62,10 @@ export const paths = {
       list: '/dashboard/equipments',
       details: (equipmentId) => `/dashboard/equipments/${equipmentId}`,
     },
+    consumables: {
+      list: '/dashboard/consumables',
+      details: (consumableId) => `/dashboard/consumables/${consumableId}`,
+    },
   },
   notAuthorized: '/errors/not-authorized',
   notFound: '/errors/not-found',
