@@ -13,7 +13,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { config } from '@/config';
 import { DataTable } from '@/pages/consumables/consumables_table';
-import { EquipmentFilters } from '@/components/dashboard/equipment/equipment_filters';
+// import { EquipmentFilters } from '@/components/dashboard/equipment/equipment_filters';
 
 const metadata = { title: `Consumables | ${config.site.name}` };
 

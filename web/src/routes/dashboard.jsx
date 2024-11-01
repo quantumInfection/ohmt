@@ -12,6 +12,9 @@ const ConsumablesList = React.lazy(() => import('@/pages/consumables/list').then
 const AddEquipment = React.lazy(() =>
   import('@/pages/equipments/add-equipment').then((module) => ({ default: module.Page }))
 );
+const AddConsumables = React.lazy(() =>
+  import('@/pages/consumables/add_consumable').then((module) => ({ default: module.Page }))
+);
 
 const ViewEquipment = React.lazy(() =>
   import('@/pages/equipments/view_equipment').then((module) => ({ default: module.Page }))
@@ -123,7 +126,7 @@ export const route = {
           path: 'add',
           element: (
             <React.Suspense fallback={<Loader />}>
-              <AddEquipment />
+              <AddConsumables />
             </React.Suspense>
           ),
         },
