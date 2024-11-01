@@ -59,6 +59,7 @@ export async function addEquipment(equipmentData) {
   } catch (error) {
     throw new Error('Failed to upload images');
   }
+
   const requestBody = {
     asset_id: equipmentData.assetId,
     device_id: equipmentData.deviceId,
@@ -71,11 +72,8 @@ export async function addEquipment(equipmentData) {
     category_id: equipmentData.category,
     calibration_category: equipmentData.calibrationCategory,
     notes: equipmentData.notes,
+    case_id: equipmentData.caseId ? equipmentData.caseId : undefined,
   };
-
-  if (equipmentData.caseId) {
-    requestBody.case_id = equipmentData.caseId;
-  }
 
   const response = await customFetch(equipmentsUrl, {
     method: 'POST',
@@ -92,6 +90,7 @@ export async function addEquipment(equipmentData) {
   return response.json();
 }
 
+
 export async function editEquipment(equipmentData) {
   const filePaths = equipmentData.files.map((file) => file.name);
   const signedUrlsResponse = await fetchImagesSignedUrls(filePaths);
@@ -101,18 +100,14 @@ export async function editEquipment(equipmentData) {
   } catch (error) {
     throw new Error('Failed to upload images');
   }
-  // Construct the body of the request dynamically
   const bodyData = {
     status: equipmentData.status,
     location_id: equipmentData.location,
     image_urls: filePaths,
     primary_image_index: equipmentData.selectedImageIndex.idx,
     notes: equipmentData.notes,
+    case_id: equipmentData.caseId ? equipmentData.caseId : undefined,
   };
-  // Conditionally add case_id if it exists
-  if (equipmentData.caseId) {
-    bodyData.case_id = equipmentData.caseId;
-  }
 
   const response = await customFetch(`${equipmentsUrl}${equipmentData?.equip_id}`, {
     method: 'PUT',
@@ -123,10 +118,12 @@ export async function editEquipment(equipmentData) {
   });
 
   if (!response.ok) {
-    throw new Error('Failed to add equipment');
+    throw new Error('Failed to edit equipment');
   }
+
   return response.json();
 }
+
 
 
 export async function fetchEquipment(id) {
