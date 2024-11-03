@@ -209,3 +209,31 @@ def get_company_equipments(uow: suow.DbPoolUnitOfWork, company_id: str) -> list[
         }
         for equipment in equipments
     ]
+
+
+def user_by_email(uow: suow.DbPoolUnitOfWork, email: str) -> dict:
+    """
+    Get user by email
+    :param uow:
+    :param email:
+    :return:
+    """
+
+    sql = """
+        select
+            id,
+            company_id,
+            first_name,
+            last_name,
+            email,
+            created_at,
+            updated_at
+        from users
+        where email = %s
+    """
+
+    with uow, uow.db_pool.dict_cursor() as curs:
+        curs.execute(sql, (email,))
+        user = curs.fetchone()
+
+    return user

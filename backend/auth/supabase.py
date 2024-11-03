@@ -4,6 +4,8 @@ from flask import request, jsonify, make_response
 from supabase import create_client, Client
 from inspect import signature
 from flask_cors import cross_origin
+import services.reads as reads
+import services.unit_of_work as suow
 
 
 def supabase(func):
@@ -25,10 +27,7 @@ def supabase(func):
             request.headers.get("Authorization") if request else None
         )
         if not token:
-            response = make_response(
-                jsonify({"error": "Missing authorization token"}), 401
-            )
-            return response
+            return make_response(jsonify({"error": "Missing authorization token"}), 401)
 
         # Remove "Bearer " prefix if present
         if token.startswith("Bearer "):
@@ -41,17 +40,21 @@ def supabase(func):
 
         # Check if the function expects a 'user' argument
         func_signature = signature(func)
+        # Authenticate with Supabase using the token
+        sb_user = supabase.auth.get_user(token)
+        sb_u = sb_user.user if sb_user else None
+
+        if not sb_u:
+            return make_response(jsonify({"error": "Invalid authorization token"}), 401)
+
+        user = reads.user_by_email(suow.DbPoolUnitOfWork(), email=sb_u.email)
+
+        if not user:
+            return make_response(jsonify({"error": "Unauthorized"}), 401)
+
+        # If the function expects a 'user' argument, add the user to the kwargs
         if "user" in func_signature.parameters:
-            # Authenticate with Supabase using the token
-            try:
-                user = supabase.auth.get_user(token)
-                # If authentication is successful, add the user to the kwargs
-                kwargs["user"] = user.user
-            except Exception as e:
-                response = make_response(
-                    jsonify({"error": "Invalid authorization token"}), 401
-                )
-                return response
+            kwargs["user"] = user
 
         # Call the decorated function
         return func(*args, **kwargs)
