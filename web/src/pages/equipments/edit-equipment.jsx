@@ -95,6 +95,11 @@ export function Page() {
   };
 
   const onSubmit = (data) => {
+    if (!data.location) {
+      alert('Please select a Case Id or Location.');
+      return;
+    }
+
     if (!selectedStatus) {
       alert('Please select a status.');
       return;
@@ -167,6 +172,15 @@ export function Page() {
           <Box>
             <Stack direction="column" spacing={4}>
               <Typography variant="h6">Device Information</Typography>
+
+              {/*status*/}
+              <Box sx={{ padding: '20px 0px' }}>
+                <Stack direction="column" spacing={3}>
+                  <Typography variant="h6">Status</Typography>
+                  <StatusButtonGroup onStatusChange={setSelectedStatus} initialstatus={data?.status_label} />
+                </Stack>
+              </Box>
+
               <Stack direction="row" spacing={3}>
                 <TextField
                   label="Asset ID"
@@ -208,29 +222,75 @@ export function Page() {
                 />
               </Stack>
               <Stack direction="row" spacing={3}>
-                <TextField
-                  label="Case ID"
-                  {...register('caseId', { required: 'Case ID is required' })}
-                  fullWidth
-                  select
-                  defaultValue=""
-                  error={!!errors.caseId}
-                  helperText={errors.caseId?.message} // React Hook Form registration
-                  value={selectedCaseId} // Controlled input value
-                  onChange={handleCaseIdChange} // Update state on change
-                >
-                  {equipmentsdata?.cases?.map((caseItem) => (
-                    <MenuItem key={caseItem.id} value={caseItem.id}>
-                      {`${caseItem.case_readable_id} - ${caseItem.location}`}
-                    </MenuItem>
-                  ))}
-                </TextField>
+                <Box sx={{ position: 'relative', width: '100%' }}>
+                  <Controller
+                    name="caseId"
+                    control={control}
+                    defaultValue={selectedCaseId || ''} 
+                    render={({ field }) => (
+                      <TextField
+                        label="Case ID"
+                        {...field}
+                        fullWidth
+                        select
+                        error={!!errors.caseId} 
+                        helperText={errors.caseId?.message} 
+                        value={selectedCaseId} 
+                        onChange={(e) => {
+                          handleCaseIdChange(e); 
+                          field.onChange(e); 
+                        }}
+                      >
+                        <MenuItem value="" disabled>
+                          e.g 01
+                        </MenuItem>
+                        {equipmentsdata?.cases?.map((caseItem) => (
+                          <MenuItem key={caseItem.id} value={caseItem.id}>
+                            {`${caseItem.case_readable_id} `}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    )}
+                  />
+
+                  {/* Conditionally render the Clear Case ID button */}
+                  {selectedCaseId && ( 
+                    <Button
+                      variant="text"
+                      color="secondary"
+                      onClick={() => {
+                        setValue('caseId', ''); 
+                        setValue('location', ''); 
+                        setSelectedCaseId(''); 
+                      }}
+                      sx={{
+                        position: 'absolute',
+                        bottom: '-35px',
+                        right: '0',
+                      }}
+                    >
+                      Clear Case ID
+                    </Button>
+                  )}
+                </Box>
+
                 <Controller
                   name="location"
                   control={control}
                   defaultValue=""
                   render={({ field }) => (
-                    <TextField {...field} label="Location" select fullWidth disabled={isLocationDisabled}>
+                    <TextField
+                      {...field}
+                      label="Location"
+                      select
+                      fullWidth
+                      disabled={isLocationDisabled}
+                      error={!!errors.location} // Add error handling if needed
+                      helperText={errors.location?.message} // Add helper text for error
+                    >
+                      <MenuItem value="" disabled>
+                        e.g Cromwell
+                      </MenuItem>
                       {equipmentsdata?.locations.map((location) => (
                         <MenuItem key={location.id} value={location.id}>
                           {location.name}
@@ -258,14 +318,6 @@ export function Page() {
               value={notes} // Bind the value of the TextField to the notes state
               onChange={handleNotesChange} // Update the state on change
             />
-          </Box>
-
-          {/*status*/}
-          <Box sx={{ padding: '20px 0px' }}>
-            <Stack direction="column" spacing={3}>
-              <Typography variant="h6">Status</Typography>
-              <StatusButtonGroup onStatusChange={setSelectedStatus} initialstatus={data?.status_label} />
-            </Stack>
           </Box>
 
           {/*specs*/}

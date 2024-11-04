@@ -21,7 +21,6 @@ import { RouterLink } from '@/components/core/link';
 export function Page() {
   const location = useLocation();
   const { categories, locations, cases, calibrationCategories } = location.state || {};
-
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [selectedImageIndex, setSelectedImageIndex] = useState(null);
   const [isLocationDisabled, setIsLocationDisabled] = useState(false);
@@ -46,6 +45,10 @@ export function Page() {
   });
 
   const onSubmit = (data) => {
+    if (!data.location) {
+      alert('Please select a Case Id or Location.');
+      return;
+    }  
     if (!selectedStatus) {
       alert('Please select a status.');
       return;
@@ -73,7 +76,7 @@ export function Page() {
       const selectedCase = cases.find((caseItem) => caseItem.id === caseId);
       setIsLocationDisabled(true);
       if (selectedCase) {
-        resetField('location', { defaultValue: selectedCase.location });
+        resetField('location', { defaultValue: selectedCase.location_id });
       }
     } else {
       setIsLocationDisabled(false);
@@ -87,7 +90,6 @@ export function Page() {
       selectedFiles.map((file) => file.url)
     );
   };
-
   return (
     <>
       <Helmet>
@@ -190,24 +192,52 @@ export function Page() {
                   />
                 </Stack>
                 <Stack direction="row" spacing={3}>
-                  <TextField
-                    label="Case ID"
-                    {...register('caseId', { required: 'Case ID is required' })}
-                    fullWidth
-                    select
-                    defaultValue=""
-                    error={!!errors.caseId}
-                    helperText={errors.caseId?.message}
-                  >
-                    <MenuItem value="" disabled>
-                      e.g 01
-                    </MenuItem>
-                    {cases.map((caseItem) => (
-                      <MenuItem key={caseItem.id} value={caseItem.id}>
-                        {caseItem.case_readable_id + ' - ' + caseItem.location}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                  <Box sx={{ position: 'relative', width: '100%' }}>
+                    <Controller
+                      name="caseId"
+                      control={control}
+                      defaultValue="" // Ensure the initial value is set
+                      render={({ field }) => (
+                        <TextField
+                          label="Case ID"
+                          {...field}
+                          fullWidth
+                          select
+                          error={!!errors.caseId}
+                          helperText={errors.caseId?.message}
+                        >
+                          <MenuItem value="" disabled>
+                            e.g 01
+                          </MenuItem>
+                          {cases.map((caseItem) => (
+                            <MenuItem key={caseItem.id} value={caseItem.id}>
+                              {caseItem.case_readable_id}
+                            </MenuItem>
+                          ))}
+                        </TextField>
+                      )}
+                    />
+
+                    {/* Conditionally render the Clear Case ID button */}
+                    {caseId && (
+                      <Button
+                        variant="text"
+                        color="secondary"
+                        onClick={() => {
+                          setValue('caseId', ''); // Clear the caseId
+                          setValue('location', ''); // Clear the location
+                        }}
+                        sx={{
+                          position: 'absolute',
+                          bottom: '-35px',
+                          right: '0',
+                        }}
+                      >
+                        Clear Case ID
+                      </Button>
+                    )}
+                  </Box>
+
                   <Controller
                     name="location"
                     control={control}
