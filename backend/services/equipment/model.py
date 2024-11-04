@@ -8,13 +8,6 @@ IMAGE_URL_CDN_PREFIX = "https://ohmt.syd1.cdn.digitaloceanspaces.com/images/equi
 PDF_URL_CDN_PREFIX = "https://ohmt.syd1.cdn.digitaloceanspaces.com/pdfs/calibration/"
 
 
-@dataclass
-class Company:
-    id: str
-    name: str
-    # TODO: More details
-
-
 class Status(Enum):
     ACTIVE = "Active"
     REPAIR = "Repair"
@@ -22,23 +15,6 @@ class Status(Enum):
     RETIRED = "Retired"
     ARCHIVED = "Archived"
 
-
-@dataclass
-class Location:
-    id: str
-    name: str
-
-
-@dataclass
-class Category:
-    id: str
-    name: str
-
-
-@classmethod
-class CalibrationProvider:
-    id: str
-    name: str
 
 
 class CalibrationType(Enum):

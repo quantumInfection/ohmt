@@ -14,7 +14,7 @@ import auth
 # TODO: Add auth
 @app.route("/", methods=["POST"])
 @auth.supabase
-def create_equipment():
+def create_equipment(user: dict):
     """
     Create equipment
 
@@ -58,7 +58,7 @@ def create_equipment():
 
 @app.route("/<equipment_id>", methods=["PUT"])
 @auth.supabase
-def update_equipment(equipment_id):
+def update_equipment(equipment_id, user: dict):
     """Updates equipment"""
 
     args = request.get_json()
@@ -82,7 +82,7 @@ def update_equipment(equipment_id):
 
 @app.route("/<equipment_id>", methods=["DELETE"])
 @auth.supabase
-def archive_equipment(equipment_id):
+def archive_equipment(equipment_id, user: dict):
     """
     Archive equipment
     """
@@ -93,7 +93,7 @@ def archive_equipment(equipment_id):
 
 @app.route("/<equipment_id>/calibration", methods=["POST"])
 @auth.supabase
-def add_calibration_to_equipment(equipment_id):
+def add_calibration_to_equipment(equipment_id, user: dict):
     """
     Add calibration to equipment
 
@@ -127,7 +127,7 @@ def add_calibration_to_equipment(equipment_id):
 
 @app.route("/<equipment_id>/calibration/<calibration_id>", methods=["PUT"])
 @auth.supabase
-def update_calibration(equipment_id, calibration_id):
+def update_calibration(equipment_id, calibration_id, user: dict):
     """
     Update calibration
 
