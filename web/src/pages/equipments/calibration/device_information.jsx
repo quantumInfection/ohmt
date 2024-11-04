@@ -85,9 +85,11 @@ const DeviceInformation = ({ data }) => {
             <Typography color="text.secondary" variant="subtitle2">
               Archived items can be found in the listing under archived tabs.
             </Typography>
-            <Button onClick={() => mutate(data?.id)} color="error" variant="contained" style={{ marginTop: '10px' }}>
+            <div>
+            <Button onClick={() => mutate(data?.id)} color="error" variant="contained" size='medium' style={{ marginTop: '10px' }}>
               {isLoading ? <CircularProgress size={24} /> : 'Archive'}
             </Button>
+            </div>
           </Stack>
         </CardContent>
       </Card>

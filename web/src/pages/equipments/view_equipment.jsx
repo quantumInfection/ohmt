@@ -22,7 +22,6 @@ export function Page() {
   const location = useLocation();
   const [equipment, setEquipment] = useState({});
   const { equipmentId, allEquipments } = location.state || {}; // Retrieve the 'id' from the state
-
   if (!equipmentId) {
     return <div>Error: No row ID provided.</div>;
   }
@@ -62,7 +61,7 @@ export function Page() {
                 width: 'var(--Content-width)',
               }}
             >
-              <Stack spacing={4}>
+              <Stack gap={4}>
                 <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ alignItems: 'flex-start' }}>
                   <Box sx={{ flex: '1 1 auto' }}>
                     <Typography variant="h4">Equipment - {equipment.name}</Typography>
