@@ -169,7 +169,6 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
             {['dateCompleted', 'expiryDate'].map((name, i) => (
               <Grid item xs={6} key={name}>
             <FormControl fullWidth error={!!errors[name]}>
-
                 <Controller
                   name={name}
                   control={control}

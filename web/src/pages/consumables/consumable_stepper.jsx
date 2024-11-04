@@ -38,69 +38,79 @@ export function StepperConsumable() {
   const [activeStep, setActiveStep] = React.useState(0);
   const [isComplete, setIsComplete] = React.useState(false);
 
+ const [formData, setFormData] = React.useState({
+    consumableSearch: {}, // Example for search consumable
+    consumableDetails: {}, // Example for details
+    uploadedImage: null, // Store uploaded image
+  });
+
   const handleNext = React.useCallback(() => {
     setActiveStep((prevState) => prevState + 1);
   }, []);
 
   const handleBack = React.useCallback(() => {
     setActiveStep((prevState) => prevState - 1);
-  }, []);
-
-  const handleComplete = React.useCallback(() => {
     setIsComplete(true);
   }, []);
 
+ 
+  
+ 
+
+  const handleComplete = () => {
+    console.log('Final Form Data:', formData);  // Log all collected form data
+  };
+
+  const updateFormData = (newData) => {
+    setFormData((prevData) => ({ ...prevData, ...newData }));
+  };
+  const handleUploadImageSubmit = (file) => {
+    updateFormData({ uploadedImage: file }); // Update the formData state with the selected image
+    console.log('Image uploaded:', formData); 
+  };
+
   const steps = [
     { label: 'Search Consumable', content: <StepSearchConsumable onBack={handleBack} onNext={handleNext} /> },
-    { label: 'Consumables Details', content: <StepConsumablesDetails onBack={handleBack} onNext={handleNext} /> },
-    { label: 'Upload image', content: <StepUploadImage onBack={handleBack} onNext={handleNext} /> },
+    { label: 'Consumables Details', content: <StepConsumablesDetails onBack={handleBack} onNext={handleNext} onSubmit={updateFormData}/> },
+    { label: 'Upload image', content: <StepUploadImage onBack={handleBack} onNext={handleNext} onSubmit={handleUploadImageSubmit}/> },
     { label: 'Print labels', content: <PrintLabels onBack={handleBack} onNext={handleComplete} /> },
   ];
 
   return (
     <Box sx={{ padding: 2, width: '100%' }}>
-      {/* Stepper Component */}
       <Stepper
         activeStep={activeStep}
         sx={{
-          '& .MuiStepConnector-root': { display: 'none' }, // Hide default connector line
+          '& .MuiStepConnector-root': { display: 'none' },
         }}
       >
         {steps.map((step, index) => (
           <Step key={step.label} sx={{ padding: 0 }}>
             <Stack direction="row" alignItems="center" spacing={1}>
-              {/* Step label */}
               <StepLabel StepIconComponent={StepIcon}>
                 <Typography variant="overline">{step.label}</Typography>
               </StepLabel>
-
-              {/* Custom Icon between labels */}
               {index < steps.length - 1 && (
                 <Box sx={{ color: 'text.secondary ' ,marginRight:'20px' }}>
-                  <CaretRight  /> {/* Custom icon */}
+                  <CaretRight  /> 
                 </Box>
               )}
             </Stack>
           </Step>
         ))}
       </Stepper>
-
-      {/* Separate Step Content */}
       <Box
         sx={{
           mt: 4,
-          p: 3,
-          bgcolor: 'background.paper',
-          borderRadius: 1,
-          boxShadow: 1,
+          py: 3,
         }}
       >
         {steps[activeStep] && (
-          <Box>
+          <Box >
             <Typography variant="h6" gutterBottom>
               {steps[activeStep].label}
             </Typography>
-            <Box sx={{ px: 2, py: 3 }}>{steps[activeStep].content}</Box>
+            <Box sx={{ py: 3, width: '65%' }} >{steps[activeStep].content}</Box>
           </Box>
         )}
       </Box>
