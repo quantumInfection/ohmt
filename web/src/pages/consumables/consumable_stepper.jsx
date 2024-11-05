@@ -14,7 +14,7 @@ import StepConsumablesDetails from './step_consumables_details';
 import StepUploadImage from './step_upload_image';
 import PrintLabels from './print_labels';
 import { Check  } from '@phosphor-icons/react';
-
+import  ConsumablePreview  from './consumable_preview.jsx';
 // Define StepIcon function
 function StepIcon({ active, completed, icon }) {
   const highlight = active || completed;
@@ -50,16 +50,12 @@ export function StepperConsumable() {
 
   const handleBack = React.useCallback(() => {
     setActiveStep((prevState) => prevState - 1);
-    setIsComplete(true);
   }, []);
-
- 
-  
- 
-
-  const handleComplete = () => {
-    console.log('Final Form Data:', formData);  // Log all collected form data
-  };
+  const handleComplete = React.useCallback(() => {
+    console.log('Final Form Data:', formData); 
+    setIsComplete(true);
+    console.log('isComplete set to true');
+  }, [formData]);
 
   const updateFormData = (newData) => {
     setFormData((prevData) => ({ ...prevData, ...newData }));
@@ -69,13 +65,18 @@ export function StepperConsumable() {
     console.log('Image uploaded:', formData); 
   };
 
-  const steps = [
+  const steps = React.useMemo(() => {
+    return[
     { label: 'Search Consumable', content: <StepSearchConsumable onBack={handleBack} onNext={handleNext} /> },
     { label: 'Consumables Details', content: <StepConsumablesDetails onBack={handleBack} onNext={handleNext} onSubmit={updateFormData}/> },
     { label: 'Upload image', content: <StepUploadImage onBack={handleBack} onNext={handleNext} onSubmit={handleUploadImageSubmit}/> },
     { label: 'Print labels', content: <PrintLabels onBack={handleBack} onNext={handleComplete} /> },
   ];
+}, [handleBack, handleNext, handleComplete]);
 
+  if (isComplete) {
+    return <ConsumablePreview />;
+  }
   return (
     <Box sx={{ padding: 2, width: '100%' }}>
       <Stepper
