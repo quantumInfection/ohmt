@@ -114,9 +114,7 @@ export function Page() {
       equip_id,
       status: selectedStatus,
       files: selectedFiles,
-      selectedImageIndex: {
-        idx: selectedImageIndex,
-      },
+      primaryImageIndex: selectedImageIndex, 
     });
   };
   return (
@@ -137,11 +135,11 @@ export function Page() {
           <Box sx={{ flex: '1 1 auto' }}>
             <Stack direction={{ xs: 'column', sm: 'row' }} spacing={3} sx={{ alignItems: 'flex-start' }}>
               <Box sx={{ flex: '1 1 auto' }}>
-                <Typography variant="h3" sx={{ padding: '8px' }}>
+                <Typography variant="h4" >
                   Edit equipment
                 </Typography>
                 <Stack direction="row" alignItems="center">
-                  <Button onClick={() => navigate(-1)} sx={{ textTransform: 'none', color: 'gray' }}>
+                  <Button onClick={() => navigate(-1)} sx={{ textTransform: 'none', color: 'gray' ,paddingLeft:"0px"}}>
                     <Stack direction="row" spacing={1} alignItems="center">
                       <ArrowLeft />
                       <Typography>Equipments</Typography>
@@ -246,7 +244,7 @@ export function Page() {
                         </MenuItem>
                         {equipmentsdata?.cases?.map((caseItem) => (
                           <MenuItem key={caseItem.id} value={caseItem.id}>
-                            {`${caseItem.case_readable_id} `}
+                            {`${caseItem.case_readable_id}  - ${caseItem.location}`}
                           </MenuItem>
                         ))}
                       </TextField>

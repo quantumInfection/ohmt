@@ -129,7 +129,7 @@ function useExtractSearchParams() {
     location: searchParams.get('location') || undefined,
     status_label: searchParams.get('status_label') || undefined,
     case_readable_id: searchParams.get('case_readable_id') || undefined,
-    calibration_due_label: searchParams.get('calibration_due_label') || undefined, // New filter added
+    calibration_due_label: searchParams.get('calibration_due_label') || undefined, 
     searchQuery: searchParams.get('searchQuery') || undefined,
   };
 }
@@ -137,7 +137,7 @@ function useExtractSearchParams() {
 
 function applyFilters(rows, { location, status_label, case_readable_id, calibration_due_label, searchQuery }) {
   return rows.filter((item) => {
-    let calibrationDueDays = parseInt(item.calibration_due_label); // Assuming the label is something like "14 days"
+    let calibrationDueDays = parseInt(item.calibration_due_label); 
     
     if (!isNaN(calibrationDueDays)) {
       if (calibration_due_label === '0' && (calibrationDueDays > 1)) {
@@ -172,6 +172,6 @@ function applyFilters(rows, { location, status_label, case_readable_id, calibrat
       if (!(nameMatch || statusMatch || caseIdMatch || calibrationMatch || locationMatch)) return false;
     }
 
-    return true; // If all filters pass, include the item
+    return true; 
   });
 }

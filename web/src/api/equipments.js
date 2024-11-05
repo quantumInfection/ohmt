@@ -67,7 +67,7 @@ export async function addEquipment(equipmentData) {
     serial_number: equipmentData.serial,
     location_id: equipmentData.location,
     image_urls: filePaths,
-    primary_image_index: equipmentData.selectedImageIndex.idx,
+    primary_image_index: equipmentData.primaryImageIndex,
     status: equipmentData.status,
     category_id: equipmentData.category,
     calibration_category: equipmentData.calibrationCategory,
@@ -104,7 +104,7 @@ export async function editEquipment(equipmentData) {
     status: equipmentData.status,
     location_id: equipmentData.location,
     image_urls: filePaths,
-    primary_image_index: equipmentData.selectedImageIndex.idx,
+    primary_image_index: equipmentData.primaryImageIndex,
     notes: equipmentData.notes,
     case_id: equipmentData.caseId ? equipmentData.caseId : undefined,
   };

@@ -1,6 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { archiveEquipment } from '@/api/equipments';
-import { Box, Card, CardContent, Divider, Grid, Typography, Button, CardHeader, CircularProgress, Stack } from '@mui/material';
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CircularProgress,
+  Divider,
+  Grid,
+  Stack,
+  Typography,
+} from '@mui/material';
 import { Archive, Info } from '@phosphor-icons/react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +19,7 @@ import { useNavigate } from 'react-router-dom';
 const DeviceInformation = ({ data }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
-  
+
   const { mutate, isLoading } = useMutation(archiveEquipment, {
     onSuccess: () => navigate(-1),
   });
@@ -20,10 +31,22 @@ const DeviceInformation = ({ data }) => {
 
   const renderInfoRow = (label, value) => (
     <Grid item xs={6}>
-      <Typography variant="body2" color="textSecondary">{label}</Typography>
+      <Typography variant="body2" color="textSecondary">
+        {label}
+      </Typography>
       <Typography variant="subtitle2">{value}</Typography>
     </Grid>
   );
+
+  const rows = [
+    { label: 'Asset ID', value: data?.asset_id },
+    { label: 'Device ID', value: data?.device_id },
+    { label: 'Model', value: data?.model },
+    { label: 'Serial Number', value: data?.serial_number },
+    { label: 'Case ID', value: data?.case_readable_id },
+    { label: 'Calibration Category', value: data?.calibration_category },
+    { label: 'Category', value: data?.category },
+  ];
 
   return (
     <>
@@ -32,22 +55,26 @@ const DeviceInformation = ({ data }) => {
           <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <Info /> Device Information
           </Typography>
-          <Divider sx={{ marginBottom: 2, marginTop: 2 }} />
 
           <Grid container spacing={2}>
-            {renderInfoRow('Asset ID', data?.asset_id)}
-            {renderInfoRow('Device ID', data?.device_id)}
-            {renderInfoRow('Model', data?.model)}
-            {renderInfoRow('Serial Number', data?.serial_number)}
-            {renderInfoRow('Case ID', data?.case_readable_id)}
-            {renderInfoRow('Calibration Category', data?.calibration_category)}
-            {renderInfoRow('Category', data?.category)}
+            {rows.map((row, index) => (
+              <React.Fragment key={row.label}>
+                {renderInfoRow(row.label, row.value)}
+                {(index + 1) % 2 === 0 && index !== rows.length - 1 && (
+                  <Grid item xs={12} style={{ paddingTop: '10px' }}>
+                    <Divider />
+                  </Grid>
+                )}
+              </React.Fragment>
+            ))}
           </Grid>
 
           <Divider sx={{ marginY: 2 }} />
           <Grid container spacing={2}>
             <Grid item xs={12}>
-              <Typography variant="body2" color="textSecondary">Notes / Comments</Typography>
+              <Typography variant="body2" color="textSecondary">
+                Notes / Comments
+              </Typography>
               <Typography variant="subtitle2">{data?.notes}</Typography>
             </Grid>
           </Grid>
@@ -57,20 +84,23 @@ const DeviceInformation = ({ data }) => {
             {!isLoaded ? (
               <CircularProgress sx={{ width: '100%', height: '157px', margin: 'auto' }} />
             ) : data.images?.length > 0 ? (
-              data.images.map((image, index) => (
-                <img
-                  key={index}
-                  src={image.url}
-                  alt="Device"
-                  style={{
-                    width: index === 0 ? '100%' : '95px',
-                    height: index === 0 ? '157px' : '95px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    marginBottom: '1rem',
-                  }}
-                />
-              ))
+              // Rearrange images to move the primary image to index 0
+              data.images
+                .sort((a, b) => (b.is_primary ? 1 : 0) - (a.is_primary ? 1 : 0)) // Sort primary image to the start
+                .map((image, index) => (
+                  <img
+                    key={index}
+                    src={image.url}
+                    alt="Device"
+                    style={{
+                      width: index === 0 ? '100%' : '95px',
+                      height: index === 0 ? '157px' : '95px',
+                      objectFit: 'contain',
+                      borderRadius: '8px',
+                      marginBottom: '1rem',
+                    }}
+                  />
+                ))
             ) : (
               <Typography>No images now</Typography>
             )}
@@ -86,9 +116,15 @@ const DeviceInformation = ({ data }) => {
               Archived items can be found in the listing under archived tabs.
             </Typography>
             <div>
-            <Button onClick={() => mutate(data?.id)} color="error" variant="contained" size='medium' style={{ marginTop: '10px' }}>
-              {isLoading ? <CircularProgress size={24} /> : 'Archive'}
-            </Button>
+              <Button
+                onClick={() => mutate(data?.id)}
+                color="error"
+                variant="contained"
+                size="medium"
+                style={{ marginTop: '10px' }}
+              >
+                {isLoading ? <CircularProgress size={24} /> : 'Archive'}
+              </Button>
             </div>
           </Stack>
         </CardContent>
