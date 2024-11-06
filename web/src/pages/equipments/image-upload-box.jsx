@@ -44,7 +44,6 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
 
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
-    console.log("Selected image index:", index); 
   };
   const handleDeleteImage = (index) => {
     setSelectedFiles((prevFiles) => {

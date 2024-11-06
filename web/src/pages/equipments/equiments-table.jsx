@@ -4,9 +4,7 @@ import Chip from '@mui/material/Chip';
 import IconButton from '@mui/material/IconButton';
 import { CheckCircle, Eye, FadersHorizontal, MapPin, Wrench, XCircle } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
-
 import { california, kepple, namedColors, redOrange, stormGrey, tomatoOrange } from '@/styles/theme/colors';
-
 import Updatecase from '../cases/update-case';
 
 export function DataTable({ data, fetchEquipments, totaldata }) {
