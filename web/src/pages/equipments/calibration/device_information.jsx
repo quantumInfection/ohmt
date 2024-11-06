@@ -16,6 +16,8 @@ import { Archive, Info } from '@phosphor-icons/react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
 
+import { stormGrey } from '@/styles/theme/colors';
+
 const DeviceInformation = ({ data }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const navigate = useNavigate();
@@ -50,10 +52,14 @@ const DeviceInformation = ({ data }) => {
 
   return (
     <>
-      <Card>
-        <CardContent>
-          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Info /> Device Information
+      <Card sx={{ border: `1px solid ${stormGrey[200]}`, borderRadius: 1 }}>
+        <CardContent sx={{ padding: ' 20px 24px' }}>
+          <Typography
+            variant="h6"
+            gutterBottom
+            sx={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '20px' }}
+          >
+            <Info size={24} /> Device Information
           </Typography>
 
           <Grid container spacing={2}>
@@ -108,27 +114,28 @@ const DeviceInformation = ({ data }) => {
         </CardContent>
       </Card>
 
-      <Card sx={{ marginY: 2 }}>
-        <CardHeader avatar={<Archive size={32} />} title="Archive Equipment" />
-        <CardContent>
-          <Stack>
-            <Typography color="text.secondary" variant="subtitle2">
-              Archived items can be found in the listing under archived tabs.
-            </Typography>
-            <div>
-              <Button
-                onClick={() => mutate(data?.id)}
-                color="error"
-                variant="contained"
-                size="medium"
-                style={{ marginTop: '10px' }}
-              >
-                {isLoading ? <CircularProgress size={24} /> : 'Archive'}
-              </Button>
-            </div>
-          </Stack>
-        </CardContent>
-      </Card>
+      <Box sx={{ marginY: 2, border: `1px solid ${stormGrey[200]}`, borderRadius: 1, padding: '24px' }}>
+        <Box display="flex" alignItems="center">
+          <Archive size={24} style={{ marginRight: "16px" }} />
+          <Typography variant="h6">Archive Equipment</Typography>
+        </Box>
+        <Stack sx={{marginTop:2}}>
+          <Typography color="text.secondary" variant="subtitle2">
+            Archived items can be found in the listing under archived tabs.
+          </Typography>
+          <div>
+            <Button
+              onClick={() => mutate(data?.id)}
+              color="error"
+              variant="contained"
+              size="medium"
+              style={{ marginTop: '10px' }}
+            >
+              {isLoading ? <CircularProgress size={24} /> : 'Archive'}
+            </Button>
+          </div>
+        </Stack>
+      </Box>
     </>
   );
 };
