@@ -120,7 +120,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth error={!!errors.provider}>
-                <InputLabel>Provider</InputLabel>
+                <InputLabel>Provider *</InputLabel>
                 <Controller
                   name="provider"
                   control={control}
@@ -144,7 +144,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
 
             <Grid item xs={12} sm={6}>
               <FormControl fullWidth error={!!errors.calibrationType}>
-                <InputLabel>Calibration Type</InputLabel>
+                <InputLabel>Calibration Type  *</InputLabel>
                 <Controller
                   name="calibrationType"
                   control={control}
@@ -176,7 +176,7 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
                   rules={{ required: `${i === 0 ? 'Date Completed' : 'Expiry Date'} is required` }}
                   render={({ field }) => (
                     <DesktopDatePicker
-                      label={i === 0 ? 'Date Completed' : 'Expiry Date'}
+                      label={i === 0 ? 'Date Completed *' : 'Expiry Date *'}
                       inputFormat="MMMM dd, yyyy"
                       value={field.value}
                       onChange={field.onChange}
@@ -203,19 +203,16 @@ function EditCalibrationModal({ mode, open, onClose, providerList, calibrationDa
             ))}
 
             <Grid item xs={12}>
-              <FormControl fullWidth error={!!errors.notes}>
+              <FormControl fullWidth>
                 <Controller
                   name="notes"
                   control={control}
-                  rules={{ required: 'Notes are required' }}
                   render={({ field }) => (
                     <TextField
                       {...field}
                       label="Notes / Comments"
                       multiline
                       rows={4}
-                      error={!!errors.notes}
-                      helperText={errors.notes ? errors.notes.message : ''}
                     />
                   )}
                 />

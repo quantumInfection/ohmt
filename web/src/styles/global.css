@@ -147,3 +147,8 @@ body {
 .css-19kzrtu{
   padding: 14px 0 !important;
 }
+
+/* remove the box shadow of status cards of equipments */
+.MuiPaper-elevation1{
+  box-shadow: none !important;
+}

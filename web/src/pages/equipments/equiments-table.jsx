@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import { california, kepple, namedColors, redOrange, stormGrey, tomatoOrange } from '@/styles/theme/colors';
 import Updatecase from '../cases/update-case';
 
-export function DataTable({ data, fetchEquipments , totaldata}) {
+export function DataTable({ data, fetchEquipments, totaldata }) {
   const navigate = useNavigate();
 
   const [open, setOpen] = React.useState(false);
@@ -43,55 +43,55 @@ export function DataTable({ data, fetchEquipments , totaldata}) {
   const getChipStyles = (row) => {
     if (row.calibration_due_label === 'NA') {
       return {
-        backgroundColor: stormGrey[100], 
+        backgroundColor: stormGrey[100],
         color: row.calibration_fg,
       };
     }
 
-    const match = row.calibration_due_label.match(/(\d+)/); 
-    const dueLabel = match ? Number(match[0]) : NaN; 
-  
+    const match = row.calibration_due_label.match(/(\d+)/);
+    const dueLabel = match ? Number(match[0]) : NaN;
+
     if (row.calibration_due_label.toLowerCase() === 'overdue') {
       return {
         backgroundColor: 'red',
         color: 'white',
       };
     }
-  
+
     if (isNaN(dueLabel)) {
       return {
-        backgroundColor: 'gray', 
+        backgroundColor: 'gray',
         color: 'black',
       };
     }
-  
+
     switch (true) {
       case dueLabel < 14:
         return {
           backgroundColor: redOrange[100],
           color: redOrange[900],
         };
-  
+
       case dueLabel >= 15 && dueLabel < 30:
         return {
           backgroundColor: namedColors['info-light'],
           color: namedColors['info-dark'],
-        }; 
-           case dueLabel >= 31 && dueLabel < 60:
+        };
+      case dueLabel >= 31 && dueLabel < 60:
         return {
           backgroundColor: california[100],
           color: california[950],
         };
-  
-      case dueLabel >= 60 :
+
+      case dueLabel >= 60:
         return {
           backgroundColor: kepple[50],
           color: kepple[900],
         };
-        
+
       default:
         return {
-          backgroundColor: stormGrey[100] ,
+          backgroundColor: stormGrey[100],
           color: stormGrey[900],
         };
     }
@@ -103,6 +103,7 @@ export function DataTable({ data, fetchEquipments , totaldata}) {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
+            <TableCell>Serial Number</TableCell>
             <TableCell>Status</TableCell>
             <TableCell>Location</TableCell>
             <TableCell>Case ID</TableCell>
@@ -112,53 +113,67 @@ export function DataTable({ data, fetchEquipments , totaldata}) {
         </TableHead>
         <TableBody>
           {data.map((row) => (
-            <TableRow key={row.id}>
-              <TableCell>
-                <Typography
-                  variant="body2"
-                  sx={{ cursor: 'pointer' }}
-                  onClick={() =>
-                    navigate('view', {
-                      state: {
-                        equipmentId: row.id,
-                        allEquipments: totaldata,
-                      },
-                    })
-                  }
-                >
+            <TableRow key={row.id}    sx={{ cursor: 'pointer'}}>
+              <TableCell
+                onClick={() =>
+                  navigate('view', {
+                    state: {
+                      equipmentId: row.id,
+                      allEquipments: totaldata,
+                    },
+                  })
+                }
+              >
+                <Typography variant="body2" sx={{ cursor: 'pointer' }}>
                   {row.name}
                 </Typography>
               </TableCell>
-              <TableCell>
+              <TableCell
+                onClick={() =>
+                  navigate('view', {
+                    state: {
+                      equipmentId: row.id,
+                      allEquipments: totaldata,
+                    },
+                  })
+                }
+              >
+                <Typography variant="body2" sx={{ cursor: 'pointer' }}>
+                  {row.serial_number}
+                </Typography>
+              </TableCell>
+              <TableCell
+                onClick={() =>
+                  navigate('view', {
+                    state: {
+                      equipmentId: row.id,
+                      allEquipments: totaldata,
+                    },
+                  })
+                }
+              >
                 <Chip
                   icon={getStatusIcon(row.status_label)}
                   label={row.status_label}
                   variant="outlined"
                   sx={{ backgroundColor: 'transparent', color: stormGrey[900], cursor: 'pointer' }}
-                  onClick={() =>
-                    navigate('view', {
-                      state: {
-                        equipmentId: row.id,
-                        allEquipments: totaldata,
-                      },
-                    })
-                  }
                 />
               </TableCell>
-              <TableCell>
+              <TableCell
+                onClick={() =>
+                  navigate('view', {
+                    state: {
+                      equipmentId: row.id,
+                      allEquipments: totaldata,
+                    },
+                  })
+                }
+              >
                 <Chip
                   icon={<MapPin weight={'fill'} />}
                   label={row.location}
                   variant="outlined"
                   sx={{ backgroundColor: 'transparent', color: stormGrey[500], cursor: 'pointer' }}
-                  onClick={() =>
-                    navigate('view', {
-                      state: {
-                        equipmentId: row.id,
-                        allEquipments: totaldata,
-                      },
-                    })
-                  }
                 />
               </TableCell>
               <TableCell onClick={() => handleOpenModal(row)} style={{ cursor: 'pointer' }}>
@@ -166,7 +181,6 @@ export function DataTable({ data, fetchEquipments , totaldata}) {
                   variant="body1"
                   color="primary"
                   sx={{
-                    textTransform: 'uppercase',
                     textDecoration: 'underline',
                     textDecorationColor: tomatoOrange[300],
                   }}

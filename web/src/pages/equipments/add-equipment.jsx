@@ -63,9 +63,7 @@ export function Page() {
       ...data,
       status: selectedStatus,
       files: selectedFiles,
-      selectedImageIndex: {
-        idx: selectedImageIndex,
-      },
+      primaryImageIndex: selectedImageIndex, 
     });
   };
 
@@ -211,7 +209,7 @@ export function Page() {
                           </MenuItem>
                           {cases.map((caseItem) => (
                             <MenuItem key={caseItem.id} value={caseItem.id}>
-                              {caseItem.case_readable_id}
+                              {caseItem.case_readable_id} - {caseItem.location}
                             </MenuItem>
                           ))}
                         </TextField>

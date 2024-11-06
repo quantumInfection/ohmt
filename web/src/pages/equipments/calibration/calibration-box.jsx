@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import { california, kepple, namedColors, redOrange ,shakespeare} from '@/styles/theme/colors';
 import CalibrationList from './calibration-list';
 import Timelinebox from './timeline-box';
+import {  stormGrey} from '@/styles/theme/colors';
 
 
 const StatusCard = ({ icon, title, value, iconBgColor }) => (
@@ -13,7 +14,7 @@ const StatusCard = ({ icon, title, value, iconBgColor }) => (
       display: 'flex',
       alignItems: 'center',
       padding: '18px',
-      borderRadius: '8px',
+      border: `1px solid ${stormGrey[200]}`, borderRadius: 1 ,
       flexGrow: 1,
     }}
   >
