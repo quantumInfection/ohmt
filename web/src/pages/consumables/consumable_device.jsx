@@ -17,6 +17,7 @@ import ButtonGroup from '@mui/material/ButtonGroup';
 import { Archive, CaretDown, Info, WarningCircle } from '@phosphor-icons/react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
+import { stormGrey } from '@/styles/theme/colors';
 
 const DeviceInformation = () => {
   const [isLoaded, setIsLoaded] = useState(false);
@@ -39,10 +40,18 @@ const DeviceInformation = () => {
       <Typography variant="subtitle2">{value}</Typography>
     </Grid>
   );
+  const rows = [
+    { label: 'Name', value: 'data?.Name' },
+    { label: 'Category Number', value: 'data?.category_number' },
+    { label: 'Serial Number', value: 'data?.serial_number' },
+    { label: 'Lab Job Number', value: 'data?.job_number' },
+    { label: 'Location', value: 'data?.Location' },
+    { label: 'Cassette ID', value: 'data?.cassette_id' },
+  ];
 
   return (
     <>
-      <Card sx={{ mb: 2 }}>
+      <Card sx={{ mb: 2 , border: `1px solid ${stormGrey[200]}`, borderRadius: 1}}>
         <CardHeader avatar={<WarningCircle size={26} />} title="Add Cassette Number" />
         <CardContent sx={{ paddingTop: '0' }}>
           <Stack>
@@ -60,21 +69,23 @@ const DeviceInformation = () => {
         </CardContent>
       </Card>
 
-      <Card>
+      <Card sx={{border: `1px solid ${stormGrey[200]}`, borderRadius: 1}}>
         <CardContent>
-          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <Info /> Consumable Information
+          <Typography variant="h6" gutterBottom sx={{ display: 'flex', alignItems: 'center', gap: '10px' , marginBottom: '20px'}}>
+            <Info size={24} /> Consumable Information
           </Typography>
-          <Divider sx={{ marginBottom: 2, marginTop: 2 }} />
-
           <Grid container spacing={2}>
-            {renderInfoRow('Name', 'data?.Name')}
-            {renderInfoRow('Category Number', 'data?.category_number')}
-            {renderInfoRow('Serial Number', 'data?.serial_number')}
-            {renderInfoRow('Lab Job Number', 'data?.job_number')}
-            {renderInfoRow('Location', 'data?.Location')}
-            {renderInfoRow('Cassette ID', 'data?.cassette_id')}
-          </Grid>
+            {rows.map((row, index) => (
+              <React.Fragment key={row.label}>
+                {renderInfoRow(row.label, row.value)}
+                {(index + 1) % 2 === 0 && index !== rows.length - 1 && (
+                  <Grid item xs={12} style={{ paddingTop: '10px' }}>
+                    <Divider />
+                  </Grid>
+                )}
+              </React.Fragment>
+            ))}
+            </Grid>
 
           <Divider sx={{ marginY: 2 }} />
           <Grid container spacing={2}>
@@ -126,7 +137,7 @@ const DeviceInformation = () => {
         </CardContent>
       </Card>
 
-      <Card sx={{ marginY: 2 }}>
+      <Card sx={{ marginY: 2 ,  border: `1px solid ${stormGrey[200]}`, borderRadius: 1 }}>
         <CardHeader avatar={<Archive size={32} />} title="Archive Consumable" />
         <CardContent>
           <Stack>

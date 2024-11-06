@@ -3,7 +3,7 @@ import { Box, Card, Tab, Tabs, Typography } from '@mui/material';
 import { CheckCircle, FadersHorizontal, MapPinLine, Wrench, XCircle } from '@phosphor-icons/react';
 import PropTypes from 'prop-types';
 
-import { california, kepple, namedColors, redOrange, shakespeare } from '@/styles/theme/colors';
+import { california, kepple, namedColors, redOrange, shakespeare, stormGrey } from '@/styles/theme/colors';
 
 // import CalibrationList from './calibration-list';
 import Timelinebox from './timeline-box.jsx';
@@ -14,7 +14,8 @@ const StatusCard = ({ icon, title, value, iconBgColor }) => (
       display: 'flex',
       alignItems: 'center',
       padding: '18px',
-      borderRadius: '8px',
+      border: `1px solid ${stormGrey[200]}`,
+      borderRadius: 1,
       flexGrow: 1,
     }}
   >
