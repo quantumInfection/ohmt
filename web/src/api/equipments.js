@@ -67,7 +67,7 @@ export async function addEquipment(equipmentData) {
     serial_number: equipmentData.serial,
     location_id: equipmentData.location,
     image_urls: filePaths,
-    primary_image_index: equipmentData.selectedImageIndex.idx,
+    primary_image_index: equipmentData.primaryImageIndex,
     status: equipmentData.status,
     category_id: equipmentData.category,
     calibration_category: equipmentData.calibrationCategory,
@@ -104,11 +104,10 @@ export async function editEquipment(equipmentData) {
     status: equipmentData.status,
     location_id: equipmentData.location,
     image_urls: filePaths,
-    primary_image_index: equipmentData.selectedImageIndex.idx,
+    primary_image_index: equipmentData.primaryImageIndex,
     notes: equipmentData.notes,
     case_id: equipmentData.caseId ? equipmentData.caseId : undefined,
   };
-
   const response = await customFetch(`${equipmentsUrl}${equipmentData?.equip_id}`, {
     method: 'PUT',
     headers: {
@@ -116,11 +115,9 @@ export async function editEquipment(equipmentData) {
     },
     body: JSON.stringify(bodyData),
   });
-
   if (!response.ok) {
     throw new Error('Failed to edit equipment');
   }
-
   return response.json();
 }
 
@@ -159,7 +156,6 @@ async function uploadPDFToSignedUrl(signedUrl, pdfFile) {
     },
     body: pdfFile,
   });
-
   if (!response.ok) {
     throw new Error('Failed to upload PDF');
   }
@@ -173,7 +169,6 @@ export async function addCalibrations(formattedData) {
   } catch (error) {
     throw new Error('Failed to upload PDF');
   }
-
   const response = await customFetch(`${equipmentsUrl}${formattedData.equipmentId}/calibration`, {
     method: 'POST',
     headers: {
@@ -188,14 +183,11 @@ export async function addCalibrations(formattedData) {
       notes: formattedData.notes,
     }),
   });
-
   if (!response.ok) {
     throw new Error('Failed to add calibration');
   }
-
   return response.json(); // Return the JSON response from the server
 }
-
 
 export async function editCalibration(formattedData) {
   const pdfFile = formattedData.pdfFile;
@@ -222,16 +214,13 @@ export async function editCalibration(formattedData) {
       }),
     }
   );
-
   if (!response.ok) {
     throw new Error('Failed to edit calibration');
   }
-
   return response.json();
 }
 
 export async function archiveEquipment(equipmentId) {
-
   const response = await customFetch(`${equipmentsUrl}${equipmentId}`, {
     method: 'DELETE',
     headers: {

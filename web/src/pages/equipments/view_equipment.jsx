@@ -66,7 +66,7 @@ export function Page() {
                   <Box sx={{ flex: '1 1 auto' }}>
                     <Typography variant="h4">Equipment - {equipment.name}</Typography>
                     <Stack direction="row" alignItems="center">
-                      <Button onClick={() => navigate(-1)} sx={{ textTransform: 'none', color: 'gray' }}>
+                      <Button onClick={() => navigate(-1)} sx={{ textTransform: 'none', color: 'gray' , paddingLeft:"0px"}}>
                         <Stack direction="row" spacing={1} alignItems="center">
                           <ArrowLeft />
                           <Typography>Equipments</Typography>

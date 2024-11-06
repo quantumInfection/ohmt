@@ -45,7 +45,6 @@ export function ImageUploader({ selectedFiles, setSelectedFiles, selectedImageIn
   const handleImageClick = (index) => {
     setSelectedImageIndex(index);
   };
-
   const handleDeleteImage = (index) => {
     setSelectedFiles((prevFiles) => {
       const updatedFiles = prevFiles.filter((_, i) => i !== index);

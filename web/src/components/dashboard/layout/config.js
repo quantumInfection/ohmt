@@ -5,12 +5,14 @@ export const layoutConfig = {
     {
       key: 'dashboards',
       items: [
-        { key: 'cases', title: 'Cases', href: paths.dashboard.cases.list, icon: 'tool-box' },
         {
           key: 'equipments',
-          title: 'Equipments',
-          href: paths.dashboard.equipments.list,
+          title: 'Equipment',
           icon: 'chart-pie',
+          items: [
+            { key: 'equipments', title: 'Equipment List', href: paths.dashboard.equipments.list },
+            { key: 'cases', title: 'Cases', href: paths.dashboard.cases.list },
+          ],
         },
         {
           key: 'consumables',
@@ -20,5 +22,6 @@ export const layoutConfig = {
         },
       ],
     },
+
   ],
 };
