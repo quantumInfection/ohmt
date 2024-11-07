@@ -39,7 +39,7 @@ export function StepperConsumable() {
   const [isComplete, setIsComplete] = React.useState(false);
 
  const [formData, setFormData] = React.useState({
-    consumableSearch: {}, // Example for search consumable
+    consumableSearch: '', // Example for search consumable
     consumableDetails: {}, // Example for details
     uploadedImage: null, // Store uploaded image
   });
@@ -51,6 +51,15 @@ export function StepperConsumable() {
   const handleBack = React.useCallback(() => {
     setActiveStep((prevState) => prevState - 1);
   }, []);
+
+  const handleConsumableSearch = (searchData) => {
+    setFormData((prevState) => ({
+      ...prevState,
+      consumableSearch: searchData, // Update consumableSearch with the data from child
+    }));
+    console.log('Consumable Search Data:', searchData);
+  };
+
   const handleComplete = React.useCallback(() => {
     console.log('Final Form Data:', formData); 
     setIsComplete(true);
@@ -67,7 +76,7 @@ export function StepperConsumable() {
 
   const steps = React.useMemo(() => {
     return[
-    { label: 'Search Consumable', content: <StepSearchConsumable onBack={handleBack} onNext={handleNext} /> },
+    { label: 'Search Consumable', content: <StepSearchConsumable onBack={handleBack} onNext={handleNext} onSearch={handleConsumableSearch} /> },
     { label: 'Consumables Details', content: <StepConsumablesDetails onBack={handleBack} onNext={handleNext} onSubmit={updateFormData}/> },
     { label: 'Upload image', content: <StepUploadImage onBack={handleBack} onNext={handleNext} onSubmit={handleUploadImageSubmit}/> },
     { label: 'Print labels', content: <PrintLabels onBack={handleBack} onNext={handleComplete} /> },

@@ -19,7 +19,6 @@ const metadata = { title: `Consumables | ${config.site.name}` };
 
 export function Page() {
   const [data, setData] = useState([]);
-  const [totalresult, setTotalresult] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
   const [countNumbers, setCountNumbers] = useState({});
   const navigate = useNavigate();
@@ -30,7 +29,6 @@ export function Page() {
     onSuccess: (data) => {
       setData(data || []); 
       setFilteredData(data || []);
-      setTotalresult(data || []);
     },
     onError: (error) => {
       console.error(error);
@@ -99,7 +97,7 @@ export function Page() {
             </Stack>
             <ConsumableFilters
               filters={{ location, status, cassettle_id, searchQuery }}
-              data={totalresult}
+              data={data}
               counts={countNumbers}
             />
             <Box sx={{ overflowX: 'auto' }}>
