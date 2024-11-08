@@ -4,19 +4,20 @@ import { ArrowRight ,ArrowLeft  ,CaretDown} from '@phosphor-icons/react';
 import { stormGrey } from '@/styles/theme/colors';
 
 
-const PrintLabels = ({ onBack, onNext }) => {
+const PrintLabels = ({ onBack, onNext ,data }) => {
+  console.log(data)
+
     const details = [
         { label: 'Name', value: 'Glass Fiber - 25mm' },
         { label: 'Category Number', value: '226-01' },
         { label: 'Supplier', value: 'SKC' },
-        { label: 'Serial Number', value: 'C256325' },
-        { label: 'Lab Job Number', value: '5256566' },
-        { label: 'Location', value: 'Cromwell' },
-        { label: 'Cassette ID', value: 'NA' },
+        { label: 'Serial Number', value: data?.serialNumber },
+        { label: 'Lab Job Number', value: data?.labJobNumber },
+        { label: 'Location', value: data?.location },
+        { label: 'Cassette ID', value: data?.cassetteID },
         {
           label: 'Notes / Comments',
-          value:
-            'Lorem ipsum odor amet, consectetuer adipiscing elit. Primis nec at semper eget interdum mauris lobortis pretium?',
+          value: data?.notes,
           xs: 8,
         },
       ];

@@ -15,21 +15,20 @@ import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import { stormGrey } from '@/styles/theme/colors';
 import { ImageUploader } from './image_upload_box';
 
-const StepUploadImage = ({ onBack, onNext, onSubmit }) => {
+const StepUploadImage = ({ onBack, onNext, onSubmit , data }) => {
+  console.log(data)
   const [selectedFile, setSelectedFile] = React.useState(null);
-
   const details = [
     { label: 'Name', value: 'Glass Fiber - 25mm' },
     { label: 'Category Number', value: '226-01' },
     { label: 'Supplier', value: 'SKC' },
-    { label: 'Serial Number', value: 'C256325' },
-    { label: 'Lab Job Number', value: '5256566' },
-    { label: 'Location', value: 'Cromwell' },
-    { label: 'Cassette ID', value: 'NA' },
+    { label: 'Serial Number', value: data?.serialNumber },
+    { label: 'Lab Job Number', value: data?.labJobNumber },
+    { label: 'Location', value: data?.location },
+    { label: 'Cassette ID', value: data?.cassetteID },
     {
       label: 'Notes / Comments',
-      value:
-        'Lorem ipsum odor amet, consectetuer adipiscing elit. Primis nec at semper eget interdum mauris lobortis pretium?',
+      value: data?.notes ,
       xs: 8,
     },
   ];
@@ -64,7 +63,7 @@ const StepUploadImage = ({ onBack, onNext, onSubmit }) => {
             </Grid>
           ))}
           <Grid item xs={4} borderRadius={1}>
-            <img src="https://picsum.photos/204/124?random=1" alt="" style={{ borderRadius: '8px' }} />
+            <img src={data?.uploadedImage ||  'https://picsum.photos/204/124?random=1' } alt="" style={{ borderRadius: '8px' }} />
           </Grid>
         </Grid>
       </Stack>

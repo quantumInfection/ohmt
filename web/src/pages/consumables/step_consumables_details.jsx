@@ -15,14 +15,14 @@ import { DesktopDatePicker } from '@mui/x-date-pickers/DesktopDatePicker';
 import { ArrowLeft, ArrowRight } from '@phosphor-icons/react';
 import {stormGrey} from "@/styles/theme/colors"
 
-const StepConsumablesDetails = ({ onBack, onNext, onSubmit }) => {
+const StepConsumablesDetails = ({ onBack, onNext, onSubmit , data }) => {
   const [formData, setFormData] = useState({
-    serialNumber: '',
-    labJobNumber: '',
-    dateCompleted: null,
-    cassetteID: '',
-    location: '',
-    notes: '',
+    serialNumber: data.serialNumber || '',
+    labJobNumber: data.labJobNumber || '',
+    dateCompleted: data.dateCompleted || null,
+    cassetteID: data.cassetteID || '',
+    location: data.location || '',
+    notes: data.notes || '',
   });
 
   const [errors, setErrors] = useState({});

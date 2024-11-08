@@ -1,7 +1,7 @@
 // import { baseUrl } from '@/api/host';
 // import { customFetch } from './customFetch';
 
-const consumableURL = `https://run.mocky.io/v3/65fbde9d-d3d8-43f2-9d2f-8cece7917a6a`;
+const consumableURL = `https://run.mocky.io/v3/37ecd20f-f8c5-4516-9b4b-96ecb6f08ce2`;
 
 export async function fetchConsumable() {
   const response = await fetch(consumableURL);
