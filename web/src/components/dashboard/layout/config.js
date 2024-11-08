@@ -3,7 +3,7 @@ import { paths } from '@/paths';
 export const layoutConfig = {
   navItems: [
     {
-      key: 'equipments',
+      key: 'dashboards',
       items: [
         {
           key: 'equipments',
@@ -14,7 +14,12 @@ export const layoutConfig = {
             { key: 'cases', title: 'Cases', href: paths.dashboard.cases.list },
           ],
         },
-     
+        {
+          key: 'consumables',
+          title: 'Consumable',
+          href: paths.dashboard.consumables.list,
+          icon: 'list-dashes',
+        },
       ],
     },
 

@@ -3,6 +3,7 @@ import { AddressBook as AddressBookIcon } from '@phosphor-icons/react/dist/ssr/A
 import { AlignLeft as AlignLeftIcon } from '@phosphor-icons/react/dist/ssr/AlignLeft';
 import { CalendarCheck as CalendarCheckIcon } from '@phosphor-icons/react/dist/ssr/CalendarCheck';
 import { ChartPie as ChartPieIcon } from '@phosphor-icons/react/dist/ssr/ChartPie';
+import { ListDashes  as ListDashesIcon} from '@phosphor-icons/react/dist/ssr/ListDashes';
 import { ChatsCircle as ChatsCircleIcon } from '@phosphor-icons/react/dist/ssr/ChatsCircle';
 import { CreditCard as CreditCardIcon } from '@phosphor-icons/react/dist/ssr/CreditCard';
 import { Cube as CubeIcon } from '@phosphor-icons/react/dist/ssr/Cube';
@@ -36,6 +37,7 @@ export const icons = {
   'align-left': AlignLeftIcon,
   'calendar-check': CalendarCheckIcon,
   'chart-pie': ChartPieIcon,
+  'list-dashes': ListDashesIcon,
   'chats-circle': ChatsCircleIcon,
   'credit-card': CreditCardIcon,
   'currency-eth': CurrencyEthIcon,

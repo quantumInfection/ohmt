@@ -15,7 +15,6 @@ import {
 import { Archive, Info } from '@phosphor-icons/react';
 import { useMutation } from 'react-query';
 import { useNavigate } from 'react-router-dom';
-
 import { stormGrey } from '@/styles/theme/colors';
 
 const DeviceInformation = ({ data }) => {
